@@ -57,6 +57,10 @@
 
     <!-- Custom Styles -->
     <style>
+        html, body {
+            overflow-x: hidden;
+        }
+
         html {
             scroll-behavior: smooth;
             scroll-padding-top: 5rem;
@@ -152,11 +156,11 @@
 
         /* Safe area for floating buttons */
         .safe-bottom-whatsapp {
-            bottom: calc(5rem + env(safe-area-inset-bottom, 0px));
+            bottom: calc(5.5rem + env(safe-area-inset-bottom, 0px));
         }
 
         .safe-bottom-scroll {
-            bottom: calc(8.5rem + env(safe-area-inset-bottom, 0px));
+            bottom: calc(10rem + env(safe-area-inset-bottom, 0px));
         }
 
         @media (min-width: 769px) {
@@ -164,7 +168,7 @@
                 bottom: 1.5rem;
             }
             .safe-bottom-scroll {
-                bottom: 6rem;
+                bottom: 5.5rem;
             }
         }
 
@@ -219,8 +223,8 @@
             </div>
 
             <!-- Mobile Menu -->
-            <div id="mobile-menu" class="lg:hidden fixed inset-0 bg-brand-dark/98 glassmorphism -translate-x-full transition-transform duration-300 ease-in-out">
-                <div class="flex flex-col items-center justify-center h-full space-y-8">
+            <div id="mobile-menu" class="lg:hidden fixed inset-0 bg-brand-dark -translate-x-full transition-transform duration-300 ease-in-out" style="z-index: 9999;">
+                <div class="flex flex-col items-center justify-center h-full space-y-6">
                     <a href="#inicio" class="mobile-nav-link text-2xl text-white font-heading font-semibold hover:text-brand-blue transition-colors">Inicio</a>
                     <a href="#nosotros" class="mobile-nav-link text-2xl text-white font-heading font-semibold hover:text-brand-blue transition-colors">Nosotros</a>
                     <a href="#tech" class="mobile-nav-link text-2xl text-white font-heading font-semibold hover:text-brand-blue transition-colors">Da Más Tech</a>
