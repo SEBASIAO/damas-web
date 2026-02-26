@@ -1,0 +1,1216 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Da Más Group | Tecnología Premium y Soluciones Financieras en Colombia</title>
+    <meta name="description" content="Da Más Group: importación directa de iPhones, PlayStation y accesorios originales desde EE.UU. Financiamiento rápido y accesible. Calidad A+ en Cali, Colombia.">
+    <!-- Open Graph -->
+    <meta property="og:title" content="Da Más Group | Tecnología Premium y Soluciones Financieras en Colombia">
+    <meta property="og:description" content="Importación directa de tecnología premium desde EE.UU. y acceso al crédito en un solo ecosistema. Tu próximo nivel, empieza aquí.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://damasgroup.com.co">
+    <meta property="og:locale" content="es_CO">
+    <!-- EDITAR: IMAGEN OG - reemplazar con URL de imagen para redes sociales (1200x630px recomendado) -->
+    <meta property="og:image" content="https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=1200&h=630&fit=crop&q=80">
+    <!-- Favicon placeholder -->
+    <!-- EDITAR: FAVICON - agregar <link rel="icon" href="favicon.ico"> -->
+
+    <!-- Tailwind CSS v3 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- AOS Animate on Scroll -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+    <!-- Tailwind Config -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'brand-blue': '#3891CB',
+                        'brand-dark': '#0C2D48',
+                        'brand-white': '#FEFEFE',
+                        'brand-gold': '#C8A85C',
+                        'brand-green': '#059669',
+                        'brand-gray': '#F1F5F9',
+                        'brand-gray-dark': '#E2E8F0',
+                        'brand-text': '#1E293B',
+                    },
+                    fontFamily: {
+                        'sans': ['Inter', 'sans-serif'],
+                        'heading': ['Sora', 'sans-serif'],
+                        'accent': ['Playfair Display', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Custom Styles -->
+    <style>
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 5rem;
+        }
+
+        .navbar-scrolled {
+            background: rgba(12, 45, 72, 0.95);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        .parallax {
+            background-attachment: fixed;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .glassmorphism {
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+
+        .gold-line {
+            width: 48px;
+            height: 2px;
+            background: #C8A85C;
+            margin: 0 auto;
+            border-radius: 2px;
+        }
+
+        @keyframes pulse-whatsapp {
+            0% {
+                box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.5);
+            }
+            70% {
+                box-shadow: 0 0 0 15px rgba(37, 211, 102, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(37, 211, 102, 0);
+            }
+        }
+
+        .whatsapp-pulse {
+            animation: pulse-whatsapp 2s infinite;
+        }
+
+        .counter-value {
+            transition: all 0.3s ease;
+        }
+
+        .nav-link {
+            position: relative;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #3891CB;
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover::after,
+        .nav-link.active::after {
+            width: 100%;
+        }
+
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+
+        .card-hover:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        @media (max-width: 768px) {
+            .parallax {
+                background-attachment: scroll;
+            }
+        }
+    </style>
+</head>
+
+<body class="font-sans text-brand-text bg-brand-white antialiased">
+
+    <!-- ============================== -->
+    <!-- NAVBAR / HEADER -->
+    <!-- ============================== -->
+    <header id="navbar" class="fixed w-full z-50 transition-all duration-300">
+        <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <!-- Logo -->
+                <a href="#inicio" class="flex items-center space-x-1 z-50">
+                    <!-- EDITAR: LOGO - reemplazar con <img src="logo.png" alt="Da Más Group" class="h-10"> -->
+                    <span class="text-2xl font-heading font-bold text-white">Da Más</span>
+                    <span class="text-2xl font-heading font-light text-brand-blue">Group</span>
+                </a>
+
+                <!-- Desktop Navigation -->
+                <div class="hidden lg:flex items-center space-x-8">
+                    <a href="#inicio" class="nav-link text-white/90 hover:text-white text-sm font-medium transition-colors">Inicio</a>
+                    <a href="#nosotros" class="nav-link text-white/90 hover:text-white text-sm font-medium transition-colors">Nosotros</a>
+                    <a href="#tech" class="nav-link text-white/90 hover:text-white text-sm font-medium transition-colors">Da Más Tech</a>
+                    <a href="#servicios" class="nav-link text-white/90 hover:text-white text-sm font-medium transition-colors">Servicios</a>
+                    <a href="#finanzas" class="nav-link text-white/90 hover:text-white text-sm font-medium transition-colors">Finanzas Da Más</a>
+                    <a href="#contacto" class="nav-link text-white/90 hover:text-white text-sm font-medium transition-colors">Contacto</a>
+                    <!-- EDITAR: TELÉFONO WHATSAPP - reemplazar 57XXXXXXXXXX con número real -->
+                    <a href="https://wa.me/57XXXXXXXXXX" target="_blank" rel="noopener noreferrer" class="bg-brand-blue hover:bg-brand-blue/90 text-white px-6 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 hover:shadow-lg hover:shadow-brand-blue/25">
+                        Contáctanos
+                    </a>
+                </div>
+
+                <!-- Hamburger Button -->
+                <button id="hamburger-btn" class="lg:hidden z-50 flex flex-col justify-center items-center w-10 h-10 space-y-1.5" aria-label="Menú de navegación" aria-expanded="false">
+                    <span class="hamburger-line block w-6 h-0.5 bg-white transition-all duration-300"></span>
+                    <span class="hamburger-line block w-6 h-0.5 bg-white transition-all duration-300"></span>
+                    <span class="hamburger-line block w-6 h-0.5 bg-white transition-all duration-300"></span>
+                </button>
+            </div>
+
+            <!-- Mobile Menu -->
+            <div id="mobile-menu" class="lg:hidden fixed inset-0 bg-brand-dark/98 glassmorphism -translate-x-full transition-transform duration-300 ease-in-out">
+                <div class="flex flex-col items-center justify-center h-full space-y-8">
+                    <a href="#inicio" class="mobile-nav-link text-2xl text-white font-heading font-semibold hover:text-brand-blue transition-colors">Inicio</a>
+                    <a href="#nosotros" class="mobile-nav-link text-2xl text-white font-heading font-semibold hover:text-brand-blue transition-colors">Nosotros</a>
+                    <a href="#tech" class="mobile-nav-link text-2xl text-white font-heading font-semibold hover:text-brand-blue transition-colors">Da Más Tech</a>
+                    <a href="#servicios" class="mobile-nav-link text-2xl text-white font-heading font-semibold hover:text-brand-blue transition-colors">Servicios</a>
+                    <a href="#finanzas" class="mobile-nav-link text-2xl text-white font-heading font-semibold hover:text-brand-blue transition-colors">Finanzas Da Más</a>
+                    <a href="#contacto" class="mobile-nav-link text-2xl text-white font-heading font-semibold hover:text-brand-blue transition-colors">Contacto</a>
+                    <!-- EDITAR: TELÉFONO WHATSAPP -->
+                    <a href="https://wa.me/57XXXXXXXXXX" target="_blank" rel="noopener noreferrer" class="bg-brand-blue hover:bg-brand-blue/90 text-white px-8 py-3 rounded-full text-lg font-semibold transition-all duration-300 hover:shadow-lg hover:shadow-brand-blue/25">
+                        Contáctanos
+                    </a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <!-- ============================== -->
+        <!-- HERO SECTION -->
+        <!-- ============================== -->
+        <section id="inicio" class="relative min-h-screen flex items-center justify-center overflow-hidden">
+            <!-- Background Image with Parallax -->
+            <!-- EDITAR: IMAGEN - reemplazar con foto propia -->
+            <div class="absolute inset-0 parallax" style="background-image: url('https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=1920&q=80');" role="img" aria-label="Atardecer dorado sobre montañas — paisaje inspirador"></div>
+            <!-- Dark Overlay -->
+            <div class="absolute inset-0 bg-gradient-to-b from-brand-dark/70 via-brand-dark/50 to-brand-dark/80"></div>
+
+            <!-- Hero Content -->
+            <div class="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 text-center">
+                <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-heading font-bold text-white leading-tight mb-6" data-aos="fade-up">
+                    Tu próximo nivel,<br>
+                    <span class="text-brand-blue">empieza aquí.</span>
+                </h1>
+                <p class="text-lg sm:text-xl md:text-2xl text-white/80 max-w-3xl mx-auto mb-10 font-light" data-aos="fade-up" data-aos-delay="100">
+                    Un ecosistema que une tecnología premium y soluciones financieras para llevarte más lejos. Respaldo, confianza y visión de crecimiento — todo en un solo lugar.
+                </p>
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6" data-aos="fade-up" data-aos-delay="200">
+                    <a href="#tech" class="w-full sm:w-auto bg-brand-blue hover:bg-brand-blue/90 text-white px-8 py-4 rounded-full text-lg font-semibold transition-all duration-300 hover:shadow-lg hover:shadow-brand-blue/30 hover:scale-105">
+                        Explorar Tecnología
+                    </a>
+                    <a href="#finanzas" class="w-full sm:w-auto border-2 border-white/70 hover:border-white text-white px-8 py-4 rounded-full text-lg font-semibold transition-all duration-300 hover:bg-white/10">
+                        Conocer Finanzas
+                    </a>
+                </div>
+            </div>
+
+            <!-- Stats Bar -->
+            <div class="absolute bottom-0 left-0 right-0 bg-brand-dark/80 glassmorphism border-t border-white/10">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8 text-center">
+                        <!-- EDITAR: ESTADÍSTICA -->
+                        <div class="stat-item" data-aos="fade-up" data-aos-delay="0">
+                            <span class="counter-value block text-3xl md:text-4xl font-heading font-bold text-white" data-target="5">0</span>
+                            <span class="text-brand-blue text-lg font-bold">+</span>
+                            <p class="text-white/70 text-sm mt-1">Años de Experiencia</p>
+                        </div>
+                        <!-- EDITAR: ESTADÍSTICA -->
+                        <div class="stat-item" data-aos="fade-up" data-aos-delay="100">
+                            <span class="counter-value block text-3xl md:text-4xl font-heading font-bold text-white" data-target="2000">0</span>
+                            <span class="text-brand-blue text-lg font-bold">+</span>
+                            <p class="text-white/70 text-sm mt-1">Equipos Importados</p>
+                        </div>
+                        <!-- EDITAR: ESTADÍSTICA -->
+                        <div class="stat-item" data-aos="fade-up" data-aos-delay="200">
+                            <span class="counter-value block text-3xl md:text-4xl font-heading font-bold text-white" data-target="1500">0</span>
+                            <span class="text-brand-blue text-lg font-bold">+</span>
+                            <p class="text-white/70 text-sm mt-1">Clientes Satisfechos</p>
+                        </div>
+                        <!-- EDITAR: ESTADÍSTICA -->
+                        <div class="stat-item" data-aos="fade-up" data-aos-delay="300">
+                            <span class="counter-value block text-3xl md:text-4xl font-heading font-bold text-white" data-target="10">0</span>
+                            <span class="text-brand-blue text-lg font-bold">+</span>
+                            <p class="text-white/70 text-sm mt-1">Ciudades Atendidas</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================== -->
+        <!-- SOBRE NOSOTROS -->
+        <!-- ============================== -->
+        <section id="nosotros" class="py-20 md:py-28 bg-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <!-- Section Header -->
+                <div class="text-center mb-16" data-aos="fade-up">
+                    <h2 class="text-3xl md:text-4xl lg:text-5xl font-heading font-bold text-brand-text mb-4">
+                        Sobre <span class="text-brand-blue">Nosotros</span>
+                    </h2>
+                    <div class="gold-line mb-6"></div>
+                    <p class="text-lg text-brand-text/70 max-w-3xl mx-auto">
+                        Somos un grupo empresarial colombiano que integra tecnología de primer nivel y soluciones financieras accesibles, para que cada cliente encuentre en nosotros un aliado de confianza.
+                    </p>
+                </div>
+
+                <!-- Intro Text -->
+                <div class="max-w-4xl mx-auto text-center mb-16" data-aos="fade-up" data-aos-delay="100">
+                    <p class="text-brand-text/80 text-lg leading-relaxed">
+                        <span class="font-accent italic text-brand-blue text-xl">"Creemos firmemente en la calidad como base de todo lo que hacemos."</span><br class="hidden md:block">
+                        Desde Santiago de Cali conectamos a nuestros clientes con tecnología original importada directamente desde Estados Unidos y con líneas de financiamiento diseñadas para hacer realidad sus proyectos. En Da Más Group cada decisión se toma pensando en ti: estándares altos, atención personalizada y un compromiso genuino con tu satisfacción.
+                    </p>
+                </div>
+
+                <!-- Cards Grid -->
+                <div class="grid md:grid-cols-3 gap-8">
+                    <!-- Misión -->
+                    <div class="card-hover bg-white rounded-2xl p-8 border border-brand-gray-dark/50 shadow-lg hover:shadow-2xl text-center" data-aos="fade-up" data-aos-delay="100">
+                        <div class="w-16 h-16 bg-brand-blue/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                            <i class="fa-solid fa-bullseye text-brand-blue text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-heading font-bold text-brand-text mb-4">Nuestra Misión</h3>
+                        <p class="text-brand-text/70 leading-relaxed">
+                            Acercar tecnología premium y oportunidades financieras reales a cada persona, a través de importación directa desde Estados Unidos, servicio técnico especializado y acceso al crédito — todo en un ecosistema pensado para generar confianza y valor.
+                        </p>
+                    </div>
+
+                    <!-- Visión -->
+                    <div class="card-hover bg-white rounded-2xl p-8 border border-brand-gray-dark/50 shadow-lg hover:shadow-2xl text-center" data-aos="fade-up" data-aos-delay="200">
+                        <div class="w-16 h-16 bg-brand-blue/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                            <i class="fa-solid fa-eye text-brand-blue text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-heading font-bold text-brand-text mb-4">Nuestra Visión</h3>
+                        <p class="text-brand-text/70 leading-relaxed">
+                            Consolidarnos como el grupo empresarial referente en Colombia que conecta tecnología y finanzas, reconocido por su excelencia operativa, innovación constante y un compromiso inquebrantable con la satisfacción de cada cliente.
+                        </p>
+                    </div>
+
+                    <!-- Valores -->
+                    <div class="card-hover bg-white rounded-2xl p-8 border border-brand-gray-dark/50 shadow-lg hover:shadow-2xl text-center" data-aos="fade-up" data-aos-delay="300">
+                        <div class="w-16 h-16 bg-brand-blue/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                            <i class="fa-solid fa-gem text-brand-blue text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-heading font-bold text-brand-text mb-4">Nuestros Valores</h3>
+                        <p class="text-brand-text/70 leading-relaxed">
+                            Calidad sin concesiones, transparencia en cada proceso, atención personalizada que marca la diferencia y un compromiso real con el crecimiento de quienes confían en nosotros. Creemos que el respaldo se demuestra con hechos.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================== -->
+        <!-- DA MÁS TECH - PRODUCTOS -->
+        <!-- ============================== -->
+        <section id="tech" class="py-20 md:py-28 bg-brand-gray">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <!-- Section Header -->
+                <div class="text-center mb-16" data-aos="fade-up">
+                    <span class="inline-block bg-brand-blue/10 text-brand-blue px-4 py-2 rounded-full text-sm font-semibold mb-4">
+                        Importación directa USA 🇺🇸
+                    </span>
+                    <h2 class="text-3xl md:text-4xl lg:text-5xl font-heading font-bold text-brand-text mb-4">
+                        Tecnología para quienes<br class="hidden md:block"> <span class="text-brand-blue">saben elegir</span>
+                    </h2>
+                    <div class="gold-line mb-6"></div>
+                    <p class="text-lg text-brand-text/70 max-w-3xl mx-auto">
+                        Traemos directamente desde Estados Unidos los equipos tecnológicos que mereces. Productos originales, calidad verificada y precios que reflejan el verdadero valor de lo premium.
+                    </p>
+                </div>
+
+                <!-- Product Cards -->
+                <div class="grid md:grid-cols-3 gap-8 lg:gap-10">
+                    <!-- iPhone Card -->
+                    <div class="group bg-white rounded-2xl shadow-lg hover:shadow-2xl overflow-hidden transition-all duration-300 hover:scale-105" data-aos="fade-up" data-aos-delay="100">
+                        <!-- EDITAR: IMAGEN - reemplazar con foto propia -->
+                        <div class="h-64 overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1601784551446-20c9e07cdbdb?w=800&q=80" alt="iPhone premium de alta calidad sobre fondo elegante — Da Más Tech" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                        </div>
+                        <div class="p-6 lg:p-8">
+                            <div class="flex items-center gap-2 mb-3">
+                                <span class="bg-brand-blue/10 text-brand-blue px-3 py-1 rounded-full text-xs font-bold tracking-wide">PREMIUM</span>
+                                <span class="bg-brand-gold/15 text-brand-gold px-3 py-1 rounded-full text-xs font-bold tracking-wide">A+</span>
+                            </div>
+                            <h3 class="text-xl font-heading font-bold text-brand-text mb-3">iPhones Calidad A+</h3>
+                            <p class="text-brand-text/70 mb-6 leading-relaxed">
+                                Equipos con excelente estado estético y funcionamiento impecable. Rendimiento premium, apariencia prácticamente nueva y la máxima confiabilidad que esperas de un iPhone.
+                            </p>
+                            <!-- EDITAR: TELÉFONO WHATSAPP -->
+                            <a href="https://wa.me/57XXXXXXXXXX?text=Hola%2C%20me%20interesa%20un%20iPhone" target="_blank" rel="noopener noreferrer" class="inline-flex items-center text-brand-blue font-semibold hover:text-brand-blue/80 transition-colors group/link">
+                                Consultar disponibilidad
+                                <i class="fa-solid fa-arrow-right ml-2 group-hover/link:translate-x-1 transition-transform"></i>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Accesorios Card -->
+                    <div class="group bg-white rounded-2xl shadow-lg hover:shadow-2xl overflow-hidden transition-all duration-300 hover:scale-105" data-aos="fade-up" data-aos-delay="200">
+                        <!-- EDITAR: IMAGEN - reemplazar con foto propia -->
+                        <div class="h-64 overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1572569511254-d8f925fe2cbb?w=800&q=80" alt="AirPods y accesorios originales Apple — importación directa Da Más Tech" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                        </div>
+                        <div class="p-6 lg:p-8">
+                            <div class="flex items-center gap-2 mb-3">
+                                <span class="bg-brand-blue/10 text-brand-blue px-3 py-1 rounded-full text-xs font-bold tracking-wide">ORIGINAL</span>
+                            </div>
+                            <h3 class="text-xl font-heading font-bold text-brand-text mb-3">Accesorios Originales</h3>
+                            <p class="text-brand-text/70 mb-6 leading-relaxed">
+                                Accesorios que igualan la calidad de tu equipo. Rendimiento óptimo, compatibilidad total y la tranquilidad de saber que cada pieza es 100% original.
+                            </p>
+                            <!-- EDITAR: TELÉFONO WHATSAPP -->
+                            <a href="https://wa.me/57XXXXXXXXXX?text=Hola%2C%20me%20interesan%20los%20accesorios" target="_blank" rel="noopener noreferrer" class="inline-flex items-center text-brand-blue font-semibold hover:text-brand-blue/80 transition-colors group/link">
+                                Consultar disponibilidad
+                                <i class="fa-solid fa-arrow-right ml-2 group-hover/link:translate-x-1 transition-transform"></i>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- PlayStation Card -->
+                    <div class="group bg-white rounded-2xl shadow-lg hover:shadow-2xl overflow-hidden transition-all duration-300 hover:scale-105" data-aos="fade-up" data-aos-delay="300">
+                        <!-- EDITAR: IMAGEN - reemplazar con foto propia -->
+                        <div class="h-64 overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1607853202273-797f1c22a38e?w=800&q=80" alt="Control DualSense PlayStation 5 — gaming sin límites con Da Más Tech" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                        </div>
+                        <div class="p-6 lg:p-8">
+                            <div class="flex items-center gap-2 mb-3">
+                                <span class="bg-brand-blue/10 text-brand-blue px-3 py-1 rounded-full text-xs font-bold tracking-wide">GAMING</span>
+                            </div>
+                            <h3 class="text-xl font-heading font-bold text-brand-text mb-3">PlayStation</h3>
+                            <p class="text-brand-text/70 mb-6 leading-relaxed">
+                                Potencia pura y una experiencia de juego sin límites. Consolas y accesorios importados directamente desde EE.UU. para quienes viven el gaming en serio.
+                            </p>
+                            <!-- EDITAR: TELÉFONO WHATSAPP -->
+                            <a href="https://wa.me/57XXXXXXXXXX?text=Hola%2C%20me%20interesa%20un%20PlayStation" target="_blank" rel="noopener noreferrer" class="inline-flex items-center text-brand-blue font-semibold hover:text-brand-blue/80 transition-colors group/link">
+                                Consultar disponibilidad
+                                <i class="fa-solid fa-arrow-right ml-2 group-hover/link:translate-x-1 transition-transform"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CTA -->
+                <div class="text-center mt-12" data-aos="fade-up">
+                    <!-- EDITAR: TELÉFONO WHATSAPP -->
+                    <a href="https://wa.me/57XXXXXXXXXX?text=Hola%2C%20quiero%20consultar%20disponibilidad%20de%20productos" target="_blank" rel="noopener noreferrer" class="inline-flex items-center bg-brand-blue hover:bg-brand-blue/90 text-white px-8 py-4 rounded-full text-lg font-semibold transition-all duration-300 hover:shadow-lg hover:shadow-brand-blue/30 hover:scale-105">
+                        <i class="fa-brands fa-whatsapp mr-3 text-xl"></i>
+                        Consultar disponibilidad
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================== -->
+        <!-- SERVICIOS TÉCNICOS -->
+        <!-- ============================== -->
+        <section id="servicios" class="py-20 md:py-28 bg-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <!-- Section Header -->
+                <div class="text-center mb-16" data-aos="fade-up">
+                    <h2 class="text-3xl md:text-4xl lg:text-5xl font-heading font-bold text-brand-text mb-4">
+                        Exclusividad en <span class="text-brand-blue">cada detalle</span>
+                    </h2>
+                    <div class="gold-line mb-6"></div>
+                    <p class="text-lg text-brand-text/70 max-w-3xl mx-auto font-accent italic">
+                        "Exclusividad — a tu alcance"
+                    </p>
+                </div>
+
+                <!-- Services Grid -->
+                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
+                    <!-- Service 1 -->
+                    <div class="card-hover bg-brand-gray rounded-2xl p-8 text-center shadow-sm hover:shadow-xl border border-transparent hover:border-brand-blue/10" data-aos="fade-up" data-aos-delay="100">
+                        <div class="w-16 h-16 bg-brand-blue/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                            <i class="fa-solid fa-plane-arrival text-brand-blue text-2xl"></i>
+                        </div>
+                        <h3 class="text-lg font-heading font-bold text-brand-text mb-3">Importación de Equipos</h3>
+                        <p class="text-brand-text/70 text-sm leading-relaxed">
+                            Traemos tecnología original directamente desde Estados Unidos. Cada equipo es verificado y cuenta con respaldo de calidad premium.
+                        </p>
+                    </div>
+
+                    <!-- Service 2 -->
+                    <div class="card-hover bg-brand-gray rounded-2xl p-8 text-center shadow-sm hover:shadow-xl border border-transparent hover:border-brand-blue/10" data-aos="fade-up" data-aos-delay="200">
+                        <div class="w-16 h-16 bg-brand-blue/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                            <i class="fa-solid fa-truck-fast text-brand-blue text-2xl"></i>
+                        </div>
+                        <h3 class="text-lg font-heading font-bold text-brand-text mb-3">Manejo de Cargas</h3>
+                        <p class="text-brand-text/70 text-sm leading-relaxed">
+                            Gestionamos todo el proceso logístico de importación con profesionalismo. Desde la compra hasta la entrega, tu tecnología llega sin complicaciones.
+                        </p>
+                    </div>
+
+                    <!-- Service 3 -->
+                    <div class="card-hover bg-brand-gray rounded-2xl p-8 text-center shadow-sm hover:shadow-xl border border-transparent hover:border-brand-blue/10" data-aos="fade-up" data-aos-delay="300">
+                        <div class="w-16 h-16 bg-brand-blue/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                            <i class="fa-solid fa-shield-halved text-brand-blue text-2xl"></i>
+                        </div>
+                        <h3 class="text-lg font-heading font-bold text-brand-text mb-3">Mantenimientos</h3>
+                        <p class="text-brand-text/70 text-sm leading-relaxed">
+                            Limpieza profesional, mantenimiento preventivo y restauración integral de equipos. Prolonga la vida útil de tu tecnología con atención especializada.
+                        </p>
+                    </div>
+
+                    <!-- Service 4 -->
+                    <div class="card-hover bg-brand-gray rounded-2xl p-8 text-center shadow-sm hover:shadow-xl border border-transparent hover:border-brand-blue/10" data-aos="fade-up" data-aos-delay="400">
+                        <div class="w-16 h-16 bg-brand-blue/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                            <i class="fa-solid fa-screwdriver-wrench text-brand-blue text-2xl"></i>
+                        </div>
+                        <h3 class="text-lg font-heading font-bold text-brand-text mb-3">Diagnóstico y Reparación</h3>
+                        <p class="text-brand-text/70 text-sm leading-relaxed">
+                            Diagnóstico certero, reparaciones precisas y cambios de batería con repuestos de alta calidad. Trabajo profesional, rápido y con garantía.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- CTA -->
+                <div class="text-center mt-12" data-aos="fade-up">
+                    <!-- EDITAR: TELÉFONO WHATSAPP -->
+                    <a href="https://wa.me/57XXXXXXXXXX?text=Hola%2C%20necesito%20asesor%C3%ADa%20sobre%20servicios%20t%C3%A9cnicos" target="_blank" rel="noopener noreferrer" class="inline-flex items-center bg-brand-blue hover:bg-brand-blue/90 text-white px-8 py-4 rounded-full text-lg font-semibold transition-all duration-300 hover:shadow-lg hover:shadow-brand-blue/30 hover:scale-105">
+                        Solicitar asesoría
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================== -->
+        <!-- POR QUÉ ELEGIRNOS -->
+        <!-- ============================== -->
+        <section id="elegirnos" class="py-20 md:py-28 bg-brand-dark">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <!-- Section Header -->
+                <div class="text-center mb-16" data-aos="fade-up">
+                    <h2 class="text-3xl md:text-4xl lg:text-5xl font-heading font-bold text-white mb-4">
+                        ¿Por qué <span class="text-brand-blue">elegirnos</span>?
+                    </h2>
+                    <div class="gold-line mb-6"></div>
+                    <p class="text-lg text-white/70 max-w-3xl mx-auto">
+                        Lo que nos diferencia no es solo lo que ofrecemos, sino cómo lo hacemos. Cada detalle refleja nuestro compromiso contigo.
+                    </p>
+                </div>
+
+                <!-- Features Grid -->
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Feature 1 -->
+                    <div class="flex items-start space-x-4 p-6 rounded-2xl bg-white/5 hover:bg-white/10 border border-transparent hover:border-brand-blue/20 transition-all duration-300" data-aos="fade-up" data-aos-delay="100">
+                        <div class="w-12 h-12 bg-brand-blue/20 rounded-xl flex items-center justify-center flex-shrink-0">
+                            <i class="fa-solid fa-flag-usa text-brand-blue text-lg"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-heading font-bold text-white mb-2">Importación Directa USA</h3>
+                            <p class="text-white/60 text-sm leading-relaxed">Equipos originales traídos directamente desde Estados Unidos, sin intermediarios ni sobrecostos innecesarios.</p>
+                        </div>
+                    </div>
+
+                    <!-- Feature 2 -->
+                    <div class="flex items-start space-x-4 p-6 rounded-2xl bg-white/5 hover:bg-white/10 border border-transparent hover:border-brand-blue/20 transition-all duration-300" data-aos="fade-up" data-aos-delay="150">
+                        <div class="w-12 h-12 bg-brand-blue/20 rounded-xl flex items-center justify-center flex-shrink-0">
+                            <i class="fa-solid fa-certificate text-brand-blue text-lg"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-heading font-bold text-white mb-2">Calidad A+ Verificada</h3>
+                            <p class="text-white/60 text-sm leading-relaxed">Cada equipo pasa por rigurosas pruebas de calidad antes de llegar a tus manos. Solo lo mejor lleva nuestra marca.</p>
+                        </div>
+                    </div>
+
+                    <!-- Feature 3 -->
+                    <div class="flex items-start space-x-4 p-6 rounded-2xl bg-white/5 hover:bg-white/10 border border-transparent hover:border-brand-blue/20 transition-all duration-300" data-aos="fade-up" data-aos-delay="200">
+                        <div class="w-12 h-12 bg-brand-blue/20 rounded-xl flex items-center justify-center flex-shrink-0">
+                            <i class="fa-solid fa-shield-heart text-brand-blue text-lg"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-heading font-bold text-white mb-2">Garantía y Soporte</h3>
+                            <p class="text-white/60 text-sm leading-relaxed">Respaldo postventa de verdad. Te acompañamos antes, durante y después de cada compra.</p>
+                        </div>
+                    </div>
+
+                    <!-- Feature 4 -->
+                    <div class="flex items-start space-x-4 p-6 rounded-2xl bg-white/5 hover:bg-white/10 border border-transparent hover:border-brand-blue/20 transition-all duration-300" data-aos="fade-up" data-aos-delay="250">
+                        <div class="w-12 h-12 bg-brand-blue/20 rounded-xl flex items-center justify-center flex-shrink-0">
+                            <i class="fa-solid fa-user-tie text-brand-blue text-lg"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-heading font-bold text-white mb-2">Asesoría Personalizada</h3>
+                            <p class="text-white/60 text-sm leading-relaxed">Te guiamos en cada decisión con orientación experta y atención dedicada a tus necesidades.</p>
+                        </div>
+                    </div>
+
+                    <!-- Feature 5 -->
+                    <div class="flex items-start space-x-4 p-6 rounded-2xl bg-white/5 hover:bg-white/10 border border-transparent hover:border-brand-blue/20 transition-all duration-300" data-aos="fade-up" data-aos-delay="300">
+                        <div class="w-12 h-12 bg-brand-blue/20 rounded-xl flex items-center justify-center flex-shrink-0">
+                            <i class="fa-solid fa-tags text-brand-blue text-lg"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-heading font-bold text-white mb-2">Precios Competitivos</h3>
+                            <p class="text-white/60 text-sm leading-relaxed">Importación directa significa cero intermediarios y el mejor precio-calidad del mercado colombiano.</p>
+                        </div>
+                    </div>
+
+                    <!-- Feature 6 -->
+                    <div class="flex items-start space-x-4 p-6 rounded-2xl bg-white/5 hover:bg-white/10 border border-transparent hover:border-brand-blue/20 transition-all duration-300" data-aos="fade-up" data-aos-delay="350">
+                        <div class="w-12 h-12 bg-brand-blue/20 rounded-xl flex items-center justify-center flex-shrink-0">
+                            <i class="fa-solid fa-award text-brand-blue text-lg"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-heading font-bold text-white mb-2">Experiencia Comprobada</h3>
+                            <p class="text-white/60 text-sm leading-relaxed">Años de trayectoria en el mercado, miles de clientes satisfechos y resultados que hablan por sí solos.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================== -->
+        <!-- FINANZAS DA MÁS -->
+        <!-- ============================== -->
+        <section id="finanzas" class="py-20 md:py-28 bg-brand-gray">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+                    <!-- Text Content -->
+                    <div data-aos="fade-right">
+                        <span class="inline-block bg-brand-green/10 text-brand-green px-4 py-2 rounded-full text-sm font-semibold mb-6">
+                            Finanzas Da Más
+                        </span>
+                        <h2 class="text-3xl md:text-4xl lg:text-5xl font-heading font-bold text-brand-text mb-6">
+                            Impulsamos tus<br> <span class="text-brand-green">sueños hoy</span>
+                        </h2>
+                        <p class="text-brand-text/70 text-lg leading-relaxed mb-6">
+                            Acceder al crédito no tiene por qué ser complicado. En Finanzas Da Más lo hacemos rápido, transparente y con acompañamiento real en cada etapa, para que tus proyectos y necesidades personales no tengan que esperar.
+                        </p>
+                        <p class="text-brand-text/80 font-semibold mb-8">
+                            <i class="fa-solid fa-check-circle text-brand-green mr-2"></i>
+                            Creemos en las oportunidades reales — y trabajamos contigo para que las alcances.
+                        </p>
+
+                        <ul class="space-y-3 mb-8">
+                            <li class="flex items-center text-brand-text/70">
+                                <i class="fa-solid fa-circle-check text-brand-green mr-3"></i>
+                                Procesos ágiles, sin trámites innecesarios
+                            </li>
+                            <li class="flex items-center text-brand-text/70">
+                                <i class="fa-solid fa-circle-check text-brand-green mr-3"></i>
+                                Requisitos claros desde el primer momento
+                            </li>
+                            <li class="flex items-center text-brand-text/70">
+                                <i class="fa-solid fa-circle-check text-brand-green mr-3"></i>
+                                Acompañamiento personalizado de inicio a fin
+                            </li>
+                            <li class="flex items-center text-brand-text/70">
+                                <i class="fa-solid fa-circle-check text-brand-green mr-3"></i>
+                                Financiamiento adaptado a tus proyectos y metas
+                            </li>
+                        </ul>
+
+                        <!-- EDITAR: TELÉFONO WHATSAPP -->
+                        <a href="https://wa.me/57XXXXXXXXXX?text=Hola%2C%20me%20interesa%20informaci%C3%B3n%20sobre%20cr%C3%A9dito" target="_blank" rel="noopener noreferrer" class="inline-flex items-center bg-brand-green hover:bg-brand-green/90 text-white px-8 py-4 rounded-full text-lg font-semibold transition-all duration-300 hover:shadow-lg hover:shadow-brand-green/30 hover:scale-105">
+                            Solicitar crédito
+                        </a>
+                    </div>
+
+                    <!-- Image -->
+                    <div class="relative" data-aos="fade-left">
+                        <!-- EDITAR: IMAGEN - reemplazar con foto propia -->
+                        <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=800&q=80" alt="Profesional sonriente transmitiendo confianza — Finanzas Da Más, asesoría financiera" class="rounded-2xl shadow-2xl w-full h-[400px] lg:h-[500px] object-cover">
+                        <!-- Decorative element -->
+                        <div class="absolute -bottom-4 -right-4 w-24 h-24 bg-brand-green/20 rounded-2xl -z-10 hidden md:block"></div>
+                        <div class="absolute -top-4 -left-4 w-32 h-32 bg-brand-blue/10 rounded-2xl -z-10 hidden md:block"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================== -->
+        <!-- PROMESA DE CALIDAD / CONFIANZA -->
+        <!-- ============================== -->
+        <section id="calidad" class="relative py-20 md:py-28 overflow-hidden">
+            <!-- Background Image with Parallax -->
+            <!-- EDITAR: IMAGEN - reemplazar con foto propia -->
+            <div class="absolute inset-0 parallax" style="background-image: url('https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=1920&q=80');" role="img" aria-label="Equipo profesional colaborando — confianza y compromiso"></div>
+            <div class="absolute inset-0 bg-brand-dark/85"></div>
+
+            <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <!-- Section Header -->
+                <div class="text-center mb-16" data-aos="fade-up">
+                    <h2 class="text-3xl md:text-4xl lg:text-5xl font-heading font-bold text-white mb-4">
+                        Valor que supera <span class="text-brand-blue">expectativas</span>
+                    </h2>
+                    <div class="gold-line mb-6"></div>
+                    <p class="text-lg text-white/70 max-w-3xl mx-auto">
+                        Cada producto y cada servicio llevan nuestra firma de calidad. Nuestros estándares son altos porque tu confianza es lo más valioso que tenemos.
+                    </p>
+                </div>
+
+                <!-- Brand Logos -->
+                <div class="flex flex-wrap items-center justify-center gap-8 md:gap-16 mb-16">
+                    <div class="text-white/40 hover:text-white/70 hover:scale-110 transition-all duration-300" data-aos="fade-up" data-aos-delay="100">
+                        <i class="fa-brands fa-apple text-5xl"></i>
+                    </div>
+                    <div class="text-white/40 hover:text-white/70 hover:scale-110 transition-all duration-300" data-aos="fade-up" data-aos-delay="200">
+                        <i class="fa-brands fa-playstation text-5xl"></i>
+                    </div>
+                    <div class="text-white/40 hover:text-white/70 hover:scale-110 transition-all duration-300" data-aos="fade-up" data-aos-delay="300">
+                        <i class="fa-solid fa-mobile-screen-button text-5xl"></i>
+                    </div>
+                    <div class="text-white/40 hover:text-white/70 hover:scale-110 transition-all duration-300" data-aos="fade-up" data-aos-delay="400">
+                        <i class="fa-solid fa-headphones text-5xl"></i>
+                    </div>
+                </div>
+
+                <!-- Testimonials -->
+                <div class="grid md:grid-cols-3 gap-8">
+                    <!-- EDITAR: TESTIMONIOS -->
+                    <!-- Testimonial 1 -->
+                    <div class="bg-white/10 glassmorphism rounded-2xl p-8 border border-white/10 hover:bg-white/[0.15] hover:border-white/20 hover:-translate-y-1 transition-all duration-300" data-aos="fade-up" data-aos-delay="100">
+                        <div class="flex text-brand-gold mb-4">
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star ml-1"></i>
+                            <i class="fa-solid fa-star ml-1"></i>
+                            <i class="fa-solid fa-star ml-1"></i>
+                            <i class="fa-solid fa-star ml-1"></i>
+                        </div>
+                        <p class="text-white/80 mb-6 leading-relaxed italic">
+                            "Compré un iPhone 14 Pro y llegó impecable, como nuevo. La atención fue excelente desde la primera consulta por WhatsApp hasta la entrega. Sin duda volvería a comprar con ellos."
+                        </p>
+                        <div class="flex items-center">
+                            <div class="w-10 h-10 bg-brand-blue/30 rounded-full flex items-center justify-center mr-3">
+                                <i class="fa-solid fa-user text-brand-blue text-sm"></i>
+                            </div>
+                            <div>
+                                <!-- EDITAR: TESTIMONIOS - nombre y texto -->
+                                <p class="text-white font-semibold text-sm">Carlos Martínez</p>
+                                <p class="text-white/50 text-xs">Cliente desde 2023 — Cali</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- EDITAR: TESTIMONIOS -->
+                    <!-- Testimonial 2 -->
+                    <div class="bg-white/10 glassmorphism rounded-2xl p-8 border border-white/10 hover:bg-white/[0.15] hover:border-white/20 hover:-translate-y-1 transition-all duration-300" data-aos="fade-up" data-aos-delay="200">
+                        <div class="flex text-brand-gold mb-4">
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star ml-1"></i>
+                            <i class="fa-solid fa-star ml-1"></i>
+                            <i class="fa-solid fa-star ml-1"></i>
+                            <i class="fa-solid fa-star ml-1"></i>
+                        </div>
+                        <p class="text-white/80 mb-6 leading-relaxed italic">
+                            "Llevé mi MacBook a mantenimiento y quedó como nueva. El diagnóstico fue rápido, me explicaron todo con claridad y los precios fueron muy justos. Profesionalismo total."
+                        </p>
+                        <div class="flex items-center">
+                            <div class="w-10 h-10 bg-brand-blue/30 rounded-full flex items-center justify-center mr-3">
+                                <i class="fa-solid fa-user text-brand-blue text-sm"></i>
+                            </div>
+                            <div>
+                                <!-- EDITAR: TESTIMONIOS - nombre y texto -->
+                                <p class="text-white font-semibold text-sm">María Alejandra López</p>
+                                <p class="text-white/50 text-xs">Cliente desde 2022 — Palmira</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- EDITAR: TESTIMONIOS -->
+                    <!-- Testimonial 3 -->
+                    <div class="bg-white/10 glassmorphism rounded-2xl p-8 border border-white/10 hover:bg-white/[0.15] hover:border-white/20 hover:-translate-y-1 transition-all duration-300" data-aos="fade-up" data-aos-delay="300">
+                        <div class="flex text-brand-gold mb-4">
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star ml-1"></i>
+                            <i class="fa-solid fa-star ml-1"></i>
+                            <i class="fa-solid fa-star ml-1"></i>
+                            <i class="fa-solid fa-star ml-1"></i>
+                        </div>
+                        <p class="text-white/80 mb-6 leading-relaxed italic">
+                            "Gracias a Finanzas Da Más pude financiar mi PlayStation y unos accesorios sin complicaciones. El proceso fue claro desde el principio y me sentí acompañado en todo momento."
+                        </p>
+                        <div class="flex items-center">
+                            <div class="w-10 h-10 bg-brand-blue/30 rounded-full flex items-center justify-center mr-3">
+                                <i class="fa-solid fa-user text-brand-blue text-sm"></i>
+                            </div>
+                            <div>
+                                <!-- EDITAR: TESTIMONIOS - nombre y texto -->
+                                <p class="text-white font-semibold text-sm">Andrés Felipe Ruiz</p>
+                                <p class="text-white/50 text-xs">Cliente desde 2024 — Cali</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============================== -->
+        <!-- CONTACTO -->
+        <!-- ============================== -->
+        <section id="contacto" class="py-20 md:py-28 bg-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <!-- Section Header -->
+                <div class="text-center mb-16" data-aos="fade-up">
+                    <h2 class="text-3xl md:text-4xl lg:text-5xl font-heading font-bold text-brand-text mb-4">
+                        ¿Listo para dar el <span class="text-brand-blue">siguiente paso</span>?
+                    </h2>
+                    <div class="gold-line mb-6"></div>
+                    <p class="text-lg text-brand-text/70 max-w-3xl mx-auto">
+                        Ya sea que quieras cotizar un equipo, consultar por un servicio técnico o conocer nuestras opciones de financiamiento, estamos listos para atenderte.
+                    </p>
+                </div>
+
+                <div class="grid lg:grid-cols-2 gap-12 lg:gap-16">
+                    <!-- Contact Form -->
+                    <div data-aos="fade-right">
+                        <form id="contact-form" class="space-y-6">
+                            <div>
+                                <label for="nombre" class="block text-sm font-semibold text-brand-text mb-2">Nombre completo</label>
+                                <input type="text" id="nombre" name="nombre" required
+                                    class="w-full px-4 py-3 rounded-xl border border-brand-gray-dark focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 outline-none transition-all bg-brand-gray text-brand-text placeholder-brand-text/40"
+                                    placeholder="Tu nombre">
+                            </div>
+                            <div>
+                                <label for="email" class="block text-sm font-semibold text-brand-text mb-2">Correo electrónico</label>
+                                <input type="email" id="email" name="email" required
+                                    class="w-full px-4 py-3 rounded-xl border border-brand-gray-dark focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 outline-none transition-all bg-brand-gray text-brand-text placeholder-brand-text/40"
+                                    placeholder="tucorreo@ejemplo.com">
+                            </div>
+                            <div>
+                                <label for="telefono" class="block text-sm font-semibold text-brand-text mb-2">Teléfono</label>
+                                <input type="tel" id="telefono" name="telefono"
+                                    class="w-full px-4 py-3 rounded-xl border border-brand-gray-dark focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 outline-none transition-all bg-brand-gray text-brand-text placeholder-brand-text/40"
+                                    placeholder="+57 3XX XXX XXXX">
+                            </div>
+                            <div>
+                                <label for="mensaje" class="block text-sm font-semibold text-brand-text mb-2">Mensaje</label>
+                                <textarea id="mensaje" name="mensaje" rows="4" required
+                                    class="w-full px-4 py-3 rounded-xl border border-brand-gray-dark focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20 outline-none transition-all bg-brand-gray text-brand-text placeholder-brand-text/40 resize-none"
+                                    placeholder="¿En qué podemos ayudarte?"></textarea>
+                            </div>
+                            <button type="submit"
+                                class="w-full bg-brand-blue hover:bg-brand-blue/90 text-white px-8 py-4 rounded-xl text-lg font-semibold transition-all duration-300 hover:shadow-lg hover:shadow-brand-blue/30 hover:scale-[1.02] active:scale-[0.98]">
+                                Enviar mensaje
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Contact Info -->
+                    <div data-aos="fade-left">
+                        <div class="bg-brand-gray rounded-2xl p-8 lg:p-10 h-full shadow-sm">
+                            <h3 class="text-2xl font-heading font-bold text-brand-text mb-8">Información de Contacto</h3>
+
+                            <div class="space-y-6">
+                                <!-- Location -->
+                                <div class="flex items-start space-x-4">
+                                    <div class="w-12 h-12 bg-brand-blue/10 rounded-xl flex items-center justify-center flex-shrink-0">
+                                        <i class="fa-solid fa-location-dot text-brand-blue text-lg"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-semibold text-brand-text mb-1">Ubicación</h4>
+                                        <p class="text-brand-text/70">Calle 13 #47a-24<br>Santiago de Cali, Colombia</p>
+                                    </div>
+                                </div>
+
+                                <!-- Email -->
+                                <div class="flex items-start space-x-4">
+                                    <div class="w-12 h-12 bg-brand-blue/10 rounded-xl flex items-center justify-center flex-shrink-0">
+                                        <i class="fa-solid fa-envelope text-brand-blue text-lg"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-semibold text-brand-text mb-1">Correo</h4>
+                                        <a href="mailto:info@damasgroup.com.co" class="text-brand-blue hover:text-brand-blue/80 transition-colors">info@damasgroup.com.co</a>
+                                    </div>
+                                </div>
+
+                                <!-- WhatsApp -->
+                                <div class="flex items-start space-x-4">
+                                    <div class="w-12 h-12 bg-brand-green/10 rounded-xl flex items-center justify-center flex-shrink-0">
+                                        <i class="fa-brands fa-whatsapp text-brand-green text-lg"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-semibold text-brand-text mb-1">WhatsApp</h4>
+                                        <!-- EDITAR: TELÉFONO WHATSAPP -->
+                                        <a href="https://wa.me/57XXXXXXXXXX" target="_blank" rel="noopener noreferrer" class="text-brand-green hover:text-brand-green/80 transition-colors">+57 XXX XXX XXXX</a>
+                                    </div>
+                                </div>
+
+                                <!-- Instagram -->
+                                <div class="flex items-start space-x-4">
+                                    <div class="w-12 h-12 bg-brand-blue/10 rounded-xl flex items-center justify-center flex-shrink-0">
+                                        <i class="fa-brands fa-instagram text-brand-blue text-lg"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-semibold text-brand-text mb-1">Síguenos</h4>
+                                        <!-- EDITAR: REDES SOCIALES -->
+                                        <a href="https://instagram.com/DaMasGroupCO" target="_blank" rel="noopener noreferrer" class="text-brand-blue hover:text-brand-blue/80 transition-colors">@DaMasGroupCO</a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Map Placeholder -->
+                            <div class="mt-8 rounded-xl overflow-hidden">
+                                <!-- EDITAR: Reemplazar con iframe de Google Maps real -->
+                                <iframe
+                                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3982.7!2d-76.53!3d3.42!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2sCalle+13+%2347a-24+Cali!5e0!3m2!1ses!2sco!4v1700000000000"
+                                    width="100%" height="200" style="border:0;" allowfullscreen="" loading="lazy"
+                                    referrerpolicy="no-referrer-when-downgrade"
+                                    class="rounded-xl"
+                                    title="Ubicación Da Más Group en Google Maps"></iframe>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- ============================== -->
+    <!-- FOOTER -->
+    <!-- ============================== -->
+    <footer class="bg-brand-dark pt-16 pb-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12 mb-12">
+                <!-- Column 1 - Logo & Description -->
+                <div class="lg:col-span-1">
+                    <a href="#inicio" class="inline-flex items-center space-x-1 mb-4">
+                        <!-- EDITAR: LOGO -->
+                        <span class="text-2xl font-heading font-bold text-white">Da Más</span>
+                        <span class="text-2xl font-heading font-light text-brand-blue">Group</span>
+                    </a>
+                    <p class="text-white/60 text-sm leading-relaxed mb-6">
+                        Grupo empresarial colombiano que integra tecnología premium importada y soluciones financieras accesibles. Tu próximo nivel, empieza aquí.
+                    </p>
+                    <!-- EDITAR: REDES SOCIALES -->
+                    <div class="flex space-x-4">
+                        <a href="https://instagram.com/DaMasGroupCO" target="_blank" rel="noopener noreferrer" class="w-10 h-10 bg-white/10 hover:bg-brand-blue/30 rounded-lg flex items-center justify-center transition-all duration-300 hover:scale-110" aria-label="Instagram">
+                            <i class="fa-brands fa-instagram text-white/70 hover:text-white"></i>
+                        </a>
+                        <a href="#" target="_blank" rel="noopener noreferrer" class="w-10 h-10 bg-white/10 hover:bg-brand-blue/30 rounded-lg flex items-center justify-center transition-all duration-300 hover:scale-110" aria-label="Facebook">
+                            <i class="fa-brands fa-facebook-f text-white/70 hover:text-white"></i>
+                        </a>
+                        <a href="#" target="_blank" rel="noopener noreferrer" class="w-10 h-10 bg-white/10 hover:bg-brand-blue/30 rounded-lg flex items-center justify-center transition-all duration-300 hover:scale-110" aria-label="TikTok">
+                            <i class="fa-brands fa-tiktok text-white/70 hover:text-white"></i>
+                        </a>
+                        <!-- EDITAR: TELÉFONO WHATSAPP -->
+                        <a href="https://wa.me/57XXXXXXXXXX" target="_blank" rel="noopener noreferrer" class="w-10 h-10 bg-white/10 hover:bg-brand-green/30 rounded-lg flex items-center justify-center transition-all duration-300 hover:scale-110" aria-label="WhatsApp">
+                            <i class="fa-brands fa-whatsapp text-white/70 hover:text-white"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Column 2 - Quick Links -->
+                <div>
+                    <h4 class="text-white font-heading font-bold text-lg mb-4">Links Rápidos</h4>
+                    <ul class="space-y-3">
+                        <li><a href="#inicio" class="text-white/60 hover:text-brand-blue transition-colors text-sm">Inicio</a></li>
+                        <li><a href="#nosotros" class="text-white/60 hover:text-brand-blue transition-colors text-sm">Nosotros</a></li>
+                        <li><a href="#tech" class="text-white/60 hover:text-brand-blue transition-colors text-sm">Da Más Tech</a></li>
+                        <li><a href="#servicios" class="text-white/60 hover:text-brand-blue transition-colors text-sm">Servicios</a></li>
+                        <li><a href="#finanzas" class="text-white/60 hover:text-brand-blue transition-colors text-sm">Finanzas Da Más</a></li>
+                        <li><a href="#contacto" class="text-white/60 hover:text-brand-blue transition-colors text-sm">Contacto</a></li>
+                    </ul>
+                </div>
+
+                <!-- Column 3 - Services -->
+                <div>
+                    <h4 class="text-white font-heading font-bold text-lg mb-4">Servicios</h4>
+                    <ul class="space-y-3">
+                        <li><a href="#tech" class="text-white/60 hover:text-brand-blue transition-colors text-sm">iPhones Calidad A+</a></li>
+                        <li><a href="#tech" class="text-white/60 hover:text-brand-blue transition-colors text-sm">Accesorios Originales</a></li>
+                        <li><a href="#tech" class="text-white/60 hover:text-brand-blue transition-colors text-sm">PlayStation</a></li>
+                        <li><a href="#servicios" class="text-white/60 hover:text-brand-blue transition-colors text-sm">Importación de Equipos</a></li>
+                        <li><a href="#servicios" class="text-white/60 hover:text-brand-blue transition-colors text-sm">Diagnóstico y Reparación</a></li>
+                        <li><a href="#finanzas" class="text-white/60 hover:text-brand-blue transition-colors text-sm">Financiamiento</a></li>
+                    </ul>
+                </div>
+
+                <!-- Column 4 - Contact -->
+                <div>
+                    <h4 class="text-white font-heading font-bold text-lg mb-4">Contacto</h4>
+                    <ul class="space-y-3">
+                        <li class="flex items-start space-x-3">
+                            <i class="fa-solid fa-location-dot text-brand-blue mt-1 text-sm"></i>
+                            <span class="text-white/60 text-sm">Calle 13 #47a-24, Santiago de Cali, Colombia</span>
+                        </li>
+                        <li class="flex items-start space-x-3">
+                            <i class="fa-solid fa-envelope text-brand-blue mt-1 text-sm"></i>
+                            <a href="mailto:info@damasgroup.com.co" class="text-white/60 hover:text-brand-blue transition-colors text-sm">info@damasgroup.com.co</a>
+                        </li>
+                        <li class="flex items-start space-x-3">
+                            <i class="fa-brands fa-whatsapp text-brand-green mt-1 text-sm"></i>
+                            <!-- EDITAR: TELÉFONO WHATSAPP -->
+                            <a href="https://wa.me/57XXXXXXXXXX" target="_blank" rel="noopener noreferrer" class="text-white/60 hover:text-brand-green transition-colors text-sm">+57 XXX XXX XXXX</a>
+                        </li>
+                        <li class="flex items-start space-x-3">
+                            <i class="fa-brands fa-instagram text-brand-blue mt-1 text-sm"></i>
+                            <!-- EDITAR: REDES SOCIALES -->
+                            <a href="https://instagram.com/DaMasGroupCO" target="_blank" rel="noopener noreferrer" class="text-white/60 hover:text-brand-blue transition-colors text-sm">@DaMasGroupCO</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Bottom Bar -->
+            <div class="border-t border-white/10 pt-8">
+                <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+                    <p class="text-white/50 text-sm text-center md:text-left">
+                        &copy; 2025 Da Más Group. Todos los derechos reservados.
+                        <!-- EDITAR: DATOS LEGALES - agregar NIT o razón social -->
+                    </p>
+                    <p class="text-white/40 text-xs">
+                        Diseñado con <i class="fa-solid fa-heart text-brand-blue"></i> en Cali, Colombia
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ============================== -->
+    <!-- FLOATING ELEMENTS -->
+    <!-- ============================== -->
+
+    <!-- WhatsApp Floating Button -->
+    <!-- EDITAR: TELÉFONO WHATSAPP -->
+    <a href="https://wa.me/57XXXXXXXXXX" target="_blank" rel="noopener noreferrer"
+        class="fixed bottom-6 right-6 z-50 w-14 h-14 bg-[#25D366] hover:bg-[#20BD5A] text-white rounded-full flex items-center justify-center shadow-lg hover:shadow-xl whatsapp-pulse transition-all duration-300 hover:scale-110"
+        aria-label="Contactar por WhatsApp">
+        <i class="fa-brands fa-whatsapp text-2xl"></i>
+    </a>
+
+    <!-- Scroll to Top Button -->
+    <button id="scroll-top-btn"
+        class="fixed bottom-24 right-6 z-50 w-12 h-12 bg-brand-blue hover:bg-brand-blue/90 text-white rounded-full flex items-center justify-center shadow-lg hover:shadow-xl hover:scale-110 opacity-0 invisible transition-all duration-300"
+        aria-label="Volver arriba">
+        <i class="fa-solid fa-arrow-up"></i>
+    </button>
+
+    <!-- ============================== -->
+    <!-- SCRIPTS -->
+    <!-- ============================== -->
+
+    <!-- AOS Library -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+    <script>
+        // ========================
+        // AOS Initialization
+        // ========================
+        AOS.init({
+            duration: 800,
+            once: true,
+            offset: 100,
+            easing: 'ease-out',
+        });
+
+        // ========================
+        // Navbar Scroll Effect
+        // ========================
+        const navbar = document.getElementById('navbar');
+        const scrollThreshold = 80;
+
+        function handleNavbarScroll() {
+            if (window.scrollY > scrollThreshold) {
+                navbar.classList.add('navbar-scrolled');
+            } else {
+                navbar.classList.remove('navbar-scrolled');
+            }
+        }
+
+        window.addEventListener('scroll', handleNavbarScroll);
+        handleNavbarScroll();
+
+        // ========================
+        // Mobile Menu Toggle
+        // ========================
+        const hamburgerBtn = document.getElementById('hamburger-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const hamburgerLines = hamburgerBtn.querySelectorAll('.hamburger-line');
+        const mobileNavLinks = document.querySelectorAll('.mobile-nav-link');
+        let menuOpen = false;
+
+        function toggleMenu() {
+            menuOpen = !menuOpen;
+            hamburgerBtn.setAttribute('aria-expanded', menuOpen);
+
+            if (menuOpen) {
+                mobileMenu.classList.remove('-translate-x-full');
+                mobileMenu.classList.add('translate-x-0');
+                // Animate hamburger to X
+                hamburgerLines[0].classList.add('rotate-45', 'translate-y-2');
+                hamburgerLines[1].classList.add('opacity-0');
+                hamburgerLines[2].classList.add('-rotate-45', '-translate-y-2');
+                document.body.style.overflow = 'hidden';
+            } else {
+                mobileMenu.classList.add('-translate-x-full');
+                mobileMenu.classList.remove('translate-x-0');
+                // Reset hamburger
+                hamburgerLines[0].classList.remove('rotate-45', 'translate-y-2');
+                hamburgerLines[1].classList.remove('opacity-0');
+                hamburgerLines[2].classList.remove('-rotate-45', '-translate-y-2');
+                document.body.style.overflow = '';
+            }
+        }
+
+        hamburgerBtn.addEventListener('click', toggleMenu);
+
+        // Close mobile menu when clicking a link
+        mobileNavLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                if (menuOpen) toggleMenu();
+            });
+        });
+
+        // Close mobile menu when clicking outside nav links (overlay area)
+        mobileMenu.addEventListener('click', (e) => {
+            if (!e.target.closest('a') && menuOpen) {
+                toggleMenu();
+            }
+        });
+
+        // ========================
+        // Animated Counters
+        // ========================
+        function animateCounter(el) {
+            const target = parseInt(el.getAttribute('data-target'));
+            const duration = 2000;
+            let startTime = null;
+
+            function easeOutQuad(t) {
+                return t * (2 - t);
+            }
+
+            function update(timestamp) {
+                if (!startTime) startTime = timestamp;
+                const elapsed = timestamp - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                const current = Math.floor(easeOutQuad(progress) * target);
+                el.textContent = current.toLocaleString('es-CO');
+
+                if (progress < 1) {
+                    requestAnimationFrame(update);
+                } else {
+                    el.textContent = target.toLocaleString('es-CO');
+                }
+            }
+
+            requestAnimationFrame(update);
+        }
+
+        // Intersection Observer for counters
+        const counterObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const counters = entry.target.querySelectorAll('.counter-value');
+                    counters.forEach(counter => animateCounter(counter));
+                    counterObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.5 });
+
+        const statsSection = document.querySelector('.stat-item')?.parentElement;
+        if (statsSection) {
+            counterObserver.observe(statsSection);
+        }
+
+        // ========================
+        // Scroll to Top Button
+        // ========================
+        const scrollTopBtn = document.getElementById('scroll-top-btn');
+
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 600) {
+                scrollTopBtn.classList.remove('opacity-0', 'invisible');
+                scrollTopBtn.classList.add('opacity-100', 'visible');
+            } else {
+                scrollTopBtn.classList.add('opacity-0', 'invisible');
+                scrollTopBtn.classList.remove('opacity-100', 'visible');
+            }
+        });
+
+        scrollTopBtn.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // ========================
+        // Contact Form Handler
+        // ========================
+        const contactForm = document.getElementById('contact-form');
+
+        contactForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            // Basic validation
+            const nombre = contactForm.nombre.value.trim();
+            const email = contactForm.email.value.trim();
+            const mensaje = contactForm.mensaje.value.trim();
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+            if (!nombre || !email || !mensaje) return;
+            if (!emailRegex.test(email)) {
+                contactForm.email.focus();
+                return;
+            }
+
+            // Show inline success message
+            let successMsg = contactForm.parentElement.querySelector('.form-success');
+            if (!successMsg) {
+                successMsg = document.createElement('div');
+                successMsg.className = 'form-success mt-6 p-4 bg-brand-green/10 border border-brand-green/30 rounded-xl text-brand-green text-center font-semibold transition-opacity duration-300';
+                contactForm.parentElement.appendChild(successMsg);
+            }
+            successMsg.textContent = `¡Gracias ${nombre}! Tu mensaje ha sido recibido. Nos comunicaremos contigo pronto.`;
+            successMsg.style.opacity = '1';
+            successMsg.style.display = 'block';
+            contactForm.reset();
+
+            // Fade out after 5 seconds
+            setTimeout(() => {
+                successMsg.style.opacity = '0';
+                setTimeout(() => { successMsg.style.display = 'none'; }, 300);
+            }, 5000);
+        });
+
+        // ========================
+        // Active Nav Link Highlighting
+        // ========================
+        const sections = document.querySelectorAll('section[id]');
+        const navLinks = document.querySelectorAll('.nav-link');
+
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop - 100;
+                if (window.scrollY >= sectionTop) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === '#' + current) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>
