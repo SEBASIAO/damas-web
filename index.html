@@ -208,8 +208,8 @@
                     <a href="#servicios" class="nav-link text-white/90 hover:text-white text-sm font-medium transition-colors">Servicios</a>
                     <a href="#finanzas" class="nav-link text-white/90 hover:text-white text-sm font-medium transition-colors">Finanzas Da Más</a>
                     <a href="#contacto" class="nav-link text-white/90 hover:text-white text-sm font-medium transition-colors">Contacto</a>
-                    <!-- EDITAR: TELÉFONO WHATSAPP - reemplazar 57XXXXXXXXXX con número real -->
-                    <a href="https://wa.me/57XXXXXXXXXX" target="_blank" rel="noopener noreferrer" class="bg-brand-blue hover:bg-brand-blue/90 text-white px-6 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 hover:shadow-lg hover:shadow-brand-blue/25">
+                    <!-- EDITAR: TELÉFONO WHATSAPP - reemplazar 573232083263 con número real -->
+                    <a href="https://wa.me/573232083263" target="_blank" rel="noopener noreferrer" class="bg-brand-blue hover:bg-brand-blue/90 text-white px-6 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 hover:shadow-lg hover:shadow-brand-blue/25">
                         Contáctanos
                     </a>
                 </div>
@@ -222,23 +222,28 @@
                 </button>
             </div>
 
-            <!-- Mobile Menu -->
-            <div id="mobile-menu" class="lg:hidden fixed inset-0 bg-brand-dark -translate-x-full transition-transform duration-300 ease-in-out" style="z-index: 9999;">
-                <div class="flex flex-col items-center justify-center h-full space-y-6">
-                    <a href="#inicio" class="mobile-nav-link text-2xl text-white font-heading font-semibold hover:text-brand-blue transition-colors">Inicio</a>
-                    <a href="#nosotros" class="mobile-nav-link text-2xl text-white font-heading font-semibold hover:text-brand-blue transition-colors">Nosotros</a>
-                    <a href="#tech" class="mobile-nav-link text-2xl text-white font-heading font-semibold hover:text-brand-blue transition-colors">Da Más Tech</a>
-                    <a href="#servicios" class="mobile-nav-link text-2xl text-white font-heading font-semibold hover:text-brand-blue transition-colors">Servicios</a>
-                    <a href="#finanzas" class="mobile-nav-link text-2xl text-white font-heading font-semibold hover:text-brand-blue transition-colors">Finanzas Da Más</a>
-                    <a href="#contacto" class="mobile-nav-link text-2xl text-white font-heading font-semibold hover:text-brand-blue transition-colors">Contacto</a>
-                    <!-- EDITAR: TELÉFONO WHATSAPP -->
-                    <a href="https://wa.me/57XXXXXXXXXX" target="_blank" rel="noopener noreferrer" class="bg-brand-blue hover:bg-brand-blue/90 text-white px-8 py-3 rounded-full text-lg font-semibold transition-all duration-300 hover:shadow-lg hover:shadow-brand-blue/25">
-                        Contáctanos
-                    </a>
-                </div>
-            </div>
         </nav>
     </header>
+
+    <!-- Mobile Menu (outside header to avoid stacking context issues) -->
+    <div id="mobile-menu" class="lg:hidden fixed inset-0 bg-brand-dark opacity-0 pointer-events-none transition-opacity duration-300 ease-in-out" style="z-index: 9999;">
+        <!-- Close Button -->
+        <button id="mobile-menu-close" class="absolute top-6 right-5 w-10 h-10 flex items-center justify-center text-white" aria-label="Cerrar menú">
+            <i class="fa-solid fa-xmark text-2xl"></i>
+        </button>
+        <div class="flex flex-col items-center justify-center h-full space-y-6">
+            <a href="#inicio" class="mobile-nav-link text-2xl text-white font-heading font-semibold hover:text-brand-blue transition-colors">Inicio</a>
+            <a href="#nosotros" class="mobile-nav-link text-2xl text-white font-heading font-semibold hover:text-brand-blue transition-colors">Nosotros</a>
+            <a href="#tech" class="mobile-nav-link text-2xl text-white font-heading font-semibold hover:text-brand-blue transition-colors">Da Más Tech</a>
+            <a href="#servicios" class="mobile-nav-link text-2xl text-white font-heading font-semibold hover:text-brand-blue transition-colors">Servicios</a>
+            <a href="#finanzas" class="mobile-nav-link text-2xl text-white font-heading font-semibold hover:text-brand-blue transition-colors">Finanzas Da Más</a>
+            <a href="#contacto" class="mobile-nav-link text-2xl text-white font-heading font-semibold hover:text-brand-blue transition-colors">Contacto</a>
+            <!-- EDITAR: TELÉFONO WHATSAPP -->
+            <a href="https://wa.me/573232083263" target="_blank" rel="noopener noreferrer" class="bg-brand-blue hover:bg-brand-blue/90 text-white px-8 py-3 rounded-full text-lg font-semibold transition-all duration-300 hover:shadow-lg hover:shadow-brand-blue/25">
+                Contáctanos
+            </a>
+        </div>
+    </div>
 
     <main>
         <!-- ============================== -->
@@ -402,7 +407,7 @@
                                 Equipos con excelente estado estético y funcionamiento impecable. Rendimiento premium, apariencia prácticamente nueva y la máxima confiabilidad que esperas de un iPhone.
                             </p>
                             <!-- EDITAR: TELÉFONO WHATSAPP -->
-                            <a href="https://wa.me/57XXXXXXXXXX?text=Hola%2C%20me%20interesa%20un%20iPhone" target="_blank" rel="noopener noreferrer" class="inline-flex items-center text-brand-blue font-semibold hover:text-brand-blue/80 transition-colors group/link">
+                            <a href="https://wa.me/573232083263?text=Hola%2C%20me%20interesa%20un%20iPhone" target="_blank" rel="noopener noreferrer" class="inline-flex items-center text-brand-blue font-semibold hover:text-brand-blue/80 transition-colors group/link">
                                 Consultar disponibilidad
                                 <i class="fa-solid fa-arrow-right ml-2 group-hover/link:translate-x-1 transition-transform"></i>
                             </a>
@@ -424,7 +429,7 @@
                                 Accesorios que igualan la calidad de tu equipo. Rendimiento óptimo, compatibilidad total y la tranquilidad de saber que cada pieza es 100% original.
                             </p>
                             <!-- EDITAR: TELÉFONO WHATSAPP -->
-                            <a href="https://wa.me/57XXXXXXXXXX?text=Hola%2C%20me%20interesan%20los%20accesorios" target="_blank" rel="noopener noreferrer" class="inline-flex items-center text-brand-blue font-semibold hover:text-brand-blue/80 transition-colors group/link">
+                            <a href="https://wa.me/573232083263?text=Hola%2C%20me%20interesan%20los%20accesorios" target="_blank" rel="noopener noreferrer" class="inline-flex items-center text-brand-blue font-semibold hover:text-brand-blue/80 transition-colors group/link">
                                 Consultar disponibilidad
                                 <i class="fa-solid fa-arrow-right ml-2 group-hover/link:translate-x-1 transition-transform"></i>
                             </a>
@@ -446,7 +451,7 @@
                                 Potencia pura y una experiencia de juego sin límites. Consolas y accesorios importados directamente desde EE.UU. para quienes viven el gaming en serio.
                             </p>
                             <!-- EDITAR: TELÉFONO WHATSAPP -->
-                            <a href="https://wa.me/57XXXXXXXXXX?text=Hola%2C%20me%20interesa%20un%20PlayStation" target="_blank" rel="noopener noreferrer" class="inline-flex items-center text-brand-blue font-semibold hover:text-brand-blue/80 transition-colors group/link">
+                            <a href="https://wa.me/573232083263?text=Hola%2C%20me%20interesa%20un%20PlayStation" target="_blank" rel="noopener noreferrer" class="inline-flex items-center text-brand-blue font-semibold hover:text-brand-blue/80 transition-colors group/link">
                                 Consultar disponibilidad
                                 <i class="fa-solid fa-arrow-right ml-2 group-hover/link:translate-x-1 transition-transform"></i>
                             </a>
@@ -457,7 +462,7 @@
                 <!-- CTA -->
                 <div class="text-center mt-12" data-aos="fade-up">
                     <!-- EDITAR: TELÉFONO WHATSAPP -->
-                    <a href="https://wa.me/57XXXXXXXXXX?text=Hola%2C%20quiero%20consultar%20disponibilidad%20de%20productos" target="_blank" rel="noopener noreferrer" class="inline-flex items-center bg-brand-blue hover:bg-brand-blue/90 text-white px-8 py-4 rounded-full text-lg font-semibold transition-all duration-300 hover:shadow-lg hover:shadow-brand-blue/30 hover:scale-105">
+                    <a href="https://wa.me/573232083263?text=Hola%2C%20quiero%20consultar%20disponibilidad%20de%20productos" target="_blank" rel="noopener noreferrer" class="inline-flex items-center bg-brand-blue hover:bg-brand-blue/90 text-white px-8 py-4 rounded-full text-lg font-semibold transition-all duration-300 hover:shadow-lg hover:shadow-brand-blue/30 hover:scale-105">
                         <i class="fa-brands fa-whatsapp mr-3 text-xl"></i>
                         Consultar disponibilidad
                     </a>
@@ -531,7 +536,7 @@
                 <!-- CTA -->
                 <div class="text-center mt-12" data-aos="fade-up">
                     <!-- EDITAR: TELÉFONO WHATSAPP -->
-                    <a href="https://wa.me/57XXXXXXXXXX?text=Hola%2C%20necesito%20asesor%C3%ADa%20sobre%20servicios%20t%C3%A9cnicos" target="_blank" rel="noopener noreferrer" class="inline-flex items-center bg-brand-blue hover:bg-brand-blue/90 text-white px-8 py-4 rounded-full text-lg font-semibold transition-all duration-300 hover:shadow-lg hover:shadow-brand-blue/30 hover:scale-105">
+                    <a href="https://wa.me/573232083263?text=Hola%2C%20necesito%20asesor%C3%ADa%20sobre%20servicios%20t%C3%A9cnicos" target="_blank" rel="noopener noreferrer" class="inline-flex items-center bg-brand-blue hover:bg-brand-blue/90 text-white px-8 py-4 rounded-full text-lg font-semibold transition-all duration-300 hover:shadow-lg hover:shadow-brand-blue/30 hover:scale-105">
                         Solicitar asesoría
                     </a>
                 </div>
@@ -667,7 +672,7 @@
                         </ul>
 
                         <!-- EDITAR: TELÉFONO WHATSAPP -->
-                        <a href="https://wa.me/57XXXXXXXXXX?text=Hola%2C%20me%20interesa%20informaci%C3%B3n%20sobre%20cr%C3%A9dito" target="_blank" rel="noopener noreferrer" class="inline-flex items-center bg-brand-green hover:bg-brand-green/90 text-white px-8 py-4 rounded-full text-lg font-semibold transition-all duration-300 hover:shadow-lg hover:shadow-brand-green/30 hover:scale-105">
+                        <a href="https://wa.me/573232083263?text=Hola%2C%20me%20interesa%20informaci%C3%B3n%20sobre%20cr%C3%A9dito" target="_blank" rel="noopener noreferrer" class="inline-flex items-center bg-brand-green hover:bg-brand-green/90 text-white px-8 py-4 rounded-full text-lg font-semibold transition-all duration-300 hover:shadow-lg hover:shadow-brand-green/30 hover:scale-105">
                             Solicitar crédito
                         </a>
                     </div>
@@ -888,7 +893,7 @@
                                     <div>
                                         <h4 class="font-semibold text-brand-text mb-1">WhatsApp</h4>
                                         <!-- EDITAR: TELÉFONO WHATSAPP -->
-                                        <a href="https://wa.me/57XXXXXXXXXX" target="_blank" rel="noopener noreferrer" class="text-brand-green hover:text-brand-green/80 transition-colors">+57 XXX XXX XXXX</a>
+                                        <a href="https://wa.me/573232083263" target="_blank" rel="noopener noreferrer" class="text-brand-green hover:text-brand-green/80 transition-colors">+57 323 208 3263</a>
                                     </div>
                                 </div>
 
@@ -950,7 +955,7 @@
                             <i class="fa-brands fa-tiktok text-white/70 hover:text-white"></i>
                         </a>
                         <!-- EDITAR: TELÉFONO WHATSAPP -->
-                        <a href="https://wa.me/57XXXXXXXXXX" target="_blank" rel="noopener noreferrer" class="w-10 h-10 bg-white/10 hover:bg-brand-green/30 rounded-lg flex items-center justify-center transition-all duration-300 hover:scale-110" aria-label="WhatsApp">
+                        <a href="https://wa.me/573232083263" target="_blank" rel="noopener noreferrer" class="w-10 h-10 bg-white/10 hover:bg-brand-green/30 rounded-lg flex items-center justify-center transition-all duration-300 hover:scale-110" aria-label="WhatsApp">
                             <i class="fa-brands fa-whatsapp text-white/70 hover:text-white"></i>
                         </a>
                     </div>
@@ -997,7 +1002,7 @@
                         <li class="flex items-start space-x-3">
                             <i class="fa-brands fa-whatsapp text-brand-green mt-1 text-sm"></i>
                             <!-- EDITAR: TELÉFONO WHATSAPP -->
-                            <a href="https://wa.me/57XXXXXXXXXX" target="_blank" rel="noopener noreferrer" class="text-white/60 hover:text-brand-green transition-colors text-sm">+57 XXX XXX XXXX</a>
+                            <a href="https://wa.me/573232083263" target="_blank" rel="noopener noreferrer" class="text-white/60 hover:text-brand-green transition-colors text-sm">+57 323 208 3263</a>
                         </li>
                         <li class="flex items-start space-x-3">
                             <i class="fa-brands fa-instagram text-brand-blue mt-1 text-sm"></i>
@@ -1029,7 +1034,7 @@
 
     <!-- WhatsApp Floating Button -->
     <!-- EDITAR: TELÉFONO WHATSAPP -->
-    <a href="https://wa.me/57XXXXXXXXXX" target="_blank" rel="noopener noreferrer"
+    <a href="https://wa.me/573232083263" target="_blank" rel="noopener noreferrer"
         class="fixed safe-bottom-whatsapp right-6 z-50 w-14 h-14 bg-[#25D366] hover:bg-[#20BD5A] text-white rounded-full flex items-center justify-center shadow-lg hover:shadow-xl whatsapp-pulse transition-all duration-300 hover:scale-110"
         aria-label="Contactar por WhatsApp">
         <i class="fa-brands fa-whatsapp text-2xl"></i>
@@ -1110,46 +1115,61 @@
         // ========================
         const hamburgerBtn = document.getElementById('hamburger-btn');
         const mobileMenu = document.getElementById('mobile-menu');
+        const mobileMenuClose = document.getElementById('mobile-menu-close');
         const hamburgerLines = hamburgerBtn.querySelectorAll('.hamburger-line');
         const mobileNavLinks = document.querySelectorAll('.mobile-nav-link');
         let menuOpen = false;
+        let savedScrollY = 0;
 
-        function toggleMenu() {
-            menuOpen = !menuOpen;
-            hamburgerBtn.setAttribute('aria-expanded', menuOpen);
-
-            if (menuOpen) {
-                mobileMenu.classList.remove('-translate-x-full');
-                mobileMenu.classList.add('translate-x-0');
-                // Animate hamburger to X
-                hamburgerLines[0].classList.add('rotate-45', 'translate-y-2');
-                hamburgerLines[1].classList.add('opacity-0');
-                hamburgerLines[2].classList.add('-rotate-45', '-translate-y-2');
-                document.body.style.overflow = 'hidden';
-            } else {
-                mobileMenu.classList.add('-translate-x-full');
-                mobileMenu.classList.remove('translate-x-0');
-                // Reset hamburger
-                hamburgerLines[0].classList.remove('rotate-45', 'translate-y-2');
-                hamburgerLines[1].classList.remove('opacity-0');
-                hamburgerLines[2].classList.remove('-rotate-45', '-translate-y-2');
-                document.body.style.overflow = '';
-            }
+        function openMenu() {
+            menuOpen = true;
+            hamburgerBtn.setAttribute('aria-expanded', true);
+            // Show menu with opacity transition
+            mobileMenu.classList.remove('opacity-0', 'pointer-events-none');
+            mobileMenu.classList.add('opacity-100', 'pointer-events-auto');
+            // Animate hamburger to X
+            hamburgerLines[0].classList.add('rotate-45', 'translate-y-2');
+            hamburgerLines[1].classList.add('opacity-0');
+            hamburgerLines[2].classList.add('-rotate-45', '-translate-y-2');
+            // Lock scroll (iOS-safe)
+            savedScrollY = window.scrollY;
+            document.body.style.position = 'fixed';
+            document.body.style.top = `-${savedScrollY}px`;
+            document.body.style.width = '100%';
         }
 
-        hamburgerBtn.addEventListener('click', toggleMenu);
+        function closeMenu() {
+            menuOpen = false;
+            hamburgerBtn.setAttribute('aria-expanded', false);
+            // Hide menu
+            mobileMenu.classList.add('opacity-0', 'pointer-events-none');
+            mobileMenu.classList.remove('opacity-100', 'pointer-events-auto');
+            // Reset hamburger
+            hamburgerLines[0].classList.remove('rotate-45', 'translate-y-2');
+            hamburgerLines[1].classList.remove('opacity-0');
+            hamburgerLines[2].classList.remove('-rotate-45', '-translate-y-2');
+            // Restore scroll (iOS-safe)
+            document.body.style.position = '';
+            document.body.style.top = '';
+            document.body.style.width = '';
+            window.scrollTo(0, savedScrollY);
+        }
+
+        hamburgerBtn.addEventListener('click', () => {
+            menuOpen ? closeMenu() : openMenu();
+        });
+
+        mobileMenuClose.addEventListener('click', closeMenu);
 
         // Close mobile menu when clicking a link
         mobileNavLinks.forEach(link => {
-            link.addEventListener('click', () => {
-                if (menuOpen) toggleMenu();
-            });
+            link.addEventListener('click', closeMenu);
         });
 
         // Close mobile menu when clicking outside nav links (overlay area)
         mobileMenu.addEventListener('click', (e) => {
-            if (!e.target.closest('a') && menuOpen) {
-                toggleMenu();
+            if (!e.target.closest('a') && !e.target.closest('button') && menuOpen) {
+                closeMenu();
             }
         });
 
