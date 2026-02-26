@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Da Más Group | Tecnología Premium y Soluciones Financieras en Colombia</title>
     <meta name="description" content="Da Más Group: importación directa de iPhones, PlayStation y accesorios originales desde EE.UU. Financiamiento rápido y accesible. Calidad A+ en Cali, Colombia.">
     <!-- Open Graph -->
@@ -137,9 +137,45 @@
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
         }
 
+        /* Mobile bottom nav */
+        .mobile-bottom-nav {
+            padding-bottom: env(safe-area-inset-bottom, 0px);
+        }
+
+        .mobile-bottom-nav a {
+            transition: color 0.2s ease;
+        }
+
+        .mobile-bottom-nav a.active-tab {
+            color: #3891CB;
+        }
+
+        /* Safe area for floating buttons */
+        .safe-bottom-whatsapp {
+            bottom: calc(5rem + env(safe-area-inset-bottom, 0px));
+        }
+
+        .safe-bottom-scroll {
+            bottom: calc(8.5rem + env(safe-area-inset-bottom, 0px));
+        }
+
+        @media (min-width: 769px) {
+            .safe-bottom-whatsapp {
+                bottom: 1.5rem;
+            }
+            .safe-bottom-scroll {
+                bottom: 6rem;
+            }
+        }
+
         @media (max-width: 768px) {
             .parallax {
                 background-attachment: scroll;
+            }
+
+            /* Add padding at bottom of page so content isn't hidden by mobile nav */
+            body {
+                padding-bottom: calc(4rem + env(safe-area-inset-bottom, 0px));
             }
         }
     </style>
@@ -990,17 +1026,45 @@
     <!-- WhatsApp Floating Button -->
     <!-- EDITAR: TELÉFONO WHATSAPP -->
     <a href="https://wa.me/57XXXXXXXXXX" target="_blank" rel="noopener noreferrer"
-        class="fixed bottom-6 right-6 z-50 w-14 h-14 bg-[#25D366] hover:bg-[#20BD5A] text-white rounded-full flex items-center justify-center shadow-lg hover:shadow-xl whatsapp-pulse transition-all duration-300 hover:scale-110"
+        class="fixed safe-bottom-whatsapp right-6 z-50 w-14 h-14 bg-[#25D366] hover:bg-[#20BD5A] text-white rounded-full flex items-center justify-center shadow-lg hover:shadow-xl whatsapp-pulse transition-all duration-300 hover:scale-110"
         aria-label="Contactar por WhatsApp">
         <i class="fa-brands fa-whatsapp text-2xl"></i>
     </a>
 
     <!-- Scroll to Top Button -->
     <button id="scroll-top-btn"
-        class="fixed bottom-24 right-6 z-50 w-12 h-12 bg-brand-blue hover:bg-brand-blue/90 text-white rounded-full flex items-center justify-center shadow-lg hover:shadow-xl hover:scale-110 opacity-0 invisible transition-all duration-300"
+        class="fixed safe-bottom-scroll right-6 z-50 w-12 h-12 bg-brand-blue hover:bg-brand-blue/90 text-white rounded-full flex items-center justify-center shadow-lg hover:shadow-xl hover:scale-110 opacity-0 invisible transition-all duration-300"
         aria-label="Volver arriba">
         <i class="fa-solid fa-arrow-up"></i>
     </button>
+
+    <!-- ============================== -->
+    <!-- MOBILE BOTTOM NAVIGATION -->
+    <!-- ============================== -->
+    <nav id="mobile-bottom-nav" class="mobile-bottom-nav fixed bottom-0 left-0 right-0 z-50 bg-brand-dark/95 backdrop-blur-lg border-t border-white/10 shadow-[0_-4px_20px_rgba(0,0,0,0.3)] lg:hidden">
+        <div class="flex items-center justify-around py-2">
+            <a href="#inicio" class="mobile-tab flex flex-col items-center px-2 py-1 text-white/60 active-tab" data-section="inicio">
+                <i class="fa-solid fa-house text-lg"></i>
+                <span class="text-[10px] mt-0.5 font-medium">Inicio</span>
+            </a>
+            <a href="#tech" class="mobile-tab flex flex-col items-center px-2 py-1 text-white/60" data-section="tech">
+                <i class="fa-solid fa-microchip text-lg"></i>
+                <span class="text-[10px] mt-0.5 font-medium">Tech</span>
+            </a>
+            <a href="#servicios" class="mobile-tab flex flex-col items-center px-2 py-1 text-white/60" data-section="servicios">
+                <i class="fa-solid fa-wrench text-lg"></i>
+                <span class="text-[10px] mt-0.5 font-medium">Servicios</span>
+            </a>
+            <a href="#finanzas" class="mobile-tab flex flex-col items-center px-2 py-1 text-white/60" data-section="finanzas">
+                <i class="fa-solid fa-coins text-lg"></i>
+                <span class="text-[10px] mt-0.5 font-medium">Finanzas</span>
+            </a>
+            <a href="#contacto" class="mobile-tab flex flex-col items-center px-2 py-1 text-white/60" data-section="contacto">
+                <i class="fa-solid fa-envelope text-lg"></i>
+                <span class="text-[10px] mt-0.5 font-medium">Contacto</span>
+            </a>
+        </div>
+    </nav>
 
     <!-- ============================== -->
     <!-- SCRIPTS -->
@@ -1194,6 +1258,8 @@
         const sections = document.querySelectorAll('section[id]');
         const navLinks = document.querySelectorAll('.nav-link');
 
+        const mobileTabs = document.querySelectorAll('.mobile-tab');
+
         window.addEventListener('scroll', () => {
             let current = '';
             sections.forEach(section => {
@@ -1203,10 +1269,21 @@
                 }
             });
 
+            // Desktop nav highlighting
             navLinks.forEach(link => {
                 link.classList.remove('active');
                 if (link.getAttribute('href') === '#' + current) {
                     link.classList.add('active');
+                }
+            });
+
+            // Mobile bottom nav highlighting
+            mobileTabs.forEach(tab => {
+                tab.classList.remove('active-tab');
+                tab.classList.add('text-white/60');
+                if (tab.getAttribute('data-section') === current) {
+                    tab.classList.add('active-tab');
+                    tab.classList.remove('text-white/60');
                 }
             });
         });
