@@ -11,8 +11,7 @@
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://damasgroup.com.co">
     <meta property="og:locale" content="es_CO">
-    <!-- EDITAR: IMAGEN OG - reemplazar con URL de imagen para redes sociales (1200x630px recomendado) -->
-    <meta property="og:image" content="https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=1200&h=630&fit=crop&q=80">
+    <meta property="og:image" content="https://damasgroup.com.co/logo%20negro%20finanzas.jpeg">
     <!-- Favicon placeholder -->
     <!-- EDITAR: FAVICON - agregar <link rel="icon" href="favicon.ico"> -->
 
@@ -22,7 +21,7 @@
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,700&family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
 
     <!-- Font Awesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -47,7 +46,7 @@
                     },
                     fontFamily: {
                         'sans': ['Inter', 'sans-serif'],
-                        'heading': ['Sora', 'sans-serif'],
+                        'heading': ['Cormorant Garamond', 'serif'],
                         'accent': ['Playfair Display', 'serif'],
                     }
                 }
@@ -192,17 +191,17 @@
     <!-- ============================== -->
     <header id="navbar" class="fixed w-full z-50 transition-all duration-300">
         <nav class="w-full px-4 sm:px-6 lg:px-10">
-            <div class="flex items-center justify-between h-20">
+            <div class="flex items-center justify-between h-24">
                 <!-- Logo -->
                 <a href="#inicio" class="flex items-center z-50 shrink-0">
-                    <img src="vector-finanzas.svg" alt="Da Más Group" class="object-contain drop-shadow-lg" style="height:60px; width:auto;">
+                    <img src="vector-finanzas.svg" alt="Da Más Group" class="object-contain drop-shadow-lg" style="height:168px; width:auto;">
                 </a>
 
                 <!-- Desktop Navigation -->
                 <div class="hidden lg:flex items-center justify-center flex-1 gap-x-8">
                     <a href="#inicio" class="nav-link text-white/90 hover:text-white text-base font-semibold tracking-wide whitespace-nowrap transition-colors">Inicio</a>
                     <a href="#nosotros" class="nav-link text-white/90 hover:text-white text-base font-semibold tracking-wide whitespace-nowrap transition-colors">Nosotros</a>
-                    <a href="#tech" class="nav-link text-white/90 hover:text-white text-base font-semibold tracking-wide whitespace-nowrap transition-colors">Da Más Tech</a>
+                    <a href="#tech" class="nav-link text-white/90 hover:text-white text-base font-semibold tracking-wide whitespace-nowrap transition-colors">DM Tech</a>
                     <a href="#servicios" class="nav-link text-white/90 hover:text-white text-base font-semibold tracking-wide whitespace-nowrap transition-colors">Servicios</a>
                     <a href="#finanzas" class="nav-link text-white/90 hover:text-white text-base font-semibold tracking-wide whitespace-nowrap transition-colors">Finanzas Da Más</a>
                     <a href="#contacto" class="nav-link text-white/90 hover:text-white text-base font-semibold tracking-wide whitespace-nowrap transition-colors">Contacto</a>
@@ -236,7 +235,7 @@
         <div class="flex flex-col items-center justify-center h-full space-y-6">
             <a href="#inicio" class="mobile-nav-link text-2xl text-white font-heading font-semibold hover:text-brand-blue transition-colors">Inicio</a>
             <a href="#nosotros" class="mobile-nav-link text-2xl text-white font-heading font-semibold hover:text-brand-blue transition-colors">Nosotros</a>
-            <a href="#tech" class="mobile-nav-link text-2xl text-white font-heading font-semibold hover:text-brand-blue transition-colors">Da Más Tech</a>
+            <a href="#tech" class="mobile-nav-link text-2xl text-white font-heading font-semibold hover:text-brand-blue transition-colors">DM Tech</a>
             <a href="#servicios" class="mobile-nav-link text-2xl text-white font-heading font-semibold hover:text-brand-blue transition-colors">Servicios</a>
             <a href="#finanzas" class="mobile-nav-link text-2xl text-white font-heading font-semibold hover:text-brand-blue transition-colors">Finanzas Da Más</a>
             <a href="#contacto" class="mobile-nav-link text-2xl text-white font-heading font-semibold hover:text-brand-blue transition-colors">Contacto</a>
@@ -274,6 +273,27 @@
                     <a href="#finanzas" class="w-full sm:w-auto border-2 border-white/70 hover:border-white text-white px-8 py-4 rounded-full text-lg font-semibold transition-all duration-300 hover:bg-white/10">
                         Conocer Finanzas
                     </a>
+                </div>
+
+                <!-- Botón crédito destacado -->
+                <div class="mt-6 flex flex-col items-center gap-3" data-aos="fade-up" data-aos-delay="320">
+                    <a href="#solicitar-credito"
+                        class="group relative inline-flex items-center justify-center gap-3 bg-brand-green text-white px-10 py-5 rounded-full text-xl font-bold transition-all duration-300 hover:scale-105 w-full sm:w-auto"
+                        style="box-shadow: 0 0 28px rgba(5,150,105,0.55), 0 4px 20px rgba(5,150,105,0.35);">
+                        <!-- Pulse ring -->
+                        <span class="absolute inset-0 rounded-full bg-brand-green opacity-30 animate-ping pointer-events-none"></span>
+                        <i class="fa-solid fa-file-invoice-dollar text-xl relative z-10"></i>
+                        <span class="relative z-10">Solicitar crédito ahora</span>
+                        <i class="fa-solid fa-arrow-right relative z-10 group-hover:translate-x-1 transition-transform duration-300"></i>
+                    </a>
+                    <p class="text-white/60 text-sm flex items-center gap-2">
+                        <i class="fa-solid fa-circle-check text-brand-green"></i>
+                        Aprobación rápida &nbsp;·&nbsp;
+                        <i class="fa-solid fa-circle-check text-brand-green"></i>
+                        Sin trámites complicados &nbsp;·&nbsp;
+                        <i class="fa-solid fa-circle-check text-brand-green"></i>
+                        100% en línea
+                    </p>
                 </div>
             </div>
 
@@ -391,13 +411,18 @@
                     </p>
                 </div>
 
+                <!-- DM Tech Logo -->
+                <div class="flex justify-center mb-14" data-aos="fade-up" data-aos-delay="100">
+                    <img src="logo 2.png" alt="DM Tech" class="object-contain drop-shadow-lg rounded-2xl" style="height:120px; width:auto;">
+                </div>
+
                 <!-- Product Cards -->
                 <div class="grid md:grid-cols-3 gap-8 lg:gap-10">
                     <!-- iPhone Card -->
                     <div class="group bg-white rounded-2xl shadow-lg hover:shadow-2xl overflow-hidden transition-all duration-300 hover:scale-105" data-aos="fade-up" data-aos-delay="100">
                         <!-- EDITAR: IMAGEN - reemplazar con foto propia -->
                         <div class="h-64 overflow-hidden">
-                            <img src="https://images.unsplash.com/photo-1601784551446-20c9e07cdbdb?w=800&q=80" alt="iPhone premium de alta calidad sobre fondo elegante — Da Más Tech" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                            <img src="https://images.unsplash.com/photo-1601784551446-20c9e07cdbdb?w=800&q=80" alt="iPhone premium de alta calidad sobre fondo elegante — DM Tech" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
                         </div>
                         <div class="p-6 lg:p-8">
                             <div class="flex items-center gap-2 mb-3">
@@ -420,7 +445,7 @@
                     <div class="group bg-white rounded-2xl shadow-lg hover:shadow-2xl overflow-hidden transition-all duration-300 hover:scale-105" data-aos="fade-up" data-aos-delay="200">
                         <!-- EDITAR: IMAGEN - reemplazar con foto propia -->
                         <div class="h-64 overflow-hidden">
-                            <img src="https://images.unsplash.com/photo-1572569511254-d8f925fe2cbb?w=800&q=80" alt="AirPods y accesorios originales Apple — importación directa Da Más Tech" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                            <img src="https://images.unsplash.com/photo-1572569511254-d8f925fe2cbb?w=800&q=80" alt="AirPods y accesorios originales Apple — importación directa DM Tech" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
                         </div>
                         <div class="p-6 lg:p-8">
                             <div class="flex items-center gap-2 mb-3">
@@ -442,7 +467,7 @@
                     <div class="group bg-white rounded-2xl shadow-lg hover:shadow-2xl overflow-hidden transition-all duration-300 hover:scale-105" data-aos="fade-up" data-aos-delay="300">
                         <!-- EDITAR: IMAGEN - reemplazar con foto propia -->
                         <div class="h-64 overflow-hidden">
-                            <img src="https://images.unsplash.com/photo-1607853202273-797f1c22a38e?w=800&q=80" alt="Control DualSense PlayStation 5 — gaming sin límites con Da Más Tech" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                            <img src="https://images.unsplash.com/photo-1607853202273-797f1c22a38e?w=800&q=80" alt="Control DualSense PlayStation 5 — gaming sin límites con DM Tech" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
                         </div>
                         <div class="p-6 lg:p-8">
                             <div class="flex items-center gap-2 mb-3">
@@ -526,7 +551,7 @@
                     <!-- Service 4 -->
                     <div class="card-hover bg-brand-gray rounded-2xl p-8 text-center shadow-sm hover:shadow-xl border border-transparent hover:border-brand-blue/10" data-aos="fade-up" data-aos-delay="400">
                         <div class="w-16 h-16 bg-brand-blue/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                            <i class="fa-solid fa-screwdriver-wrench text-brand-blue text-2xl"></i>
+                            <i class="fa-solid fa-magnifying-glass text-brand-blue text-2xl"></i>
                         </div>
                         <h3 class="text-lg font-heading font-bold text-brand-text mb-3">Diagnóstico y Reparación</h3>
                         <p class="text-brand-text/70 text-sm leading-relaxed">
@@ -673,8 +698,7 @@
                             </li>
                         </ul>
 
-                        <!-- EDITAR: TELÉFONO WHATSAPP -->
-                        <a href="https://wa.me/573232083263?text=Hola%2C%20me%20interesa%20informaci%C3%B3n%20sobre%20cr%C3%A9dito" target="_blank" rel="noopener noreferrer" class="inline-flex items-center bg-brand-green hover:bg-brand-green/90 text-white px-8 py-4 rounded-full text-lg font-semibold transition-all duration-300 hover:shadow-lg hover:shadow-brand-green/30 hover:scale-105">
+                        <a href="#solicitar-credito" class="inline-flex items-center bg-brand-green hover:bg-brand-green/90 text-white px-8 py-4 rounded-full text-lg font-semibold transition-all duration-300 hover:shadow-lg hover:shadow-brand-green/30 hover:scale-105">
                             Solicitar crédito
                         </a>
                     </div>
@@ -682,11 +706,268 @@
                     <!-- Image -->
                     <div class="relative" data-aos="fade-left">
                         <!-- EDITAR: IMAGEN - reemplazar con foto propia -->
-                        <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=800&q=80" alt="Profesional sonriente transmitiendo confianza — Finanzas Da Más, asesoría financiera" class="rounded-2xl shadow-2xl w-full h-[400px] lg:h-[500px] object-cover">
+                        <img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=800&q=80" alt="Personas felices celebrando la aprobación de su crédito — Finanzas Da Más" class="rounded-2xl shadow-2xl w-full h-[400px] lg:h-[500px] object-cover">
                         <!-- Decorative element -->
                         <div class="absolute -bottom-4 -right-4 w-24 h-24 bg-brand-green/20 rounded-2xl -z-10 hidden md:block"></div>
                         <div class="absolute -top-4 -left-4 w-32 h-32 bg-brand-blue/10 rounded-2xl -z-10 hidden md:block"></div>
                     </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================================ -->
+        <!-- SOLICITAR CRÉDITO               -->
+        <!-- ================================ -->
+        <section id="solicitar-credito" class="py-20 md:py-28 bg-white">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                <!-- Header -->
+                <div class="text-center mb-12" data-aos="fade-up">
+                    <span class="inline-block bg-brand-green/10 text-brand-green text-sm font-semibold px-4 py-2 rounded-full mb-4">Finanzas Da Más</span>
+                    <h2 class="text-3xl md:text-4xl lg:text-5xl font-heading font-bold text-brand-text mb-4">
+                        Solicita tu <span class="text-brand-green">crédito hoy</span>
+                    </h2>
+                    <div class="w-16 h-1 bg-brand-green mx-auto rounded-full mb-6"></div>
+                    <p class="text-lg text-brand-text/70 max-w-2xl mx-auto">
+                        Completa el formulario con tus datos y una foto de tu cédula. Te enviaremos la solicitud directamente por WhatsApp para comenzar tu proceso.
+                    </p>
+                </div>
+
+                <!-- Form Card -->
+                <div class="bg-white rounded-2xl shadow-xl border border-brand-gray-dark p-8 md:p-10" data-aos="fade-up" data-aos-delay="100">
+                    <form id="credit-form" novalidate>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                            <!-- Nombre completo -->
+                            <div class="flex flex-col gap-1">
+                                <label for="cr-nombre" class="text-sm font-semibold text-brand-text">Nombre completo <span class="text-red-500">*</span></label>
+                                <input type="text" id="cr-nombre" name="nombre" placeholder="Ej. Juan Pérez" required
+                                    class="px-4 py-3 rounded-xl border border-brand-gray-dark focus:outline-none focus:ring-2 focus:ring-brand-green/40 focus:border-brand-green text-brand-text placeholder-brand-text/40 transition-all duration-200">
+                                <span class="cr-error text-xs text-red-500 hidden"></span>
+                            </div>
+
+                            <!-- Tipo documento -->
+                            <div class="flex flex-col gap-1">
+                                <label for="cr-tipo-doc" class="text-sm font-semibold text-brand-text">Tipo de documento <span class="text-red-500">*</span></label>
+                                <select id="cr-tipo-doc" name="tipo_documento" required
+                                    class="px-4 py-3 rounded-xl border border-brand-gray-dark focus:outline-none focus:ring-2 focus:ring-brand-green/40 focus:border-brand-green text-brand-text bg-white transition-all duration-200 appearance-none cursor-pointer">
+                                    <option value="" disabled selected>Selecciona una opción</option>
+                                    <option value="Cédula Ciudadanía">Cédula Ciudadanía</option>
+                                    <option value="Pasaporte">Pasaporte</option>
+                                    <option value="PTT VEN">PTT VEN</option>
+                                    <option value="CC VEN">CC VEN</option>
+                                </select>
+                                <span class="cr-error text-xs text-red-500 hidden"></span>
+                            </div>
+
+                            <!-- Número documento -->
+                            <div class="flex flex-col gap-1">
+                                <label for="cr-cedula" class="text-sm font-semibold text-brand-text">Número de documento <span class="text-red-500">*</span></label>
+                                <input type="text" id="cr-cedula" name="cedula" placeholder="Ej. 1234567890" required
+                                    class="px-4 py-3 rounded-xl border border-brand-gray-dark focus:outline-none focus:ring-2 focus:ring-brand-green/40 focus:border-brand-green text-brand-text placeholder-brand-text/40 transition-all duration-200">
+                                <span class="cr-error text-xs text-red-500 hidden"></span>
+                            </div>
+
+                            <!-- Celular -->
+                            <div class="flex flex-col gap-1">
+                                <label for="cr-celular" class="text-sm font-semibold text-brand-text">Celular <span class="text-red-500">*</span></label>
+                                <input type="tel" id="cr-celular" name="celular" placeholder="Ej. 3001234567" required
+                                    class="px-4 py-3 rounded-xl border border-brand-gray-dark focus:outline-none focus:ring-2 focus:ring-brand-green/40 focus:border-brand-green text-brand-text placeholder-brand-text/40 transition-all duration-200">
+                                <span class="cr-error text-xs text-red-500 hidden"></span>
+                            </div>
+
+                            <!-- Correo -->
+                            <div class="flex flex-col gap-1">
+                                <label for="cr-correo" class="text-sm font-semibold text-brand-text">Correo electrónico <span class="text-red-500">*</span></label>
+                                <input type="email" id="cr-correo" name="correo" placeholder="ejemplo@correo.com" required
+                                    class="px-4 py-3 rounded-xl border border-brand-gray-dark focus:outline-none focus:ring-2 focus:ring-brand-green/40 focus:border-brand-green text-brand-text placeholder-brand-text/40 transition-all duration-200">
+                                <span class="cr-error text-xs text-red-500 hidden"></span>
+                            </div>
+
+                            <!-- Ciudad -->
+                            <div class="flex flex-col gap-1">
+                                <label for="cr-ciudad" class="text-sm font-semibold text-brand-text">Ciudad <span class="text-red-500">*</span></label>
+                                <input type="text" id="cr-ciudad" name="ciudad" placeholder="Ej. Cali" required
+                                    class="px-4 py-3 rounded-xl border border-brand-gray-dark focus:outline-none focus:ring-2 focus:ring-brand-green/40 focus:border-brand-green text-brand-text placeholder-brand-text/40 transition-all duration-200">
+                                <span class="cr-error text-xs text-red-500 hidden"></span>
+                            </div>
+
+                            <!-- Dirección trabajo -->
+                            <div class="flex flex-col gap-1">
+                                <label for="cr-direccion" class="text-sm font-semibold text-brand-text">Dirección (trabajo) <span class="text-red-500">*</span></label>
+                                <input type="text" id="cr-direccion" name="direccion_trabajo" placeholder="Ej. Calle 10 # 5-23" required
+                                    class="px-4 py-3 rounded-xl border border-brand-gray-dark focus:outline-none focus:ring-2 focus:ring-brand-green/40 focus:border-brand-green text-brand-text placeholder-brand-text/40 transition-all duration-200">
+                                <span class="cr-error text-xs text-red-500 hidden"></span>
+                            </div>
+
+                            <!-- Dirección vivienda -->
+                            <div class="flex flex-col gap-1">
+                                <label for="cr-direccion-vivienda" class="text-sm font-semibold text-brand-text">Dirección (vivienda) <span class="text-red-500">*</span></label>
+                                <input type="text" id="cr-direccion-vivienda" name="direccion_vivienda" placeholder="Ej. Carrera 5 # 12-40" required
+                                    class="px-4 py-3 rounded-xl border border-brand-gray-dark focus:outline-none focus:ring-2 focus:ring-brand-green/40 focus:border-brand-green text-brand-text placeholder-brand-text/40 transition-all duration-200">
+                                <span class="cr-error text-xs text-red-500 hidden"></span>
+                            </div>
+
+                            <!-- Barrio trabajo -->
+                            <div class="flex flex-col gap-1">
+                                <label for="cr-barrio-trabajo" class="text-sm font-semibold text-brand-text">Barrio (trabajo) <span class="text-red-500">*</span></label>
+                                <input type="text" id="cr-barrio-trabajo" name="barrio_trabajo" placeholder="Ej. El Poblado" required
+                                    class="px-4 py-3 rounded-xl border border-brand-gray-dark focus:outline-none focus:ring-2 focus:ring-brand-green/40 focus:border-brand-green text-brand-text placeholder-brand-text/40 transition-all duration-200">
+                                <span class="cr-error text-xs text-red-500 hidden"></span>
+                            </div>
+
+                            <!-- Barrio vivienda -->
+                            <div class="flex flex-col gap-1">
+                                <label for="cr-barrio-vivienda" class="text-sm font-semibold text-brand-text">Barrio (vivienda) <span class="text-red-500">*</span></label>
+                                <input type="text" id="cr-barrio-vivienda" name="barrio_vivienda" placeholder="Ej. Centro" required
+                                    class="px-4 py-3 rounded-xl border border-brand-gray-dark focus:outline-none focus:ring-2 focus:ring-brand-green/40 focus:border-brand-green text-brand-text placeholder-brand-text/40 transition-all duration-200">
+                                <span class="cr-error text-xs text-red-500 hidden"></span>
+                            </div>
+
+                            <!-- Ocupación -->
+                            <div class="flex flex-col gap-1">
+                                <label for="cr-ocupacion" class="text-sm font-semibold text-brand-text">Ocupación / Fuente de ingresos <span class="text-red-500">*</span></label>
+                                <input type="text" id="cr-ocupacion" name="ocupacion" placeholder="Ej. Empleado, Independiente" required
+                                    class="px-4 py-3 rounded-xl border border-brand-gray-dark focus:outline-none focus:ring-2 focus:ring-brand-green/40 focus:border-brand-green text-brand-text placeholder-brand-text/40 transition-all duration-200">
+                                <span class="cr-error text-xs text-red-500 hidden"></span>
+                            </div>
+
+                            <!-- Producto -->
+                            <div class="flex flex-col gap-1">
+                                <label for="cr-producto" class="text-sm font-semibold text-brand-text">Producto de interés <span class="text-red-500">*</span></label>
+                                <select id="cr-producto" name="producto" required
+                                    class="px-4 py-3 rounded-xl border border-brand-gray-dark focus:outline-none focus:ring-2 focus:ring-brand-green/40 focus:border-brand-green text-brand-text bg-white transition-all duration-200 appearance-none cursor-pointer">
+                                    <option value="" disabled selected>Selecciona una opción</option>
+                                    <option value="Telefonía">Telefonía</option>
+                                    <option value="Consolas de videojuegos">Consolas de videojuegos</option>
+                                    <option value="Accesorios">Accesorios</option>
+                                    <option value="Crédito libre inversión">Crédito libre inversión</option>
+                                    <option value="Otro">Otro</option>
+                                </select>
+                                <span class="cr-error text-xs text-red-500 hidden"></span>
+                            </div>
+
+                            <!-- Monto -->
+                            <div class="flex flex-col gap-1 md:col-span-2">
+                                <label for="cr-monto" class="text-sm font-semibold text-brand-text">Monto de crédito solicitado (COP) <span class="text-red-500">*</span></label>
+                                <input type="number" id="cr-monto" name="monto" placeholder="Ej. 1500000" min="200000" max="10000000" required
+                                    class="px-4 py-3 rounded-xl border border-brand-gray-dark focus:outline-none focus:ring-2 focus:ring-brand-green/40 focus:border-brand-green text-brand-text placeholder-brand-text/40 transition-all duration-200">
+                                <span class="cr-error text-xs text-red-500 hidden"></span>
+                                <p id="cr-monto-hint" class="hidden text-sm text-brand-blue font-medium mt-1 flex items-start gap-2">
+                                    <i class="fa-solid fa-phone-volume mt-0.5 shrink-0"></i>
+                                    Para montos superiores a $10.000.000 COP, comuníquese a nuestra línea de atención.
+                                </p>
+                            </div>
+
+                            <!-- ── Bloque de fotografías ── -->
+                            <div class="md:col-span-2 mt-2">
+                                <div class="flex items-center gap-3 mb-5">
+                                    <div class="h-px flex-1 bg-brand-gray-dark"></div>
+                                    <span class="text-[11px] font-semibold text-brand-text/40 uppercase tracking-widest">Fotografías requeridas</span>
+                                    <div class="h-px flex-1 bg-brand-gray-dark"></div>
+                                </div>
+
+                                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+
+                                    <!-- Foto frontal -->
+                                    <div class="flex flex-col gap-2">
+                                        <div class="flex items-center gap-2">
+                                            <div class="w-6 h-6 rounded-full bg-brand-green/10 flex items-center justify-center shrink-0">
+                                                <i class="fa-solid fa-id-card text-brand-green text-[10px]"></i>
+                                            </div>
+                                            <span class="text-sm font-semibold text-brand-text">Documento — Frontal <span class="text-red-500">*</span></span>
+                                        </div>
+                                        <label for="foto-frontal" class="block cursor-pointer group">
+                                            <div class="relative w-full rounded-2xl border border-slate-200 bg-slate-50 group-hover:bg-brand-green/5 group-hover:border-brand-green/30 transition-all duration-300 overflow-hidden shadow-sm" style="aspect-ratio: 85.6/54;">
+                                                <div id="foto-frontal-placeholder" class="absolute inset-0 flex flex-col items-center justify-center gap-2 pointer-events-none">
+                                                    <div class="w-10 h-10 rounded-xl bg-brand-green/10 flex items-center justify-center">
+                                                        <i class="fa-solid fa-camera text-brand-green text-lg"></i>
+                                                    </div>
+                                                    <span class="text-brand-text/40 text-[11px] text-center leading-snug">Parte frontal</span>
+                                                </div>
+                                                <img id="foto-frontal-preview" src="" alt="Preview frontal" class="absolute inset-0 w-full h-full object-cover hidden">
+                                            </div>
+                                        </label>
+                                        <input type="file" id="foto-frontal" name="foto_frontal" accept="image/*" required class="hidden">
+                                        <span class="cr-error text-xs text-red-500 hidden" id="foto-frontal-error"></span>
+                                    </div>
+
+                                    <!-- Foto trasera -->
+                                    <div class="flex flex-col gap-2">
+                                        <div class="flex items-center gap-2">
+                                            <div class="w-6 h-6 rounded-full bg-brand-green/10 flex items-center justify-center shrink-0">
+                                                <i class="fa-solid fa-id-card-clip text-brand-green text-[10px]"></i>
+                                            </div>
+                                            <span class="text-sm font-semibold text-brand-text">Documento — Trasera <span class="text-red-500">*</span></span>
+                                        </div>
+                                        <label for="foto-trasera" class="block cursor-pointer group">
+                                            <div class="relative w-full rounded-2xl border border-slate-200 bg-slate-50 group-hover:bg-brand-green/5 group-hover:border-brand-green/30 transition-all duration-300 overflow-hidden shadow-sm" style="aspect-ratio: 85.6/54;">
+                                                <div id="foto-trasera-placeholder" class="absolute inset-0 flex flex-col items-center justify-center gap-2 pointer-events-none">
+                                                    <div class="w-10 h-10 rounded-xl bg-brand-green/10 flex items-center justify-center">
+                                                        <i class="fa-solid fa-camera text-brand-green text-lg"></i>
+                                                    </div>
+                                                    <span class="text-brand-text/40 text-[11px] text-center leading-snug">Parte trasera</span>
+                                                </div>
+                                                <img id="foto-trasera-preview" src="" alt="Preview trasera" class="absolute inset-0 w-full h-full object-cover hidden">
+                                            </div>
+                                        </label>
+                                        <input type="file" id="foto-trasera" name="foto_trasera" accept="image/*" required class="hidden">
+                                        <span class="cr-error text-xs text-red-500 hidden" id="foto-trasera-error"></span>
+                                    </div>
+
+                                    <!-- Foto cliente -->
+                                    <div class="flex flex-col gap-2">
+                                        <div class="flex items-center gap-2">
+                                            <div class="w-6 h-6 rounded-full bg-brand-blue/10 flex items-center justify-center shrink-0">
+                                                <i class="fa-solid fa-user text-brand-blue text-[10px]"></i>
+                                            </div>
+                                            <span class="text-sm font-semibold text-brand-text">Foto cliente <span class="text-red-500">*</span></span>
+                                        </div>
+                                        <label for="foto-cliente" class="block cursor-pointer group">
+                                            <div class="relative w-full rounded-2xl border border-slate-200 bg-slate-50 group-hover:bg-brand-blue/5 group-hover:border-brand-blue/30 transition-all duration-300 overflow-hidden shadow-sm" style="aspect-ratio: 3/4;">
+                                                <div id="foto-cliente-placeholder" class="absolute inset-0 flex flex-col items-center justify-center gap-2 pointer-events-none">
+                                                    <div class="w-10 h-10 rounded-full bg-brand-blue/10 flex items-center justify-center">
+                                                        <i class="fa-solid fa-user text-brand-blue text-lg"></i>
+                                                    </div>
+                                                    <span class="text-brand-text/40 text-[11px] text-center leading-snug">Foto del cliente</span>
+                                                </div>
+                                                <img id="foto-cliente-preview" src="" alt="Preview cliente" class="absolute inset-0 w-full h-full object-cover hidden">
+                                            </div>
+                                        </label>
+                                        <input type="file" id="foto-cliente" name="foto_cliente" accept="image/*" required class="hidden">
+                                        <p class="text-[11px] text-brand-text/50 leading-relaxed mt-1">
+                                            <i class="fa-solid fa-circle-info text-brand-blue mr-1"></i>
+                                            Ubícate frente a una fuente de luz natural (ventana o lámpara). Evita contraluz y sombras en el rostro.
+                                        </p>
+                                        <span class="cr-error text-xs text-red-500 hidden" id="foto-cliente-error"></span>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!-- Submit button -->
+                        <div class="mt-8 flex flex-col items-center gap-4">
+                            <button type="submit" id="cr-submit-btn"
+                                class="inline-flex items-center justify-center gap-3 bg-brand-green hover:bg-brand-green/90 text-white px-10 py-4 rounded-full text-lg font-semibold transition-all duration-300 hover:shadow-lg hover:shadow-brand-green/30 hover:scale-105 disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:scale-100">
+                                <i class="fa-brands fa-whatsapp text-xl"></i>
+                                <span id="cr-btn-text">Enviar solicitud</span>
+                                <svg id="cr-spinner" class="hidden animate-spin w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+                                </svg>
+                            </button>
+                            <p id="cr-foto-hint" class="hidden text-sm text-brand-text/60 text-center max-w-sm">
+                                <i class="fa-solid fa-circle-info text-brand-green mr-1"></i>
+                                Por favor, adjunta manualmente las fotos de tu cédula (frontal y trasera) en el chat de WhatsApp que se acaba de abrir.
+                            </p>
+                        </div>
+
+                        <!-- Toast -->
+                        <div id="cr-toast" class="hidden mt-6 p-4 bg-brand-green/10 border border-brand-green/30 rounded-xl text-brand-green text-center font-semibold transition-opacity duration-300">
+                            ¡Solicitud enviada! Te contactaremos pronto.
+                        </div>
+                    </form>
                 </div>
             </div>
         </section>
@@ -969,7 +1250,7 @@
                     <ul class="space-y-3">
                         <li><a href="#inicio" class="text-white/60 hover:text-brand-blue transition-colors text-sm">Inicio</a></li>
                         <li><a href="#nosotros" class="text-white/60 hover:text-brand-blue transition-colors text-sm">Nosotros</a></li>
-                        <li><a href="#tech" class="text-white/60 hover:text-brand-blue transition-colors text-sm">Da Más Tech</a></li>
+                        <li><a href="#tech" class="text-white/60 hover:text-brand-blue transition-colors text-sm">DM Tech</a></li>
                         <li><a href="#servicios" class="text-white/60 hover:text-brand-blue transition-colors text-sm">Servicios</a></li>
                         <li><a href="#finanzas" class="text-white/60 hover:text-brand-blue transition-colors text-sm">Finanzas Da Más</a></li>
                         <li><a href="#contacto" class="text-white/60 hover:text-brand-blue transition-colors text-sm">Contacto</a></li>
@@ -1063,7 +1344,7 @@
                 <span class="text-[10px] mt-0.5 font-medium">Tech</span>
             </a>
             <a href="#servicios" class="mobile-tab flex flex-col items-center px-2 py-1 text-white/60" data-section="servicios">
-                <i class="fa-solid fa-wrench text-lg"></i>
+                <i class="fa-solid fa-list-check text-lg"></i>
                 <span class="text-[10px] mt-0.5 font-medium">Servicios</span>
             </a>
             <a href="#finanzas" class="mobile-tab flex flex-col items-center px-2 py-1 text-white/60" data-section="finanzas">
@@ -1279,6 +1560,310 @@
         });
 
         // ========================
+        // Credit Form — Email + WhatsApp Submission
+        // ========================
+        (function () {
+            const creditForm = document.getElementById('credit-form');
+            if (!creditForm) return;
+
+            const fotoFrontal     = document.getElementById('foto-frontal');
+            const fotoTrasera     = document.getElementById('foto-trasera');
+            const fotoCliente     = document.getElementById('foto-cliente');
+            const submitBtn       = document.getElementById('cr-submit-btn');
+            const btnText         = document.getElementById('cr-btn-text');
+            const spinner         = document.getElementById('cr-spinner');
+            const toast           = document.getElementById('cr-toast');
+            const fotoHint        = document.getElementById('cr-foto-hint');
+
+            // Store captured files (covers both file-picker and camera capture)
+            const capturedFiles = { 'foto-frontal': null, 'foto-trasera': null, 'foto-cliente': null };
+
+            // Helper: wire file input + camera capture for document-style preview
+            function wirePhotoPreview(inputId, placeholderId, previewId) {
+                const input       = document.getElementById(inputId);
+                const placeholder = document.getElementById(placeholderId);
+                const preview     = document.getElementById(previewId);
+
+                function showFile(file) {
+                    capturedFiles[inputId] = file;
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        preview.src = e.target.result;
+                        preview.classList.remove('hidden');
+                        placeholder.classList.add('hidden');
+                    };
+                    reader.readAsDataURL(file);
+                }
+
+                // Regular file picker
+                input.addEventListener('change', function () {
+                    if (this.files && this.files[0]) showFile(this.files[0]);
+                });
+
+                // Camera capture custom event
+                input.addEventListener('camera-capture', function (e) {
+                    showFile(e.detail.file);
+                });
+            }
+
+            wirePhotoPreview('foto-frontal', 'foto-frontal-placeholder', 'foto-frontal-preview');
+            wirePhotoPreview('foto-trasera', 'foto-trasera-placeholder', 'foto-trasera-preview');
+            wirePhotoPreview('foto-cliente', 'foto-cliente-placeholder', 'foto-cliente-preview');
+
+            // Intercept label clicks → solo cámara, sin explorador de archivos
+            function interceptLabel(forAttr, inputId, title) {
+                const lbl = document.querySelector('label[for="' + forAttr + '"]');
+                if (!lbl) return;
+                lbl.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    if (window._openDocCamera &&
+                        navigator.mediaDevices &&
+                        navigator.mediaDevices.getUserMedia) {
+                        window._openDocCamera(inputId, title);
+                    } else {
+                        alert('Para adjuntar esta foto debes usar un dispositivo con cámara (celular o computador con cámara activada).');
+                    }
+                });
+            }
+
+            interceptLabel('foto-frontal', 'foto-frontal', 'Documento — Parte frontal');
+            interceptLabel('foto-trasera', 'foto-trasera', 'Documento — Parte trasera');
+            interceptLabel('foto-cliente', 'foto-cliente', 'Foto cliente');
+
+            // Monto — mensaje en tiempo real
+            document.getElementById('cr-monto').addEventListener('input', function () {
+                const hint = document.getElementById('cr-monto-hint');
+                const val  = parseInt(this.value, 10);
+                if (!this.value || isNaN(val)) { hint.classList.add('hidden'); return; }
+                if (val > 10000000) {
+                    hint.innerHTML = '<i class="fa-solid fa-phone-volume mt-0.5 shrink-0"></i> Para montos superiores a $10.000.000 COP, comuníquese a nuestra línea de atención.';
+                    hint.classList.remove('hidden', 'text-red-500');
+                    hint.classList.add('text-brand-blue');
+                } else if (val < 200000) {
+                    hint.innerHTML = '<i class="fa-solid fa-triangle-exclamation mt-0.5 shrink-0"></i> El valor ingresado es inválido. El monto mínimo es $200.000 COP.';
+                    hint.classList.remove('hidden', 'text-brand-blue');
+                    hint.classList.add('text-red-500');
+                } else {
+                    hint.classList.add('hidden');
+                }
+            });
+
+            function showFieldError(input, msg) {
+                const errSpan = input.parentElement.querySelector('.cr-error');
+                if (errSpan) { errSpan.textContent = msg; errSpan.classList.remove('hidden'); }
+                input.classList.add('border-red-400', 'focus:ring-red-400/40', 'focus:border-red-400');
+            }
+
+            function clearFieldError(input) {
+                const errSpan = input.parentElement.querySelector('.cr-error');
+                if (errSpan) errSpan.classList.add('hidden');
+                input.classList.remove('border-red-400', 'focus:ring-red-400/40', 'focus:border-red-400');
+            }
+
+            function validateForm() {
+                let valid = true;
+                const fields = [
+                    { el: document.getElementById('cr-nombre'),   msg: 'Ingresa tu nombre completo.' },
+                    { el: document.getElementById('cr-tipo-doc'), msg: 'Selecciona el tipo de documento.' },
+                    { el: document.getElementById('cr-cedula'),   msg: 'Ingresa tu número de documento.' },
+                    { el: document.getElementById('cr-celular'),  msg: 'Ingresa tu número de celular.' },
+                    { el: document.getElementById('cr-correo'),   msg: 'Ingresa un correo electrónico válido.', pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/ },
+                    { el: document.getElementById('cr-ciudad'),   msg: 'Ingresa tu ciudad.' },
+                    { el: document.getElementById('cr-direccion'),          msg: 'Ingresa tu dirección de trabajo.' },
+                    { el: document.getElementById('cr-direccion-vivienda'), msg: 'Ingresa tu dirección de vivienda.' },
+                    { el: document.getElementById('cr-barrio-trabajo'),    msg: 'Ingresa el barrio de trabajo.' },
+                    { el: document.getElementById('cr-barrio-vivienda'),   msg: 'Ingresa el barrio de vivienda.' },
+                    { el: document.getElementById('cr-ocupacion'),msg: 'Ingresa tu ocupación o fuente de ingresos.' },
+                    { el: document.getElementById('cr-producto'), msg: 'Selecciona un producto de interés.' },
+                ];
+                fields.forEach(({ el, msg, pattern }) => {
+                    clearFieldError(el);
+                    if (!el.value.trim() || (pattern && !pattern.test(el.value.trim()))) {
+                        showFieldError(el, msg);
+                        valid = false;
+                    }
+                });
+
+                // Monto — rango 200.000 a 10.000.000
+                const montoEl  = document.getElementById('cr-monto');
+                const montoVal = parseInt(montoEl.value, 10);
+                clearFieldError(montoEl);
+                if (!montoEl.value.trim() || isNaN(montoVal)) {
+                    showFieldError(montoEl, 'Ingresa el monto de crédito solicitado.');
+                    valid = false;
+                } else if (montoVal < 200000) {
+                    showFieldError(montoEl, 'El monto mínimo es $200.000 COP.');
+                    valid = false;
+                } else if (montoVal > 10000000) {
+                    showFieldError(montoEl, 'Monto fuera del rango. Comuníquese a nuestra línea de atención.');
+                    valid = false;
+                }
+
+                // Foto frontal — usa capturedFiles como fuente principal
+                const errFrontal = document.getElementById('foto-frontal-error');
+                if (!capturedFiles['foto-frontal'] && !(fotoFrontal.files && fotoFrontal.files[0])) {
+                    errFrontal.textContent = 'Adjunta la foto de la parte frontal del documento.';
+                    errFrontal.classList.remove('hidden');
+                    valid = false;
+                } else { errFrontal.classList.add('hidden'); }
+
+                // Foto trasera — usa capturedFiles como fuente principal
+                const errTrasera = document.getElementById('foto-trasera-error');
+                if (!capturedFiles['foto-trasera'] && !(fotoTrasera.files && fotoTrasera.files[0])) {
+                    errTrasera.textContent = 'Adjunta la foto de la parte trasera del documento.';
+                    errTrasera.classList.remove('hidden');
+                    valid = false;
+                } else { errTrasera.classList.add('hidden'); }
+
+                // Foto cliente
+                const errCliente = document.getElementById('foto-cliente-error');
+                if (!capturedFiles['foto-cliente'] && !(fotoCliente.files && fotoCliente.files[0])) {
+                    errCliente.textContent = 'Adjunta la foto del cliente.';
+                    errCliente.classList.remove('hidden');
+                    valid = false;
+                } else { errCliente.classList.add('hidden'); }
+
+                return valid;
+            }
+
+            function buildMessage() {
+                const v = (id) => document.getElementById(id).value.trim();
+                return (
+                    '🏦 *SOLICITUD DE CRÉDITO — Finanzas Da Más*\n\n' +
+                    '👤 Nombre: '             + v('cr-nombre')    + '\n' +
+                    '📋 Tipo documento: '     + v('cr-tipo-doc')  + '\n' +
+                    '🪪 Número documento: '   + v('cr-cedula')    + '\n' +
+                    '📱 Celular: '            + v('cr-celular')   + '\n' +
+                    '📧 Correo: '             + v('cr-correo')    + '\n' +
+                    '🏙️ Ciudad: '             + v('cr-ciudad')    + '\n' +
+                    '🏢 Dir. trabajo: '       + v('cr-direccion') + ', Barrio: ' + v('cr-barrio-trabajo') + '\n' +
+                    '🏠 Dir. vivienda: '      + v('cr-direccion-vivienda') + ', Barrio: ' + v('cr-barrio-vivienda') + '\n' +
+                    '💼 Ocupación: '          + v('cr-ocupacion') + '\n' +
+                    '🛍️ Producto de interés: '+ v('cr-producto')  + '\n' +
+                    '💵 Monto solicitado: $'  + Number(v('cr-monto')).toLocaleString('es-CO') + ' COP'
+                );
+            }
+
+            function showToast(msg) {
+                toast.textContent = msg;
+                toast.classList.remove('hidden');
+                toast.style.opacity = '1';
+                setTimeout(() => {
+                    toast.style.opacity = '0';
+                    setTimeout(() => toast.classList.add('hidden'), 300);
+                }, 7000);
+            }
+
+            function setLoading(loading) {
+                submitBtn.disabled = loading;
+                spinner.classList.toggle('hidden', !loading);
+                btnText.textContent = loading ? 'Enviando...' : 'Enviar solicitud';
+            }
+
+            function resetForm() {
+                creditForm.reset();
+                capturedFiles['foto-frontal'] = null;
+                capturedFiles['foto-trasera'] = null;
+                capturedFiles['foto-cliente'] = null;
+                ['foto-frontal', 'foto-trasera', 'foto-cliente'].forEach(id => {
+                    const preview = document.getElementById(id + '-preview');
+                    preview.src = '';
+                    preview.classList.add('hidden');
+                    document.getElementById(id + '-placeholder').classList.remove('hidden');
+                });
+                document.getElementById('cr-monto-hint').classList.add('hidden');
+            }
+
+            // Comprime imagen a base64 (max 1200px, 82% calidad)
+            function compressToBase64(file) {
+                return new Promise(function (resolve, reject) {
+                    var img = new Image();
+                    var url = URL.createObjectURL(file);
+                    img.onload = function () {
+                        var ratio  = Math.min(1200 / img.width, 1);
+                        var canvas = document.createElement('canvas');
+                        canvas.width  = Math.round(img.width  * ratio);
+                        canvas.height = Math.round(img.height * ratio);
+                        canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+                        URL.revokeObjectURL(url);
+                        canvas.toBlob(function (blob) {
+                            var reader = new FileReader();
+                            reader.onload  = function (e) { resolve(e.target.result); };
+                            reader.onerror = reject;
+                            reader.readAsDataURL(blob);
+                        }, 'image/jpeg', 0.82);
+                    };
+                    img.onerror = reject;
+                    img.src = url;
+                });
+            }
+
+            creditForm.addEventListener('submit', async function (e) {
+                e.preventDefault();
+                if (!validateForm()) return;
+
+                setLoading(true);
+                fotoHint.classList.add('hidden');
+
+                const fileFrontal = capturedFiles['foto-frontal'] || (fotoFrontal.files && fotoFrontal.files[0]);
+                const fileTrasera = capturedFiles['foto-trasera'] || (fotoTrasera.files && fotoTrasera.files[0]);
+                const fileCliente = capturedFiles['foto-cliente'] || (fotoCliente.files && fotoCliente.files[0]);
+                const v = (id) => document.getElementById(id).value.trim();
+
+                try {
+                    // Comprimir las tres fotos a base64
+                    const [b64Frontal, b64Trasera, b64Cliente] = await Promise.all([
+                        compressToBase64(fileFrontal),
+                        compressToBase64(fileTrasera),
+                        compressToBase64(fileCliente)
+                    ]);
+
+                    const payload = {
+                        fields: {
+                            nombre:           v('cr-nombre'),
+                            tipoDocumento:    v('cr-tipo-doc'),
+                            cedula:           v('cr-cedula'),
+                            celular:          v('cr-celular'),
+                            correo:           v('cr-correo'),
+                            ciudad:           v('cr-ciudad'),
+                            direccion:         v('cr-direccion'),
+                            barrioTrabajo:    v('cr-barrio-trabajo'),
+                            direccionVivienda: v('cr-direccion-vivienda'),
+                            barrioVivienda:   v('cr-barrio-vivienda'),
+                            ocupacion:        v('cr-ocupacion'),
+                            producto:         v('cr-producto'),
+                            monto:            v('cr-monto')
+                        },
+                        fotoFrontal: b64Frontal,
+                        fotoTrasera: b64Trasera,
+                        fotoCliente: b64Cliente
+                    };
+
+                    const res = await fetch('/.netlify/functions/send-whatsapp', {
+                        method:  'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body:    JSON.stringify(payload)
+                    });
+
+                    if (res.ok) {
+                        showToast('¡Solicitud enviada! Te contactaremos pronto por WhatsApp.');
+                        resetForm();
+                    } else {
+                        throw new Error('Error ' + res.status);
+                    }
+                } catch (err) {
+                    // Fallback: abrir WhatsApp con texto solamente
+                    const message = buildMessage();
+                    window.open('https://wa.me/573232083263?text=' + encodeURIComponent(message), '_blank');
+                    fotoHint.classList.remove('hidden');
+                    showToast('Envío automático no disponible. Por favor adjunta las fotos en el chat de WhatsApp.');
+                }
+
+                setLoading(false);
+            });
+        })();
+
+        // ========================
         // Active Nav Link Highlighting
         // ========================
         const sections = document.querySelectorAll('section[id]');
@@ -1313,7 +1898,220 @@
                 }
             });
         });
+
+        // ========================
+        // Document Camera — Crop Scanner
+        // ========================
+        (function () {
+            const modal       = document.getElementById('camera-modal');
+            const video       = document.getElementById('camera-video');
+            const canvas      = document.getElementById('camera-canvas');
+            const captureBtn  = document.getElementById('camera-capture');
+            const cancelBtn   = document.getElementById('camera-cancel');
+            const flipBtn     = document.getElementById('camera-flip');
+            const frame       = document.getElementById('camera-frame');
+            const titleEl     = document.getElementById('camera-title');
+            const flashEl     = document.getElementById('camera-flash');
+
+            let stream        = null;
+            let facingMode    = 'environment';
+            let targetInputId = null;
+
+            function getCoverParams() {
+                const vw = video.videoWidth,  vh = video.videoHeight;
+                const dw = video.clientWidth, dh = video.clientHeight;
+                if (!vw || !vh) return null;
+                const scale = Math.max(dw / vw, dh / vh);
+                const ox    = (dw - vw * scale) / 2;
+                const oy    = (dh - vh * scale) / 2;
+                return { scale, ox, oy };
+            }
+
+            async function startStream() {
+                stopStream();
+                try {
+                    stream = await navigator.mediaDevices.getUserMedia({
+                        video: { facingMode, width: { ideal: 1920 }, height: { ideal: 1080 } }
+                    });
+                    video.srcObject = stream;
+                } catch (_) {
+                    closeModal();
+                    if (targetInputId) document.getElementById(targetInputId).click();
+                }
+            }
+
+            function stopStream() {
+                if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null; }
+                video.srcObject = null;
+            }
+
+            function openModal(inputId, title) {
+                targetInputId = inputId;
+                titleEl.textContent = title;
+
+                // Adaptar marco y cámara según tipo de foto
+                const isPortrait = inputId === 'foto-cliente';
+                if (isPortrait) {
+                    frame.style.width = 'min(62vw, 240px)';
+                    frame.style.aspectRatio = '3/4';
+                    facingMode = 'user';
+                } else {
+                    frame.style.width = 'min(82vw, 380px)';
+                    frame.style.aspectRatio = '85.6/54';
+                    facingMode = 'environment';
+                }
+
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+                startStream();
+            }
+
+            function closeModal() {
+                stopStream();
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }
+
+            function flash() {
+                flashEl.style.opacity = '1';
+                setTimeout(() => { flashEl.style.opacity = '0'; }, 80);
+            }
+
+            function captureAndCrop() {
+                const params = getCoverParams();
+                if (!params) return;
+                const { scale, ox, oy } = params;
+
+                const videoRect = video.getBoundingClientRect();
+                const frameRect = frame.getBoundingClientRect();
+
+                const fdx = frameRect.left - videoRect.left;
+                const fdy = frameRect.top  - videoRect.top;
+
+                const nx = (fdx - ox) / scale;
+                const ny = (fdy - oy) / scale;
+                const nw = frameRect.width  / scale;
+                const nh = frameRect.height / scale;
+
+                const cx = Math.max(0, Math.round(nx));
+                const cy = Math.max(0, Math.round(ny));
+                const cw = Math.min(Math.round(nw), video.videoWidth  - cx);
+                const ch = Math.min(Math.round(nh), video.videoHeight - cy);
+
+                canvas.width  = cw;
+                canvas.height = ch;
+                canvas.getContext('2d').drawImage(video, cx, cy, cw, ch, 0, 0, cw, ch);
+
+                flash();
+
+                canvas.toBlob(function (blob) {
+                    const fileName = (targetInputId || 'cedula') + '.jpg';
+                    const file     = new File([blob], fileName, { type: 'image/jpeg' });
+
+                    const input = document.getElementById(targetInputId);
+                    try {
+                        const dt = new DataTransfer();
+                        dt.items.add(file);
+                        input.files = dt.files;
+                    } catch (_) {}
+
+                    input.dispatchEvent(new CustomEvent('camera-capture', { detail: { file } }));
+                    closeModal();
+                }, 'image/jpeg', 0.93);
+            }
+
+            captureBtn.addEventListener('click', captureAndCrop);
+            cancelBtn.addEventListener('click',  closeModal);
+            flipBtn.addEventListener('click', function () {
+                facingMode = facingMode === 'environment' ? 'user' : 'environment';
+                startStream();
+            });
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape' && !modal.classList.contains('hidden')) closeModal();
+            });
+
+            window._openDocCamera = openModal;
+        })();
+
     </script>
+
+
+    <!-- ============================== -->
+    <!-- CAMERA MODAL — Document Scanner -->
+    <!-- ============================== -->
+    <div id="camera-modal" class="fixed inset-0 z-[9999] bg-black hidden flex-col items-center justify-center" role="dialog" aria-modal="true">
+
+        <!-- Video stream -->
+        <video id="camera-video" autoplay playsinline muted
+            class="absolute inset-0 w-full h-full object-cover"></video>
+
+        <!-- Guide overlay -->
+        <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none select-none">
+
+            <!-- Instruction -->
+            <p id="camera-title" class="text-white text-base font-semibold mb-5 z-10 drop-shadow-lg text-center px-4">
+                Coloca tu cédula dentro del marco
+            </p>
+
+            <!-- Document frame with cutout shadow -->
+            <div id="camera-frame"
+                class="relative z-10 rounded-xl"
+                style="width: min(88vw, 400px); aspect-ratio: 85.6/54;">
+
+                <!-- Dark overlay outside frame via box-shadow -->
+                <div class="absolute inset-0 rounded-xl"
+                    style="box-shadow: 0 0 0 200vmax rgba(0,0,0,0.62);"></div>
+
+                <!-- Corner markers -->
+                <span class="absolute -top-1 -left-1 w-7 h-7 border-t-4 border-l-4 border-brand-green rounded-tl-lg"></span>
+                <span class="absolute -top-1 -right-1 w-7 h-7 border-t-4 border-r-4 border-brand-green rounded-tr-lg"></span>
+                <span class="absolute -bottom-1 -left-1 w-7 h-7 border-b-4 border-l-4 border-brand-green rounded-bl-lg"></span>
+                <span class="absolute -bottom-1 -right-1 w-7 h-7 border-b-4 border-r-4 border-brand-green rounded-br-lg"></span>
+
+                <!-- Scan line animation -->
+                <div class="absolute left-0 right-0 h-0.5 bg-brand-green/70 rounded"
+                    style="animation: scanLine 2s ease-in-out infinite; top: 50%;"></div>
+            </div>
+
+            <p class="text-white/60 text-xs mt-5 z-10">Asegúrate de tener buena iluminación</p>
+        </div>
+
+        <!-- Flash effect -->
+        <div id="camera-flash" class="absolute inset-0 bg-white opacity-0 pointer-events-none z-30"
+            style="transition: opacity 0.08s;"></div>
+
+        <!-- Controls -->
+        <div class="absolute bottom-10 left-0 right-0 flex items-center justify-center gap-16 z-20">
+            <button id="camera-cancel" type="button"
+                class="flex flex-col items-center gap-1 text-white/80 hover:text-white transition-colors">
+                <i class="fa-solid fa-xmark text-3xl"></i>
+                <span class="text-xs">Cancelar</span>
+            </button>
+
+            <!-- Capture button -->
+            <button id="camera-capture" type="button"
+                class="w-20 h-20 rounded-full bg-white border-4 border-brand-green shadow-2xl hover:scale-105 active:scale-95 transition-transform flex items-center justify-center">
+                <i class="fa-solid fa-camera text-brand-green text-3xl"></i>
+            </button>
+
+            <button id="camera-flip" type="button"
+                class="flex flex-col items-center gap-1 text-white/80 hover:text-white transition-colors">
+                <i class="fa-solid fa-rotate text-3xl"></i>
+                <span class="text-xs">Voltear</span>
+            </button>
+        </div>
+
+        <!-- Hidden canvas for crop processing -->
+        <canvas id="camera-canvas" class="hidden"></canvas>
+    </div>
+
+    <style>
+        @keyframes scanLine {
+            0%   { top: 10%; opacity: 1; }
+            50%  { top: 90%; opacity: 1; }
+            100% { top: 10%; opacity: 1; }
+        }
+    </style>
 
 </body>
 </html>
