@@ -12,8 +12,8 @@
     <meta property="og:url" content="https://damasgroup.com.co">
     <meta property="og:locale" content="es_CO">
     <meta property="og:image" content="https://damasgroup.com.co/logo%20negro%20finanzas.jpeg">
-    <!-- Favicon placeholder -->
-    <!-- EDITAR: FAVICON - agregar <link rel="icon" href="favicon.ico"> -->
+    <link rel="icon" type="image/png" href="logo 1.png">
+    <link rel="apple-touch-icon" href="logo 1.png">
 
     <!-- Tailwind CSS v3 -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -21,7 +21,7 @@
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,700&family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,700&family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
 
     <!-- Font Awesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -46,7 +46,7 @@
                     },
                     fontFamily: {
                         'sans': ['Inter', 'sans-serif'],
-                        'heading': ['Cormorant Garamond', 'serif'],
+                        'heading': ['Sora', 'sans-serif'],
                         'accent': ['Playfair Display', 'serif'],
                     }
                 }
@@ -63,6 +63,12 @@
         html {
             scroll-behavior: smooth;
             scroll-padding-top: 5rem;
+        }
+
+        .nav-link,
+        .mobile-nav-link {
+            font-family: 'Cormorant Garamond', serif;
+            letter-spacing: 0.04em;
         }
 
         .navbar-scrolled {
@@ -194,17 +200,17 @@
             <div class="flex items-center justify-between h-24">
                 <!-- Logo -->
                 <a href="#inicio" class="flex items-center z-50 shrink-0">
-                    <img src="vector-finanzas.svg" alt="Da Más Group" class="object-contain drop-shadow-lg" style="height:168px; width:auto;">
+                    <img src="vector-finanzas.svg" alt="Da Más Group" class="object-contain drop-shadow-lg" style="height:210px; width:auto;">
                 </a>
 
                 <!-- Desktop Navigation -->
                 <div class="hidden lg:flex items-center justify-center flex-1 gap-x-8">
-                    <a href="#inicio" class="nav-link text-white/90 hover:text-white text-base font-semibold tracking-wide whitespace-nowrap transition-colors">Inicio</a>
-                    <a href="#nosotros" class="nav-link text-white/90 hover:text-white text-base font-semibold tracking-wide whitespace-nowrap transition-colors">Nosotros</a>
-                    <a href="#tech" class="nav-link text-white/90 hover:text-white text-base font-semibold tracking-wide whitespace-nowrap transition-colors">DM Tech</a>
-                    <a href="#servicios" class="nav-link text-white/90 hover:text-white text-base font-semibold tracking-wide whitespace-nowrap transition-colors">Servicios</a>
-                    <a href="#finanzas" class="nav-link text-white/90 hover:text-white text-base font-semibold tracking-wide whitespace-nowrap transition-colors">Finanzas Da Más</a>
-                    <a href="#contacto" class="nav-link text-white/90 hover:text-white text-base font-semibold tracking-wide whitespace-nowrap transition-colors">Contacto</a>
+                    <a href="#inicio" class="nav-link text-white/90 hover:text-white text-lg font-semibold tracking-wide whitespace-nowrap transition-colors">Inicio</a>
+                    <a href="#nosotros" class="nav-link text-white/90 hover:text-white text-lg font-semibold tracking-wide whitespace-nowrap transition-colors">Nosotros</a>
+                    <a href="#tech" class="nav-link text-white/90 hover:text-white text-lg font-semibold tracking-wide whitespace-nowrap transition-colors">DM Tech</a>
+                    <a href="#servicios" class="nav-link text-white/90 hover:text-white text-lg font-semibold tracking-wide whitespace-nowrap transition-colors">Servicios</a>
+                    <a href="#finanzas" class="nav-link text-white/90 hover:text-white text-lg font-semibold tracking-wide whitespace-nowrap transition-colors">Finanzas Da Más</a>
+                    <a href="#contacto" class="nav-link text-white/90 hover:text-white text-lg font-semibold tracking-wide whitespace-nowrap transition-colors">Contacto</a>
                 </div>
 
                 <!-- Botón Contáctanos -->
@@ -253,7 +259,7 @@
         <section id="inicio" class="relative min-h-screen flex flex-col justify-center overflow-hidden">
             <!-- Background Image with Parallax -->
             <!-- EDITAR: IMAGEN - reemplazar con foto propia -->
-            <div class="absolute inset-0 parallax" style="background-image: url('https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=1920&q=80');" role="img" aria-label="Atardecer dorado sobre montañas — paisaje inspirador"></div>
+            <div class="absolute inset-0 parallax" style="background-image: url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1920&q=80');" role="img" aria-label="Rascacielos modernos de cristal — solidez y confianza empresarial"></div>
             <!-- Dark Overlay -->
             <div class="absolute inset-0 bg-gradient-to-b from-brand-dark/70 via-brand-dark/50 to-brand-dark/80"></div>
 
@@ -849,7 +855,7 @@
                             <!-- Monto -->
                             <div class="flex flex-col gap-1 md:col-span-2">
                                 <label for="cr-monto" class="text-sm font-semibold text-brand-text">Monto de crédito solicitado (COP) <span class="text-red-500">*</span></label>
-                                <input type="number" id="cr-monto" name="monto" placeholder="Ej. 1500000" min="200000" max="10000000" required
+                                <input type="text" inputmode="numeric" id="cr-monto" name="monto" placeholder="Ej. 1.500.000" required
                                     class="px-4 py-3 rounded-xl border border-brand-gray-dark focus:outline-none focus:ring-2 focus:ring-brand-green/40 focus:border-brand-green text-brand-text placeholder-brand-text/40 transition-all duration-200">
                                 <span class="cr-error text-xs text-red-500 hidden"></span>
                                 <p id="cr-monto-hint" class="hidden text-sm text-brand-blue font-medium mt-1 flex items-start gap-2">
@@ -887,7 +893,7 @@
                                                 <img id="foto-frontal-preview" src="" alt="Preview frontal" class="absolute inset-0 w-full h-full object-cover hidden">
                                             </div>
                                         </label>
-                                        <input type="file" id="foto-frontal" name="foto_frontal" accept="image/*" required class="hidden">
+                                        <input type="file" id="foto-frontal" name="foto_frontal" accept="image/*" capture="environment" required class="hidden">
                                         <span class="cr-error text-xs text-red-500 hidden" id="foto-frontal-error"></span>
                                     </div>
 
@@ -910,7 +916,7 @@
                                                 <img id="foto-trasera-preview" src="" alt="Preview trasera" class="absolute inset-0 w-full h-full object-cover hidden">
                                             </div>
                                         </label>
-                                        <input type="file" id="foto-trasera" name="foto_trasera" accept="image/*" required class="hidden">
+                                        <input type="file" id="foto-trasera" name="foto_trasera" accept="image/*" capture="environment" required class="hidden">
                                         <span class="cr-error text-xs text-red-500 hidden" id="foto-trasera-error"></span>
                                     </div>
 
@@ -933,7 +939,7 @@
                                                 <img id="foto-cliente-preview" src="" alt="Preview cliente" class="absolute inset-0 w-full h-full object-cover hidden">
                                             </div>
                                         </label>
-                                        <input type="file" id="foto-cliente" name="foto_cliente" accept="image/*" required class="hidden">
+                                        <input type="file" id="foto-cliente" name="foto_cliente" accept="image/*" capture="user" required class="hidden">
                                         <p class="text-[11px] text-brand-text/50 leading-relaxed mt-1">
                                             <i class="fa-solid fa-circle-info text-brand-blue mr-1"></i>
                                             Ubícate frente a una fuente de luz natural (ventana o lámpara). Evita contraluz y sombras en el rostro.
@@ -1610,19 +1616,18 @@
             wirePhotoPreview('foto-trasera', 'foto-trasera-placeholder', 'foto-trasera-preview');
             wirePhotoPreview('foto-cliente', 'foto-cliente-placeholder', 'foto-cliente-preview');
 
-            // Intercept label clicks → solo cámara, sin explorador de archivos
+            // Intercept label clicks → cámara modal si está disponible, si no cámara nativa del celular
             function interceptLabel(forAttr, inputId, title) {
                 const lbl = document.querySelector('label[for="' + forAttr + '"]');
                 if (!lbl) return;
                 lbl.addEventListener('click', function (e) {
-                    e.preventDefault();
                     if (window._openDocCamera &&
                         navigator.mediaDevices &&
                         navigator.mediaDevices.getUserMedia) {
+                        e.preventDefault();
                         window._openDocCamera(inputId, title);
-                    } else {
-                        alert('Para adjuntar esta foto debes usar un dispositivo con cámara (celular o computador con cámara activada).');
                     }
+                    // Si no soporta getUserMedia → abre cámara nativa del celular via input file
                 });
             }
 
@@ -1630,11 +1635,20 @@
             interceptLabel('foto-trasera', 'foto-trasera', 'Documento — Parte trasera');
             interceptLabel('foto-cliente', 'foto-cliente', 'Foto cliente');
 
-            // Monto — mensaje en tiempo real
+            // Monto — formateo automático con puntos y mensaje en tiempo real
             document.getElementById('cr-monto').addEventListener('input', function () {
-                const hint = document.getElementById('cr-monto-hint');
-                const val  = parseInt(this.value, 10);
-                if (!this.value || isNaN(val)) { hint.classList.add('hidden'); return; }
+                const hint     = document.getElementById('cr-monto-hint');
+                const cursor   = this.selectionStart;
+                const prevLen  = this.value.length;
+                const digits   = this.value.replace(/\D/g, '');
+                const formatted = digits.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+                this.value     = formatted;
+                // Mantener posición del cursor
+                const diff = formatted.length - prevLen;
+                this.setSelectionRange(cursor + diff, cursor + diff);
+
+                const val = parseInt(digits, 10);
+                if (!digits || isNaN(val)) { hint.classList.add('hidden'); return; }
                 if (val > 10000000) {
                     hint.innerHTML = '<i class="fa-solid fa-phone-volume mt-0.5 shrink-0"></i> Para montos superiores a $10.000.000 COP, comuníquese a nuestra línea de atención.';
                     hint.classList.remove('hidden', 'text-red-500');
@@ -1686,7 +1700,7 @@
 
                 // Monto — rango 200.000 a 10.000.000
                 const montoEl  = document.getElementById('cr-monto');
-                const montoVal = parseInt(montoEl.value, 10);
+                const montoVal = parseInt(montoEl.value.replace(/\./g, ''), 10);
                 clearFieldError(montoEl);
                 if (!montoEl.value.trim() || isNaN(montoVal)) {
                     showFieldError(montoEl, 'Ingresa el monto de crédito solicitado.');
@@ -1740,7 +1754,7 @@
                     '🏠 Dir. vivienda: '      + v('cr-direccion-vivienda') + ', Barrio: ' + v('cr-barrio-vivienda') + '\n' +
                     '💼 Ocupación: '          + v('cr-ocupacion') + '\n' +
                     '🛍️ Producto de interés: '+ v('cr-producto')  + '\n' +
-                    '💵 Monto solicitado: $'  + Number(v('cr-monto')).toLocaleString('es-CO') + ' COP'
+                    '💵 Monto solicitado: $'  + Number(v('cr-monto').replace(/\./g, '')).toLocaleString('es-CO') + ' COP'
                 );
             }
 
@@ -1832,7 +1846,7 @@
                             barrioVivienda:   v('cr-barrio-vivienda'),
                             ocupacion:        v('cr-ocupacion'),
                             producto:         v('cr-producto'),
-                            monto:            v('cr-monto')
+                            monto:            v('cr-monto').replace(/\./g, '')
                         },
                         fotoFrontal: b64Frontal,
                         fotoTrasera: b64Trasera,

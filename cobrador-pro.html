@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cobrador PRO - Da Mas Group</title>
+    <link rel="icon" type="image/png" href="logo 1.png">
+    <link rel="apple-touch-icon" href="logofinal.png">
+    <link rel="manifest" href="manifest.webmanifest">
+    <meta name="theme-color" content="#0C2D48">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Inter:wght@400;500;600;700;800&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'brand-blue': '#3891CB',
+                        'brand-dark': '#0C2D48',
+                        'brand-gold': '#C8A85C',
+                        'brand-green': '#059669',
+                        'brand-gray': '#F1F5F9',
+                        'brand-gray-dark': '#E2E8F0',
+                        'brand-text': '#1E293B'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        heading: ['Sora', 'sans-serif'],
+                        banco: ['Cormorant Garamond', 'serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        html, body { overflow-x: hidden; }
+        .field-input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border-radius: 0.75rem;
+            border: 1px solid #E2E8F0;
+            background: #F8FAFC;
+            color: #1E293B;
+            outline: none;
+        }
+        .field-input:focus { border-color: #3891CB; box-shadow: 0 0 0 3px rgba(56,145,203,0.15); background: #fff; }
+    </style>
+</head>
+<body class="font-sans bg-brand-gray min-h-screen text-brand-text">
+    <div id="login-screen" class="fixed inset-0 z-50 flex items-center justify-center p-4" style="background:linear-gradient(135deg,#0C2D48,#071a30);">
+        <form id="login-form" class="w-full max-w-sm text-center">
+            <img src="logo 1.png" alt="Da Mas Group" class="mx-auto object-contain mb-4" style="height:130px;mix-blend-mode:screen;filter:brightness(1.15);">
+            <h1 class="text-white text-3xl font-banco font-bold">Cobrador PRO</h1>
+            <p class="text-white/40 text-sm mt-1 mb-8">Gestion, motivacion y progreso</p>
+            <div class="space-y-3">
+                <input name="username" class="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder-white/30 text-center outline-none" placeholder="Usuario" autocomplete="username" required>
+                <input name="pin" class="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder-white/30 text-center outline-none" placeholder="PIN" inputmode="numeric" autocomplete="current-password" required>
+                <button class="w-full bg-brand-blue hover:bg-brand-blue/90 text-white font-bold py-3 rounded-xl">Ingresar</button>
+            </div>
+            <div id="biometric-login-wrap" class="hidden mt-5">
+                <div class="flex items-center gap-3 mb-3">
+                    <div class="h-px flex-1 bg-white/10"></div>
+                    <span class="text-white/30 text-xs">o ingresa con</span>
+                    <div class="h-px flex-1 bg-white/10"></div>
+                </div>
+                <button id="biometric-login-btn" type="button" class="w-full py-3 rounded-xl bg-white/10 border border-white/20 hover:bg-white/20 text-white font-semibold flex items-center justify-center gap-3">
+                    <i class="fa-solid fa-fingerprint text-2xl text-brand-blue"></i>
+                    Huella / Face ID
+                </button>
+            </div>
+            <p id="login-error" class="hidden text-red-300 text-sm mt-4">Usuario, PIN o estado invalido.</p>
+        </form>
+    </div>
+
+    <div id="biometric-banner" class="hidden fixed bottom-0 left-0 right-0 z-50 p-4">
+        <div class="max-w-md mx-auto bg-brand-dark border border-brand-blue/30 rounded-2xl p-4 shadow-2xl flex items-center gap-4">
+            <div class="w-12 h-12 bg-brand-blue/20 rounded-xl flex items-center justify-center shrink-0">
+                <i class="fa-solid fa-fingerprint text-brand-blue text-2xl"></i>
+            </div>
+            <div class="flex-1">
+                <p class="text-white font-semibold text-sm">Activar Huella / Face ID</p>
+                <p class="text-white/50 text-xs mt-0.5">Accede mas rapido la proxima vez</p>
+            </div>
+            <div class="flex gap-2">
+                <button id="biometric-register-btn" type="button" class="bg-brand-blue hover:bg-brand-blue/90 text-white text-xs font-semibold px-4 py-2 rounded-xl">
+                    Activar
+                </button>
+                <button id="biometric-close-btn" type="button" class="text-white/40 hover:text-white text-xs px-3 py-2">
+                    Ahora no
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="app" class="hidden min-h-screen">
+        <header class="bg-brand-dark shadow-lg">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between gap-4">
+                <div class="flex items-center gap-3 min-w-0">
+                    <img src="logo 1.png" alt="Da Mas Group" class="object-contain shrink-0" style="height:clamp(118px, 12vw, 155px);width:auto;mix-blend-mode:screen;filter:brightness(1.15);">
+                    <div class="min-w-0">
+                        <h1 class="text-white font-banco font-bold text-xl leading-tight">Cobrador PRO</h1>
+                        <p id="header-name" class="text-white/45 text-xs truncate">-</p>
+                    </div>
+                </div>
+                <button id="logout-btn" class="text-white/55 hover:text-white text-sm flex items-center gap-2">
+                    <i class="fa-solid fa-right-from-bracket"></i><span class="hidden sm:inline">Salir</span>
+                </button>
+            </div>
+        </header>
+        <main class="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+            <div class="flex gap-2 border-b border-brand-gray-dark mb-6">
+                <button data-tab="inicio" class="pro-tab pb-3 px-2 text-sm font-bold border-b-2 border-brand-blue text-brand-blue"><i class="fa-solid fa-house mr-2"></i>Inicio</button>
+                <button data-tab="pizarra" class="pro-tab pb-3 px-2 text-sm font-bold border-b-2 border-transparent text-brand-text/40"><i class="fa-solid fa-chalkboard mr-2"></i>Pizarra</button>
+                <button data-tab="perfil" class="pro-tab pb-3 px-2 text-sm font-bold border-b-2 border-transparent text-brand-text/40"><i class="fa-solid fa-user mr-2"></i>Perfil</button>
+            </div>
+            <div id="pro-view"></div>
+        </main>
+    </div>
+
+    <script src="pro-data.js?v=20260508-1150"></script>
+    <script src="cobrador-pro.js?v=20260508-1135"></script>
+</body>
+</html>

@@ -1,0 +1,418 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manejo Admin - Da Mas Group</title>
+    <link rel="icon" type="image/png" href="logo 1.png">
+    <link rel="apple-touch-icon" href="logofinal.png">
+    <link rel="manifest" href="manifest.webmanifest">
+    <meta name="theme-color" content="#0C2D48">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Inter:wght@400;500;600;700&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'brand-blue':  '#3891CB',
+                        'brand-dark':  '#0C2D48',
+                        'brand-gold':  '#C8A85C',
+                        'brand-green': '#059669',
+                        'brand-gray':  '#F1F5F9',
+                        'brand-gray-dark': '#E2E8F0',
+                        'brand-text':  '#1E293B',
+                    },
+                    fontFamily: {
+                        'sans':    ['Inter', 'sans-serif'],
+                        'heading': ['Sora', 'sans-serif'],
+                        'banco':   ['Cormorant Garamond', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        html, body { overflow-x: hidden; }
+
+        .pin-dot {
+            width: 14px; height: 14px;
+            border-radius: 50%;
+            border: 2px solid #3891CB;
+            background: transparent;
+            transition: background 0.2s;
+        }
+        .pin-dot.filled { background: #3891CB; }
+
+        .key-btn {
+            width: 72px; height: 72px;
+            border-radius: 50%;
+            border: 1.5px solid rgba(56,145,203,0.25);
+            background: rgba(255,255,255,0.05);
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 600;
+            transition: background 0.15s, transform 0.1s;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer;
+            backdrop-filter: blur(4px);
+        }
+        .key-btn:hover  { background: rgba(56,145,203,0.2); }
+        .key-btn:active { transform: scale(0.92); background: rgba(56,145,203,0.35); }
+
+        .shake {
+            animation: shake 0.4s ease;
+        }
+        @keyframes shake {
+            0%,100% { transform: translateX(0); }
+            20%      { transform: translateX(-8px); }
+            40%      { transform: translateX(8px); }
+            60%      { transform: translateX(-6px); }
+            80%      { transform: translateX(6px); }
+        }
+
+        .field-input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border-radius: 0.75rem;
+            border: 1px solid #E2E8F0;
+            background: #F8FAFC;
+            color: #1E293B;
+            font-size: 0.95rem;
+            outline: none;
+            transition: border 0.2s, box-shadow 0.2s;
+        }
+        .field-input:focus {
+            border-color: #3891CB;
+            box-shadow: 0 0 0 3px rgba(56,145,203,0.15);
+            background: white;
+        }
+
+        select.field-input { cursor: pointer; appearance: none; }
+    </style>
+</head>
+<body class="font-sans bg-brand-gray min-h-screen">
+
+    <!-- ============================== -->
+    <!-- PANTALLA DE LOGIN              -->
+    <!-- ============================== -->
+    <div id="login-screen" class="fixed inset-0 z-50 flex flex-col items-center justify-center"
+         style="background: linear-gradient(135deg, #0C2D48 0%, #0a2240 50%, #071a30 100%);">
+
+        <!-- Logo -->
+        <div class="mb-8 text-center">
+            <img src="logo 1.png" alt="Da Mas Group" class="mx-auto object-contain" style="height:160px; width:auto; mix-blend-mode:screen; filter:brightness(1.15);">
+            <h1 class="text-white text-3xl font-banco font-bold tracking-wider mt-3">Manejo Admin</h1>
+            <p class="text-white/40 text-sm mt-1">Da Mas Group</p>
+        </div>
+
+        <!-- Usuario -->
+        <div class="mb-6 text-center">
+            <p class="text-white/50 text-xs uppercase tracking-widest mb-2">Usuario</p>
+            <p id="user-display" class="text-white text-lg font-semibold tracking-wider">- - -</p>
+        </div>
+
+        <!-- Teclado usuario primero -->
+        <div id="user-step">
+            <div class="mb-5">
+                <input id="user-input" type="text" placeholder="Ingresa tu usuario"
+                    class="w-64 px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder-white/30 text-center text-base outline-none focus:border-brand-blue focus:bg-white/15 transition-all">
+            </div>
+            <button onclick="submitUser()"
+                class="w-64 py-3 rounded-xl bg-brand-blue hover:bg-brand-blue/90 text-white font-semibold text-base transition-all hover:shadow-lg hover:shadow-brand-blue/30">
+                Continuar
+            </button>
+
+            <!-- Boton huella / Face ID (solo si esta registrado) -->
+            <div id="biometric-btn-wrap" class="hidden mt-5 text-center">
+                <div class="flex items-center gap-3 mb-3">
+                    <div class="h-px flex-1 bg-white/10"></div>
+                    <span class="text-white/30 text-xs">o ingresa con</span>
+                    <div class="h-px flex-1 bg-white/10"></div>
+                </div>
+                <button onclick="loginWithBiometric()"
+                    class="w-64 py-3 rounded-xl bg-white/10 border border-white/20 hover:bg-white/20 text-white font-semibold text-base transition-all flex items-center justify-center gap-3">
+                    <i class="fa-solid fa-fingerprint text-2xl text-brand-blue"></i>
+                    Huella / Face ID
+                </button>
+            </div>
+
+            <p id="user-error" class="text-red-400 text-xs text-center mt-3 hidden">Usuario incorrecto</p>
+        </div>
+
+        <!-- PIN step -->
+        <div id="pin-step" class="hidden flex-col items-center">
+            <p class="text-white/50 text-xs uppercase tracking-widest mb-5">Ingresa tu PIN</p>
+
+            <!-- Dots -->
+            <div id="pin-dots" class="flex gap-4 mb-8">
+                <div class="pin-dot"></div>
+                <div class="pin-dot"></div>
+                <div class="pin-dot"></div>
+                <div class="pin-dot"></div>
+            </div>
+
+            <!-- Teclado numerico -->
+            <div class="grid grid-cols-3 gap-3">
+                <button class="key-btn" onclick="pressKey('1')">1</button>
+                <button class="key-btn" onclick="pressKey('2')">2</button>
+                <button class="key-btn" onclick="pressKey('3')">3</button>
+                <button class="key-btn" onclick="pressKey('4')">4</button>
+                <button class="key-btn" onclick="pressKey('5')">5</button>
+                <button class="key-btn" onclick="pressKey('6')">6</button>
+                <button class="key-btn" onclick="pressKey('7')">7</button>
+                <button class="key-btn" onclick="pressKey('8')">8</button>
+                <button class="key-btn" onclick="pressKey('9')">9</button>
+                <button class="key-btn" onclick="pressKey('back')" style="font-size:1.2rem;">
+                    <i class="fa-solid fa-delete-left"></i>
+                </button>
+                <button class="key-btn" onclick="pressKey('0')">0</button>
+                <div></div>
+            </div>
+
+            <p id="pin-error" class="text-red-400 text-xs text-center mt-5 hidden">PIN incorrecto</p>
+            <button onclick="backToUser()" class="text-white/30 text-xs mt-6 hover:text-white/60 transition-colors">
+                &larr; Cambiar usuario
+            </button>
+        </div>
+    </div>
+
+    <!-- Banner activar biometria -->
+    <div id="biometric-banner" class="hidden fixed bottom-0 left-0 right-0 z-50 p-4">
+        <div class="max-w-md mx-auto bg-brand-dark border border-brand-blue/30 rounded-2xl p-4 shadow-2xl flex items-center gap-4">
+            <div class="w-12 h-12 bg-brand-blue/20 rounded-xl flex items-center justify-center shrink-0">
+                <i class="fa-solid fa-fingerprint text-brand-blue text-2xl"></i>
+            </div>
+            <div class="flex-1">
+                <p class="text-white font-semibold text-sm">Activar Huella / Face ID</p>
+                <p class="text-white/50 text-xs mt-0.5">Accede mas rapido la proxima vez</p>
+            </div>
+            <div class="flex gap-2">
+                <button onclick="registerBiometric()"
+                    class="bg-brand-blue hover:bg-brand-blue/90 text-white text-xs font-semibold px-4 py-2 rounded-xl transition-all">
+                    Activar
+                </button>
+                <button onclick="closeBiometricBanner()"
+                    class="text-white/40 hover:text-white text-xs px-3 py-2 transition-colors">
+                    Ahora no
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================== -->
+    <!-- PANEL ADMIN                    -->
+    <!-- ============================== -->
+    <div id="admin-panel" class="hidden min-h-screen">
+
+        <!-- Header -->
+        <header class="bg-brand-dark shadow-lg">
+            <div class="max-w-5xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <img src="logo 1.png" alt="Da Mas Group" class="object-contain" style="height:clamp(130px, 13vw, 170px); width:auto; mix-blend-mode:screen; filter:brightness(1.15);">
+                    <div>
+                        <h1 class="text-white font-banco font-bold text-xl leading-tight tracking-wide">Manejo Admin</h1>
+                        <p class="text-white/40 text-xs">Da Mas Group</p>
+                    </div>
+                </div>
+                <button onclick="logout()"
+                    class="flex items-center gap-2 text-white/50 hover:text-white text-sm transition-colors">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <span class="hidden sm:inline">Cerrar sesion</span>
+                </button>
+            </div>
+        </header>
+
+        <main id="admin-app" class="max-w-7xl mx-auto px-4 sm:px-6 py-8"></main>
+    </div>
+
+    <script src="pro-data.js?v=20260508-1150"></script>
+    <script>
+        // ========================
+        // AUTH
+        // ========================
+        const USUARIOS = {
+            mauricio: { pin: '1296', nombre: 'Mauricio' }
+        };
+
+        let pinIngresado = '';
+        let usuarioActual = null;
+
+        function mostrarAdmin() {
+            const authUser = sessionStorage.getItem('admin_user');
+            const nombre = USUARIOS[authUser]?.nombre || 'Administrador';
+            document.getElementById('login-screen').style.display = 'none';
+            document.getElementById('admin-panel').classList.remove('hidden');
+            if (window.DamasAdmin) window.DamasAdmin.render(nombre);
+        }
+
+        function submitUser() {
+            const val = document.getElementById('user-input').value.trim().toLowerCase();
+            if (USUARIOS[val]) {
+                usuarioActual = val;
+                document.getElementById('user-display').textContent = USUARIOS[val].nombre;
+                document.getElementById('user-step').classList.add('hidden');
+                document.getElementById('pin-step').classList.remove('hidden');
+                document.getElementById('pin-step').classList.add('flex');
+            } else {
+                document.getElementById('user-error').classList.remove('hidden');
+                document.getElementById('user-input').value = '';
+            }
+        }
+
+        document.getElementById('user-input').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') submitUser();
+        });
+
+        function backToUser() {
+            pinIngresado = '';
+            updateDots();
+            document.getElementById('pin-step').classList.add('hidden');
+            document.getElementById('pin-step').classList.remove('flex');
+            document.getElementById('user-step').classList.remove('hidden');
+            document.getElementById('user-error').classList.add('hidden');
+            document.getElementById('pin-error').classList.add('hidden');
+            document.getElementById('user-input').value = '';
+            usuarioActual = null;
+        }
+
+        function pressKey(k) {
+            if (k === 'back') {
+                pinIngresado = pinIngresado.slice(0, -1);
+                updateDots();
+                return;
+            }
+            if (pinIngresado.length >= 4) return;
+            pinIngresado += k;
+            updateDots();
+            if (pinIngresado.length === 4) {
+                setTimeout(checkPin, 200);
+            }
+        }
+
+        function updateDots() {
+            const dots = document.querySelectorAll('.pin-dot');
+            dots.forEach((d, i) => {
+                d.classList.toggle('filled', i < pinIngresado.length);
+            });
+        }
+
+        function checkPin() {
+            if (usuarioActual && pinIngresado === USUARIOS[usuarioActual].pin) {
+                sessionStorage.setItem('admin_auth', '1');
+                sessionStorage.setItem('admin_user', usuarioActual);
+                mostrarAdmin();
+                // Mostrar banner de biometria si aun no esta registrada
+                if (window.PublicKeyCredential && !localStorage.getItem(`biometric_cred_id_${usuarioActual}`)) {
+                    setTimeout(() => document.getElementById('biometric-banner').classList.remove('hidden'), 800);
+                }
+            } else {
+                document.getElementById('pin-error').classList.remove('hidden');
+                document.getElementById('pin-dots').classList.add('shake');
+                setTimeout(() => {
+                    document.getElementById('pin-dots').classList.remove('shake');
+                    pinIngresado = '';
+                    updateDots();
+                    document.getElementById('pin-error').classList.add('hidden');
+                }, 600);
+            }
+        }
+
+        function logout() {
+            sessionStorage.removeItem('admin_auth');
+            sessionStorage.removeItem('admin_user');
+            location.reload();
+        }
+
+        // Verificar sesion activa
+        if (sessionStorage.getItem('admin_auth') === '1') {
+            mostrarAdmin();
+        }
+
+        // Mostrar boton biometrico si hay credencial registrada
+        if (window.PublicKeyCredential && Object.keys(USUARIOS).some(user => localStorage.getItem(`biometric_cred_id_${user}`))) {
+            document.getElementById('biometric-btn-wrap').classList.remove('hidden');
+        }
+
+        // WebAuthn
+
+        async function registerBiometric() {
+            closeBiometricBanner();
+            if (!window.PublicKeyCredential) {
+                alert('Tu dispositivo no soporta autenticacion biometrica.');
+                return;
+            }
+            try {
+                const challenge = crypto.getRandomValues(new Uint8Array(32));
+                const credential = await navigator.credentials.create({
+                    publicKey: {
+                        challenge,
+                        rp: { name: 'Da Mas Admin' },
+                        user: {
+                            id: new TextEncoder().encode(sessionStorage.getItem('admin_user') || usuarioActual || 'admin'),
+                            name: sessionStorage.getItem('admin_user') || usuarioActual || 'admin',
+                            displayName: USUARIOS[sessionStorage.getItem('admin_user') || usuarioActual]?.nombre || 'Administrador'
+                        },
+                        pubKeyCredParams: [
+                            { type: 'public-key', alg: -7 },
+                            { type: 'public-key', alg: -257 }
+                        ],
+                        authenticatorSelection: {
+                            authenticatorAttachment: 'platform',
+                            userVerification: 'required'
+                        },
+                        timeout: 60000
+                    }
+                });
+                // Guardar ID de credencial en base64
+                const idBase64 = btoa(String.fromCharCode(...new Uint8Array(credential.rawId)));
+                const bioUser = sessionStorage.getItem('admin_user') || usuarioActual;
+                if (bioUser) localStorage.setItem(`biometric_cred_id_${bioUser}`, idBase64);
+                document.getElementById('biometric-btn-wrap').classList.remove('hidden');
+                alert('Huella / Face ID activado correctamente.');
+            } catch (err) {
+                if (err.name !== 'NotAllowedError') {
+                    alert('No se pudo activar la biometria: ' + err.message);
+                }
+            }
+        }
+
+        async function loginWithBiometric() {
+            const bioUser = Object.keys(USUARIOS).find(user => localStorage.getItem(`biometric_cred_id_${user}`));
+            const idBase64 = bioUser ? localStorage.getItem(`biometric_cred_id_${bioUser}`) : null;
+            if (!idBase64) return;
+            try {
+                const challenge = crypto.getRandomValues(new Uint8Array(32));
+                const idBytes = Uint8Array.from(atob(idBase64), c => c.charCodeAt(0));
+                await navigator.credentials.get({
+                    publicKey: {
+                        challenge,
+                        allowCredentials: [{ type: 'public-key', id: idBytes }],
+                        userVerification: 'required',
+                        timeout: 60000
+                    }
+                });
+                // Autenticacion exitosa
+                sessionStorage.setItem('admin_auth', '1');
+                sessionStorage.setItem('admin_user', bioUser);
+                mostrarAdmin();
+            } catch (err) {
+                if (err.name !== 'NotAllowedError') {
+                    alert('Error de autenticacion: ' + err.message);
+                }
+            }
+        }
+
+        function closeBiometricBanner() {
+            document.getElementById('biometric-banner').classList.add('hidden');
+        }
+    </script>
+    <script src="admin-pro.js?v=20260508-1205"></script>
+
+</body>
+</html>
+
+

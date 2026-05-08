@@ -1,0 +1,17 @@
+{
+  "name": "Cobrador PRO",
+  "short_name": "Cobrador PRO",
+  "start_url": "/cobrador-pro.html",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#0C2D48",
+  "theme_color": "#0C2D48",
+  "icons": [
+    {
+      "src": "/logofinal.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
