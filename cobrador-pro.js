@@ -246,11 +246,11 @@
                 ${avatar(c, 'w-11 h-11')}
                 <div class="flex-1 min-w-0">
                     <div class="flex items-center justify-between gap-3 mb-2">
-                        <div class="min-w-0">
-                            <p class="font-bold text-brand-text truncate">${h(DamasPro.displayName(c))}</p>
+                        <div class="min-w-0 flex-1">
+                            <p class="font-bold text-brand-text truncate" title="${h(DamasPro.displayName(c))}">${h(DamasPro.displayName(c))}</p>
                             ${c.nickname ? `<p class="text-xs text-brand-text/40 truncate">${h(c.nombre)}</p>` : ''}
                         </div>
-                        <p class="font-heading font-bold text-brand-green">${Math.round(r.cumplimientoGeneral)}%</p>
+                        <p class="shrink-0 min-w-[3.5rem] text-right font-heading font-bold text-brand-green tabular-nums">${Math.round(r.cumplimientoGeneral)}%</p>
                     </div>
                     ${progressBar(r.cumplimientoGeneral)}
                     <p class="text-xs text-brand-text/50 mt-2">Estado: ${status}</p>
@@ -266,7 +266,7 @@
         return `<div class="rounded-xl border border-brand-gray-dark p-4 flex items-center gap-3">
             <span class="${badges[index]} w-9 h-9 rounded-full flex items-center justify-center font-heading font-bold">${index + 1}</span>
             ${avatar(c, 'w-10 h-10')}
-            <div class="flex-1 min-w-0"><p class="font-bold truncate">${h(DamasPro.displayName(c))}</p><p class="text-xs text-brand-text/40">${Math.round(r.cumplimientoGeneral)}% general</p><button data-cobrador-profile="${c.id}" class="view-cobrador-profile mt-2 text-brand-blue text-xs font-bold">Ver perfil</button></div>
+            <div class="flex-1 min-w-0"><p class="font-bold truncate" title="${h(DamasPro.displayName(c))}">${h(DamasPro.displayName(c))}</p><p class="text-xs text-brand-text/40 tabular-nums">${Math.round(r.cumplimientoGeneral)}% general</p><button data-cobrador-profile="${c.id}" class="view-cobrador-profile mt-2 text-brand-blue text-xs font-bold">Ver perfil</button></div>
         </div>`;
     }
 
