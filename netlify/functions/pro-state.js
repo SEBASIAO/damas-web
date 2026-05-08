@@ -10,7 +10,7 @@ exports.handler = async function (event) {
     };
 
     try {
-        const store = getStore(STORE_NAME);
+        const store = getStore({ name: STORE_NAME });
 
         if (event.httpMethod === 'GET') {
             const state = await store.get(STATE_KEY, { type: 'json' });
