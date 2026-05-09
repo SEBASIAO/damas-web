@@ -631,6 +631,8 @@
         const week = DamasPro.weekRange();
         const unlockedLogroIds = state.logros_cobradores.filter(x => x.cobrador_id === cobrador.id && x.fecha_inicio_semana === week.start).map(x => x.logro_id);
         const unlockedPremioIds = state.premios_cobradores.filter(x => x.cobrador_id === cobrador.id && x.fecha_inicio_periodo === week.start).map(x => x.premio_id);
+        const unlockedLogros = state.logros.filter(l => unlockedLogroIds.includes(l.id));
+        const unlockedPremios = state.premios.filter(p => unlockedPremioIds.includes(p.id));
         $('pro-view').innerHTML = `
             <div class="grid xl:grid-cols-[360px_1fr] gap-5">
                 <section class="space-y-5">
@@ -672,6 +674,15 @@
                     <section class="bg-white border border-brand-gray-dark rounded-xl p-5 shadow-sm">
                         <h3 class="font-heading font-bold mb-4">Pizarron de Notas Privadas</h3>
                         <div class="space-y-3">${myNotes.map(noteCard).join('') || empty('No tienes notas privadas.')}</div>
+                    </section>
+
+                    <section class="bg-white border border-brand-gray-dark rounded-xl p-5 shadow-sm">
+                        <h3 class="font-heading font-bold mb-4">Medallero</h3>
+                        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                            ${unlockedLogros.map(l => medalCard(l, 'Logro')).join('')}
+                            ${unlockedPremios.map(p => medalCard(p, 'Premio')).join('')}
+                            ${!unlockedLogros.length && !unlockedPremios.length ? empty('Aun no tienes medallas esta semana.') : ''}
+                        </div>
                     </section>
 
                     <section class="bg-white border border-brand-gray-dark rounded-xl p-5 shadow-sm">
@@ -722,6 +733,18 @@
             </div>
             <p class="text-sm text-brand-text/60 mt-2">${h(l.descripcion)}</p>
             <div class="mt-3">${progressBar(percent, 'h-2')}</div>
+        </article>`;
+    }
+
+    function medalCard(item, type) {
+        const icon = type === 'Premio' ? 'fa-trophy' : 'fa-medal';
+        return `<article class="rounded-xl border border-brand-green bg-brand-green/5 p-4 text-center">
+            <div class="mx-auto w-20 h-20 rounded-full bg-white border border-brand-green/25 shadow-sm flex items-center justify-center overflow-hidden">
+                ${item.imagen_url ? `<img src="${item.imagen_url}" alt="${h(item.nombre)}" class="w-full h-full object-cover">` : `<i class="fa-solid ${icon} text-3xl text-brand-gold"></i>`}
+            </div>
+            <p class="text-[11px] uppercase tracking-widest text-brand-green font-bold mt-3">${type}</p>
+            <h4 class="font-heading font-bold text-sm mt-1">${h(item.nombre)}</h4>
+            <p class="text-xs text-brand-text/45 mt-1">${h(item.nivel || '')}</p>
         </article>`;
     }
 

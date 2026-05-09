@@ -63,8 +63,10 @@
             pizarra_notas: [],
             logros: [],
             logros_cobradores: [],
+            logros_bloqueados: [],
             premios: [],
             premios_cobradores: [],
+            premios_bloqueados: [],
             frases: [
                 { id: 'frase_default', titulo: 'Frase de la semana', texto: 'Esta semana se gana con disciplina, constancia y resultados.', activa: true, fecha_inicio: week.start, fecha_fin: '', created_by: 'admin_mauricio', created_at: todayIso() }
             ]
@@ -96,8 +98,10 @@
             state.avances = [];
             state.premios = [];
             state.premios_cobradores = [];
+            state.premios_bloqueados = [];
             state.logros = [];
             state.logros_cobradores = [];
+            state.logros_bloqueados = [];
             state.data_reset_version = DATA_RESET_VERSION;
             changed = true;
         }
@@ -119,6 +123,7 @@
             }
         });
         state.premios_cobradores = state.premios_cobradores || [];
+        state.premios_bloqueados = state.premios_bloqueados || [];
         state.logros = state.logros || [];
         state.logros.forEach(l => {
             if (l.imagen_url === undefined) {
@@ -127,6 +132,7 @@
             }
         });
         state.logros_cobradores = state.logros_cobradores || [];
+        state.logros_bloqueados = state.logros_bloqueados || [];
         if (changed) save(state);
         return state;
     }
@@ -294,30 +300,16 @@
         const now = new Date().toISOString();
         for (const logro of state.logros.filter(l => l.activo)) {
             const exists = state.logros_cobradores.some(x => x.cobrador_id === cobradorId && x.logro_id === logro.id && x.fecha_inicio_semana === week.start);
-            if (!exists && metricValue(resumen, logro.tipo) >= Number(logro.valor_objetivo || 0)) {
+            const blocked = (state.logros_bloqueados || []).some(x => x.cobrador_id === cobradorId && x.logro_id === logro.id && x.fecha_inicio_semana === week.start);
+            if (!exists && !blocked && metricValue(resumen, logro.tipo) >= Number(logro.valor_objetivo || 0)) {
                 state.logros_cobradores.push({ id: uid('lc'), cobrador_id: cobradorId, logro_id: logro.id, fecha_inicio_semana: week.start, fecha_desbloqueo: now, created_at: now });
                 addMessage(state, {
                     recipient_type: 'cobrador',
                     recipient_id: cobradorId,
                     recipient_name: displayName(cobrador),
                     title: 'Logro desbloqueado',
-                    body: `Desbloqueaste el logro "${logro.nombre}". Sigue asi.`,
+                    body: `Felicitaciones, ${displayName(cobrador)}. Desbloqueaste el logro "${logro.nombre}". Sigue asi.`,
                     category: 'logro'
-                });
-                changed = true;
-            }
-        }
-        for (const premio of state.premios.filter(p => p.activo && !p.asignacion_manual)) {
-            const exists = state.premios_cobradores.some(x => x.cobrador_id === cobradorId && x.premio_id === premio.id && x.fecha_inicio_periodo === week.start);
-            if (!exists && metricValue(resumen, premio.tipo_meta) >= Number(premio.valor_objetivo || 0)) {
-                state.premios_cobradores.push({ id: uid('pc'), cobrador_id: cobradorId, premio_id: premio.id, fecha_inicio_periodo: week.start, fecha_fin_periodo: week.end, desbloqueado: true, fecha_desbloqueo: now, asignado_manualmente: false, asignado_por: null, created_at: now });
-                addMessage(state, {
-                    recipient_type: 'cobrador',
-                    recipient_id: cobradorId,
-                    recipient_name: displayName(cobrador),
-                    title: 'Premio desbloqueado',
-                    body: `Ganaste el premio "${premio.nombre}" por valor de ${money(premio.valor_economico || 0)}.`,
-                    category: 'premio'
                 });
                 changed = true;
             }
@@ -338,7 +330,33 @@
         const week = weekRange();
         state.premios_cobradores = state.premios_cobradores.filter(p => p.fecha_inicio_periodo !== week.start);
         state.logros_cobradores = state.logros_cobradores.filter(l => l.fecha_inicio_semana !== week.start);
+        state.premios_bloqueados = (state.premios_bloqueados || []).filter(p => p.fecha_inicio_periodo !== week.start);
+        state.logros_bloqueados = (state.logros_bloqueados || []).filter(l => l.fecha_inicio_semana !== week.start);
         save(state);
+    }
+
+    function blockLogro(state, award) {
+        state.logros_bloqueados = state.logros_bloqueados || [];
+        const exists = state.logros_bloqueados.some(x => x.cobrador_id === award.cobrador_id && x.logro_id === award.logro_id && x.fecha_inicio_semana === award.fecha_inicio_semana);
+        if (!exists) {
+            state.logros_bloqueados.push({ id: uid('lb'), cobrador_id: award.cobrador_id, logro_id: award.logro_id, fecha_inicio_semana: award.fecha_inicio_semana, blocked_at: new Date().toISOString() });
+        }
+    }
+
+    function unblockLogro(state, cobradorId, logroId, fechaInicioSemana) {
+        state.logros_bloqueados = (state.logros_bloqueados || []).filter(x => !(x.cobrador_id === cobradorId && x.logro_id === logroId && x.fecha_inicio_semana === fechaInicioSemana));
+    }
+
+    function blockPremio(state, award) {
+        state.premios_bloqueados = state.premios_bloqueados || [];
+        const exists = state.premios_bloqueados.some(x => x.cobrador_id === award.cobrador_id && x.premio_id === award.premio_id && x.fecha_inicio_periodo === award.fecha_inicio_periodo);
+        if (!exists) {
+            state.premios_bloqueados.push({ id: uid('pb'), cobrador_id: award.cobrador_id, premio_id: award.premio_id, fecha_inicio_periodo: award.fecha_inicio_periodo, blocked_at: new Date().toISOString() });
+        }
+    }
+
+    function unblockPremio(state, cobradorId, premioId, fechaInicioPeriodo) {
+        state.premios_bloqueados = (state.premios_bloqueados || []).filter(x => !(x.cobrador_id === cobradorId && x.premio_id === premioId && x.fecha_inicio_periodo === fechaInicioPeriodo));
     }
 
     function activePhrase(state) {
@@ -383,6 +401,7 @@
         load, save, uid, hashPin, verifyPin, weekRange, currentMeta, weeklyAvances, totals,
         pct, visualPct, resumenCobrador, estadoCumplimiento, metricValue, unlockForCobrador,
         recomputeUnlocks, resetWeeklyAwards, activePhrase, displayName, initials, money, escapeHtml, validateImage, fileToDataUrl
+        , blockLogro, blockPremio, unblockLogro, unblockPremio
         , addMessage
         , startAutoSync
     };

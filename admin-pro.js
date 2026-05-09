@@ -844,6 +844,7 @@
         const exists = (state.logros_cobradores || []).some(x => x.cobrador_id === data.cobrador_id && x.logro_id === data.logro_id && x.fecha_inicio_semana === week.start);
         if (exists) return alert('Ese cobrador ya tiene este logro esta semana.');
         const now = new Date().toISOString();
+        DamasPro.unblockLogro(state, data.cobrador_id, data.logro_id, week.start);
         state.logros_cobradores.push({ id: DamasPro.uid('lc'), cobrador_id: data.cobrador_id, logro_id: data.logro_id, fecha_inicio_semana: week.start, fecha_desbloqueo: now, asignado_manualmente: true, asignado_por: 'admin_mauricio', created_at: now });
         const target = state.cobradores.find(c => c.id === data.cobrador_id);
         const logro = state.logros.find(l => l.id === data.logro_id);
@@ -855,7 +856,7 @@
             recipient_id: data.cobrador_id,
             recipient_name: DamasPro.displayName(target),
             title: 'Logro otorgado',
-            body: `Se te otorgo el logro "${logro?.nombre || 'Logro'}".`,
+            body: `Felicitaciones, ${DamasPro.displayName(target)}. Se te otorgo el logro "${logro?.nombre || 'Logro'}".`,
             category: 'logro'
         });
         DamasPro.save(state);
@@ -865,6 +866,8 @@
     function revokeLogro(e) {
         const id = e.target.dataset.logroAward;
         if (!confirm('Quitar este logro al cobrador?')) return;
+        const award = (state.logros_cobradores || []).find(x => x.id === id);
+        if (award && !award.asignado_manualmente) DamasPro.blockLogro(state, award);
         state.logros_cobradores = (state.logros_cobradores || []).filter(x => x.id !== id);
         DamasPro.save(state);
         renderView();
@@ -873,6 +876,7 @@
     function renderPremios() {
         const week = DamasPro.weekRange();
         const weekAwards = currentWeekPremioAwards();
+        const candidates = premioCandidates();
         $('admin-view').innerHTML = `
             <div class="grid lg:grid-cols-[380px_1fr] gap-5">
                 <div class="space-y-5">
@@ -911,6 +915,10 @@
                         <h3 class="font-heading font-bold text-brand-text mb-4">Ganadores de premios esta semana</h3>
                         ${premioWinnersTable(weekAwards)}
                     </section>
+                    <section class="bg-white border border-brand-gray-dark rounded-xl p-5 shadow-sm overflow-x-auto">
+                        <h3 class="font-heading font-bold text-brand-text mb-4">Merecedores pendientes</h3>
+                        ${premioCandidatesTable(candidates)}
+                    </section>
                     <section class="grid md:grid-cols-2 xl:grid-cols-3 gap-4">${state.premios.map(p => premioCard(p)).join('')}</section>
                 </div>
             </div>`;
@@ -922,6 +930,7 @@
         document.querySelectorAll('.premio-edit').forEach(btn => btn.addEventListener('click', editPremio));
         document.querySelectorAll('.premio-delete').forEach(btn => btn.addEventListener('click', deletePremio));
         document.querySelectorAll('.premio-revoke').forEach(btn => btn.addEventListener('click', revokePremio));
+        document.querySelectorAll('.premio-award-candidate').forEach(btn => btn.addEventListener('click', awardPremioCandidate));
     }
 
     function premioCard(p) {
@@ -1039,26 +1048,73 @@
         </table>`;
     }
 
+    function premioCandidates() {
+        const week = DamasPro.weekRange();
+        const activePremios = (state.premios || []).filter(p => p.activo && p.tipo_meta !== 'manual');
+        return state.cobradores
+            .filter(c => c.estado === 'activo')
+            .flatMap(c => {
+                const resumen = DamasPro.resumenCobrador(state, c.id);
+                return activePremios.map(p => {
+                    const actual = DamasPro.metricValue(resumen, p.tipo_meta);
+                    const percent = DamasPro.pct(actual, p.valor_objetivo);
+                    const awarded = (state.premios_cobradores || []).some(x => x.cobrador_id === c.id && x.premio_id === p.id && x.fecha_inicio_periodo === week.start);
+                    const blocked = (state.premios_bloqueados || []).some(x => x.cobrador_id === c.id && x.premio_id === p.id && x.fecha_inicio_periodo === week.start);
+                    return { cobrador: c, premio: p, actual, percent, awarded, blocked };
+                });
+            })
+            .filter(x => !x.awarded && !x.blocked && x.percent >= 100)
+            .sort((a, b) => b.percent - a.percent);
+    }
+
+    function premioCandidatesTable(rows) {
+        if (!rows.length) return empty('No hay cobradores pendientes para premio.');
+        return `<table class="w-full min-w-[820px] text-sm">
+            <thead><tr class="text-left text-brand-text/40 border-b"><th class="py-2">Cobrador</th><th>Premio</th><th>Meta</th><th>Cumplimiento</th><th>Valor</th><th></th></tr></thead>
+            <tbody>${rows.map(({ cobrador, premio, actual, percent }) => `<tr class="border-b last:border-0">
+                <td class="py-3 font-bold">${h(DamasPro.displayName(cobrador))}</td>
+                <td>${h(premio.nombre)}</td>
+                <td>${h(labelMeta(premio.tipo_meta))}: ${h(actual)} / ${h(premio.valor_objetivo || 0)}</td>
+                <td><b class="text-brand-green">${Math.round(percent)}%</b></td>
+                <td>${DamasPro.money(premio.valor_economico || 0)}</td>
+                <td class="text-right"><button data-cobrador="${cobrador.id}" data-premio="${premio.id}" class="premio-award-candidate rounded-lg bg-brand-green text-white px-3 py-1.5 text-xs font-bold">Otorgar</button></td>
+            </tr>`).join('')}</tbody>
+        </table>`;
+    }
+
+    function labelMeta(type) {
+        return { creditos_nuevos: 'Creditos nuevos', renovaciones: 'Renovaciones', recaudo: 'Recaudo', cumplimiento_general: 'Cumplimiento general', manual: 'Manual' }[type] || type;
+    }
+
     function awardPremio(e) {
         e.preventDefault();
         const data = Object.fromEntries(new FormData(e.target).entries());
-        if (!data.cobrador_id || !data.premio_id) return alert('Selecciona cobrador y premio.');
+        awardPremioTo(data.cobrador_id, data.premio_id);
+    }
+
+    function awardPremioCandidate(e) {
+        awardPremioTo(e.target.dataset.cobrador, e.target.dataset.premio);
+    }
+
+    function awardPremioTo(cobradorId, premioId) {
+        if (!cobradorId || !premioId) return alert('Selecciona cobrador y premio.');
         const week = DamasPro.weekRange();
-        const exists = (state.premios_cobradores || []).some(x => x.cobrador_id === data.cobrador_id && x.premio_id === data.premio_id && x.fecha_inicio_periodo === week.start);
+        const exists = (state.premios_cobradores || []).some(x => x.cobrador_id === cobradorId && x.premio_id === premioId && x.fecha_inicio_periodo === week.start);
         if (exists) return alert('Ese cobrador ya tiene este premio esta semana.');
         const now = new Date().toISOString();
-        state.premios_cobradores.push({ id: DamasPro.uid('pc'), cobrador_id: data.cobrador_id, premio_id: data.premio_id, fecha_inicio_periodo: week.start, fecha_fin_periodo: week.end, desbloqueado: true, fecha_desbloqueo: now, asignado_manualmente: true, asignado_por: 'admin_mauricio', created_at: now });
-        const target = state.cobradores.find(c => c.id === data.cobrador_id);
-        const premio = state.premios.find(p => p.id === data.premio_id);
+        DamasPro.unblockPremio(state, cobradorId, premioId, week.start);
+        state.premios_cobradores.push({ id: DamasPro.uid('pc'), cobrador_id: cobradorId, premio_id: premioId, fecha_inicio_periodo: week.start, fecha_fin_periodo: week.end, desbloqueado: true, fecha_desbloqueo: now, asignado_manualmente: true, asignado_por: 'admin_mauricio', created_at: now });
+        const target = state.cobradores.find(c => c.id === cobradorId);
+        const premio = state.premios.find(p => p.id === premioId);
         DamasPro.addMessage(state, {
             sender_type: 'admin',
             sender_id: 'admin_mauricio',
             sender_name: 'Admin Mauricio',
             recipient_type: 'cobrador',
-            recipient_id: data.cobrador_id,
+            recipient_id: cobradorId,
             recipient_name: DamasPro.displayName(target),
             title: 'Premio otorgado',
-            body: `Se te otorgo el premio "${premio?.nombre || 'Premio'}" por valor de ${DamasPro.money(premio?.valor_economico || 0)}.`,
+            body: `Felicitaciones, ${DamasPro.displayName(target)}. Se te otorgo el premio "${premio?.nombre || 'Premio'}" por valor de ${DamasPro.money(premio?.valor_economico || 0)}.`,
             category: 'premio'
         });
         DamasPro.save(state);
@@ -1068,6 +1124,8 @@
     function revokePremio(e) {
         const id = e.target.dataset.premioAward;
         if (!confirm('Quitar este premio al cobrador?')) return;
+        const award = (state.premios_cobradores || []).find(x => x.id === id);
+        if (award && !award.asignado_manualmente) DamasPro.blockPremio(state, award);
         state.premios_cobradores = (state.premios_cobradores || []).filter(x => x.id !== id);
         DamasPro.save(state);
         renderView();
@@ -1174,6 +1232,10 @@
             .filter(x => x.cobrador_id === target.id && x.fecha_inicio_semana === week.start)
             .map(x => x.logro_id);
         const unlockedLogros = state.logros.filter(l => unlockedLogroIds.includes(l.id));
+        const unlockedPremioIds = state.premios_cobradores
+            .filter(x => x.cobrador_id === target.id && x.fecha_inicio_periodo === week.start)
+            .map(x => x.premio_id);
+        const unlockedPremios = state.premios.filter(p => unlockedPremioIds.includes(p.id));
         $('admin-view').innerHTML = `
             <button id="back-admin-profile" class="mb-5 inline-flex items-center gap-2 text-brand-blue font-bold text-sm">
                 <i class="fa-solid fa-arrow-left"></i> Volver
@@ -1196,6 +1258,14 @@
             </section>
             ${target.id === 'cob_ruta1' ? adminProfileEditForm(target) : ''}
             <section class="bg-white border border-brand-gray-dark rounded-xl p-5 shadow-sm">
+                <h3 class="font-heading font-bold text-brand-text mb-4">Medallero</h3>
+                <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                    ${unlockedLogros.map(l => adminProfileMedalCard(l, 'Logro')).join('')}
+                    ${unlockedPremios.map(p => adminProfileMedalCard(p, 'Premio')).join('')}
+                    ${!unlockedLogros.length && !unlockedPremios.length ? empty('Este cobrador aun no tiene medallas esta semana.') : ''}
+                </div>
+            </section>
+            <section class="bg-white border border-brand-gray-dark rounded-xl p-5 shadow-sm mt-5">
                 <h3 class="font-heading font-bold text-brand-text mb-4">Logros desbloqueados</h3>
                 <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">${unlockedLogros.map(adminProfileLogroCard).join('') || empty('Este cobrador aun no tiene logros desbloqueados.')}</div>
             </section>
@@ -1258,6 +1328,18 @@
                 <div><h4 class="font-bold">${h(l.nombre)}</h4><p class="text-xs text-brand-text/50">Desbloqueado - ${h(l.nivel)}</p></div>
             </div>
             <p class="text-sm text-brand-text/60 mt-2">${h(l.descripcion)}</p>
+        </article>`;
+    }
+
+    function adminProfileMedalCard(item, type) {
+        const icon = type === 'Premio' ? 'fa-trophy' : 'fa-medal';
+        return `<article class="rounded-xl border border-brand-green bg-brand-green/5 p-4 text-center">
+            <div class="mx-auto w-20 h-20 rounded-full bg-white border border-brand-green/25 shadow-sm flex items-center justify-center overflow-hidden">
+                ${item.imagen_url ? `<img src="${item.imagen_url}" alt="${h(item.nombre)}" class="w-full h-full object-cover">` : `<i class="fa-solid ${icon} text-3xl text-brand-gold"></i>`}
+            </div>
+            <p class="text-[11px] uppercase tracking-widest text-brand-green font-bold mt-3">${type}</p>
+            <h4 class="font-heading font-bold text-sm mt-1">${h(item.nombre)}</h4>
+            <p class="text-xs text-brand-text/45 mt-1">${h(item.nivel || '')}</p>
         </article>`;
     }
 
