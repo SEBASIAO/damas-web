@@ -260,6 +260,7 @@
         state.metas.filter(m => m.cobrador_id === data.cobrador_id).forEach(m => m.activa = false);
         state.metas.push({ id: DamasPro.uid('meta'), cobrador_id: data.cobrador_id, fecha_inicio_semana: data.fecha_inicio_semana, fecha_fin_semana: data.fecha_fin_semana, meta_creditos_nuevos: Number(data.meta_creditos_nuevos), meta_renovaciones: Number(data.meta_renovaciones), meta_recaudo: Number(data.meta_recaudo), activa: true, created_by: 'admin_mauricio', created_at: new Date().toISOString() });
         DamasPro.recomputeUnlocks(state);
+        DamasPro.save(state);
         renderView();
     }
 
@@ -289,6 +290,7 @@
             if (lastForCollector) lastForCollector.activa = true;
         }
         DamasPro.recomputeUnlocks(state);
+        DamasPro.save(state);
         renderView();
     }
 
@@ -356,6 +358,7 @@
             state.avances.push({ id: DamasPro.uid('av'), ...payload, created_by: 'admin_mauricio', created_at: new Date().toISOString() });
         }
         DamasPro.recomputeUnlocks(state);
+        DamasPro.save(state);
         renderView();
     }
 
@@ -380,6 +383,7 @@
         if (!confirm('Eliminar este avance diario?')) return;
         state.avances = state.avances.filter(a => a.id !== e.target.dataset.avanceDelete);
         DamasPro.recomputeUnlocks(state);
+        DamasPro.save(state);
         renderView();
     }
 
@@ -765,6 +769,7 @@
             state.logros.push({ id: DamasPro.uid('logro'), ...payload, imagen_url: image, activo: true, created_by: 'admin_mauricio', created_at: new Date().toISOString() });
         }
         DamasPro.recomputeUnlocks(state);
+        DamasPro.save(state);
         renderView();
     }
 
@@ -978,6 +983,7 @@
             state.premios.push({ id: DamasPro.uid('premio'), ...payload, imagen_url: image, fecha_inicio: week.start, fecha_fin: week.end, activo: true, created_by: 'admin_mauricio', created_at: new Date().toISOString() });
         }
         DamasPro.recomputeUnlocks(state);
+        DamasPro.save(state);
         renderView();
     }
 
