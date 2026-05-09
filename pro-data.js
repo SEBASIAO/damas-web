@@ -154,7 +154,7 @@
         state._sync = { updated_at: new Date().toISOString(), client_id: clientId() };
         lastSyncAt = state._sync.updated_at;
         saveLocal(state);
-        saveRemote(state);
+        return saveRemote(state);
     }
 
     async function loadRemote() {
@@ -186,7 +186,7 @@
             const remote = await loadRemote();
             if (!remote || !remote.version) return;
             const remoteSyncAt = remote._sync?.updated_at || '';
-            if (!remoteSyncAt || remoteSyncAt === lastSyncAt) return;
+            if (!remoteSyncAt || remoteSyncAt <= lastSyncAt) return;
             lastSyncAt = remoteSyncAt;
             saveLocal(remote);
             onUpdate(normalizeState(remote));
@@ -267,6 +267,8 @@
         const now = new Date().toISOString();
         const message = {
             id: uid('msg'),
+            thread_id: payload.thread_id || uid('thread'),
+            reply_to: payload.reply_to || '',
             sender_type: payload.sender_type || 'system',
             sender_id: payload.sender_id || 'system',
             sender_name: payload.sender_name || 'Sistema',

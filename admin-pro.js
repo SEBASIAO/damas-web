@@ -425,6 +425,7 @@
 
     function renderBuzon() {
         const messages = adminMessages();
+        const conversations = adminConversations(messages);
         const unread = messages.filter(m => m.recipient_type === 'admin' && !m.read).length;
         $('admin-view').innerHTML = `
             <div class="grid lg:grid-cols-[380px_1fr] gap-5">
@@ -440,18 +441,66 @@
                         <h3 class="font-heading font-bold text-brand-text">Buzon admin</h3>
                         <span class="text-xs rounded-full px-3 py-1 font-bold ${unread ? 'bg-brand-blue text-white' : 'bg-brand-gray text-brand-text/50'}">${unread} sin leer</span>
                     </div>
-                    <div class="space-y-3">${messages.map(adminMessageCard).join('') || empty('No hay mensajes en el buzon.')}</div>
+                    <div class="space-y-4">${conversations.map(adminConversationCard).join('') || empty('No hay mensajes en el buzon.')}</div>
                 </section>
             </div>`;
         $('form-message').addEventListener('submit', sendAdminMessage);
         document.querySelectorAll('.admin-message-read').forEach(btn => btn.addEventListener('click', markAdminMessageRead));
         document.querySelectorAll('.admin-message-delete').forEach(btn => btn.addEventListener('click', deleteMessage));
+        document.querySelectorAll('.admin-reply-form').forEach(form => form.addEventListener('submit', sendAdminReply));
     }
 
     function adminMessages() {
         return (state.mensajes || [])
             .filter(m => m.recipient_type === 'admin' || m.sender_type === 'admin')
             .sort((a, b) => String(b.created_at || '').localeCompare(String(a.created_at || '')));
+    }
+
+    function adminConversations(messages) {
+        const groups = new Map();
+        messages.forEach(m => {
+            const key = m.thread_id || m.id;
+            if (!groups.has(key)) groups.set(key, []);
+            groups.get(key).push(m);
+        });
+        return Array.from(groups.entries()).map(([threadId, items]) => {
+            const sorted = items.slice().sort((a, b) => String(a.created_at || '').localeCompare(String(b.created_at || '')));
+            return { threadId, messages: sorted, latest: sorted[sorted.length - 1] };
+        }).sort((a, b) => String(b.latest.created_at || '').localeCompare(String(a.latest.created_at || '')));
+    }
+
+    function adminConversationCard(conversation) {
+        const unread = conversation.messages.some(m => m.recipient_type === 'admin' && !m.read);
+        const latestIncoming = conversation.messages.slice().reverse().find(m => m.sender_type !== 'admin');
+        const target = latestIncoming
+            ? { id: latestIncoming.sender_id, type: latestIncoming.sender_type, name: latestIncoming.sender_name }
+            : { id: conversation.latest.recipient_id, type: conversation.latest.recipient_type, name: conversation.latest.recipient_name };
+        return `<article class="rounded-xl border ${unread ? 'border-brand-blue bg-brand-blue/5' : 'border-brand-gray-dark'} p-4">
+            <div class="flex items-start justify-between gap-3 mb-3">
+                <div>
+                    <h4 class="font-bold text-brand-text">${h(conversation.latest.title)}</h4>
+                    <p class="text-xs text-brand-text/40 mt-1">Conversacion con ${h(target.name || 'Usuario')} - ${conversation.messages.length} mensajes</p>
+                </div>
+                <span class="shrink-0 text-xs rounded-full px-2 py-1 ${unread ? 'bg-brand-blue text-white' : 'bg-brand-gray text-brand-text/50'}">${unread ? 'Nuevo' : 'Leido'}</span>
+            </div>
+            <div class="space-y-2">${conversation.messages.map(adminConversationMessage).join('')}</div>
+            <form class="admin-reply-form mt-4 flex flex-col sm:flex-row gap-2" data-thread="${conversation.threadId}" data-recipient-type="${h(target.type)}" data-recipient-id="${h(target.id)}" data-recipient-name="${h(target.name || '')}">
+                <input name="body" class="field-input" placeholder="Responder esta conversacion" required>
+                <button class="shrink-0 bg-brand-blue text-white rounded-xl px-4 py-2 font-bold">Responder</button>
+            </form>
+            <div class="mt-3 flex flex-wrap gap-2">
+                ${unread ? `<button data-message="${conversation.threadId}" class="admin-message-read text-brand-blue text-sm font-bold">Marcar conversacion como leida</button>` : ''}
+                <button data-message-delete="${conversation.threadId}" class="admin-message-delete text-red-500 text-sm font-bold">Eliminar conversacion</button>
+            </div>
+        </article>`;
+    }
+
+    function adminConversationMessage(m) {
+        const mine = m.sender_type === 'admin';
+        return `<div class="rounded-lg ${mine ? 'bg-brand-blue/10' : 'bg-white'} border border-brand-gray-dark p-3">
+            <p class="text-xs font-bold ${mine ? 'text-brand-blue' : 'text-brand-text/55'}">${mine ? 'Admin Mauricio' : h(m.sender_name || 'Cobrador')} - ${new Date(m.created_at).toLocaleString('es-CO')}</p>
+            <p class="text-sm text-brand-text/75 mt-1 whitespace-pre-wrap">${h(m.body)}</p>
+        </div>`;
     }
 
     function adminMessageCard(m) {
@@ -498,17 +547,43 @@
     }
 
     function markAdminMessageRead(e) {
-        const msg = (state.mensajes || []).find(m => m.id === e.target.dataset.message && m.recipient_type === 'admin');
-        if (!msg) return;
-        msg.read = true;
-        msg.read_at = new Date().toISOString();
+        const threadId = e.target.dataset.message;
+        const now = new Date().toISOString();
+        (state.mensajes || []).forEach(m => {
+            if ((m.thread_id || m.id) === threadId && m.recipient_type === 'admin') {
+                m.read = true;
+                m.read_at = now;
+            }
+        });
         DamasPro.save(state);
         renderView();
     }
 
     function deleteMessage(e) {
-        if (!confirm('Eliminar este mensaje del buzon?')) return;
-        state.mensajes = (state.mensajes || []).filter(m => m.id !== e.target.dataset.messageDelete);
+        if (!confirm('Eliminar esta conversacion del buzon?')) return;
+        const threadId = e.target.dataset.messageDelete;
+        state.mensajes = (state.mensajes || []).filter(m => (m.thread_id || m.id) !== threadId);
+        DamasPro.save(state);
+        renderView();
+    }
+
+    function sendAdminReply(e) {
+        e.preventDefault();
+        const form = e.target;
+        const body = String(new FormData(form).get('body') || '').trim();
+        if (!body) return;
+        DamasPro.addMessage(state, {
+            thread_id: form.dataset.thread,
+            sender_type: 'admin',
+            sender_id: 'admin_mauricio',
+            sender_name: 'Admin Mauricio',
+            recipient_type: form.dataset.recipientType,
+            recipient_id: form.dataset.recipientId,
+            recipient_name: form.dataset.recipientName,
+            title: 'Respuesta',
+            body,
+            category: 'mensaje'
+        });
         DamasPro.save(state);
         renderView();
     }
@@ -1141,16 +1216,31 @@
     async function saveAdminProfile(e) {
         e.preventDefault();
         const form = e.target;
+        const submit = form.querySelector('button');
+        if (submit) {
+            submit.disabled = true;
+            submit.textContent = 'Guardando...';
+        }
         const fd = new FormData(form);
         const ruta1 = state.cobradores.find(c => c.id === 'cob_ruta1');
-        if (!ruta1) return;
-        ruta1.nickname = String(fd.get('nickname') || '').trim();
-        const file = fd.get('profile_image');
-        if (file && file.size) {
-            try { ruta1.profile_image_url = await DamasPro.fileToDataUrl(file); } catch (err) { return alert(err.message); }
+        try {
+            if (!ruta1) return alert('No se encontro Ruta 1.');
+            ruta1.nickname = String(fd.get('nickname') || '').trim();
+            const file = fd.get('profile_image');
+            if (file && file.size) {
+                ruta1.profile_image_url = await DamasPro.fileToDataUrl(file);
+            }
+            await DamasPro.save(state);
+            alert('Perfil guardado correctamente.');
+            renderAdminProfile(ruta1.id);
+        } catch (err) {
+            alert(err.message || 'No se pudo guardar el perfil.');
+        } finally {
+            if (submit) {
+                submit.disabled = false;
+                submit.textContent = 'Guardar perfil';
+            }
         }
-        DamasPro.save(state);
-        renderAdminProfile(ruta1.id);
     }
 
     function adminProfileMetric(label, value, target) {

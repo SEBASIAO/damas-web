@@ -358,6 +358,7 @@
 
     function renderBuzon() {
         const messages = cobradorMessages();
+        const conversations = cobradorConversations(messages);
         const unread = messages.filter(m => m.recipient_type === 'cobrador' && !m.read).length;
         $('pro-view').innerHTML = `
             <div class="grid lg:grid-cols-[360px_1fr] gap-5">
@@ -373,12 +374,13 @@
                         <h3 class="font-heading font-bold text-brand-text">Mi buzon</h3>
                         <span class="text-xs rounded-full px-3 py-1 font-bold ${unread ? 'bg-brand-blue text-white' : 'bg-brand-gray text-brand-text/50'}">${unread} sin leer</span>
                     </div>
-                    <div class="space-y-3">${messages.map(messageCard).join('') || empty('No tienes mensajes.')}</div>
+                    <div class="space-y-4">${conversations.map(conversationCard).join('') || empty('No tienes mensajes.')}</div>
                 </section>
             </div>`;
         $('form-message').addEventListener('submit', sendMessageToAdmin);
         document.querySelectorAll('.message-read').forEach(btn => btn.addEventListener('click', markMessageRead));
         document.querySelectorAll('.message-delete').forEach(btn => btn.addEventListener('click', deleteMessage));
+        document.querySelectorAll('.reply-form').forEach(form => form.addEventListener('submit', sendReply));
     }
 
     function messageRecipientOptions() {
@@ -394,6 +396,56 @@
         return (state.mensajes || [])
             .filter(m => (m.recipient_type === 'cobrador' && m.recipient_id === cobrador.id) || (m.sender_type === 'cobrador' && m.sender_id === cobrador.id))
             .sort((a, b) => String(b.created_at || '').localeCompare(String(a.created_at || '')));
+    }
+
+    function cobradorConversations(messages) {
+        const groups = new Map();
+        messages.forEach(m => {
+            const key = m.thread_id || m.id;
+            if (!groups.has(key)) groups.set(key, []);
+            groups.get(key).push(m);
+        });
+        return Array.from(groups.entries()).map(([threadId, items]) => {
+            const sorted = items.slice().sort((a, b) => String(a.created_at || '').localeCompare(String(b.created_at || '')));
+            return { threadId, messages: sorted, latest: sorted[sorted.length - 1] };
+        }).sort((a, b) => String(b.latest.created_at || '').localeCompare(String(a.latest.created_at || '')));
+    }
+
+    function conversationCard(conversation) {
+        const unread = conversation.messages.some(m => m.recipient_type === 'cobrador' && m.recipient_id === cobrador.id && !m.read);
+        const latestIncoming = conversation.messages.slice().reverse().find(m => !(m.sender_type === 'cobrador' && m.sender_id === cobrador.id));
+        let target = latestIncoming
+            ? { id: latestIncoming.sender_id, type: latestIncoming.sender_type, name: latestIncoming.sender_name }
+            : { id: conversation.latest.recipient_id, type: conversation.latest.recipient_type, name: conversation.latest.recipient_name };
+        if (target.type === 'system') {
+            target = { id: 'admin_mauricio', type: 'admin', name: 'Admin Mauricio' };
+        }
+        return `<article class="rounded-xl border ${unread ? 'border-brand-blue bg-brand-blue/5' : 'border-brand-gray-dark'} p-4">
+            <div class="flex items-start justify-between gap-3 mb-3">
+                <div>
+                    <h4 class="font-bold">${h(conversation.latest.title)}</h4>
+                    <p class="text-xs text-brand-text/40 mt-1">Conversacion con ${h(target.name || 'Usuario')} - ${conversation.messages.length} mensajes</p>
+                </div>
+                <span class="shrink-0 text-xs rounded-full px-2 py-1 ${unread ? 'bg-brand-blue text-white' : 'bg-brand-gray text-brand-text/50'}">${unread ? 'Nuevo' : 'Leido'}</span>
+            </div>
+            <div class="space-y-2">${conversation.messages.map(conversationMessage).join('')}</div>
+            <form class="reply-form mt-4 flex flex-col sm:flex-row gap-2" data-thread="${conversation.threadId}" data-recipient-type="${h(target.type)}" data-recipient-id="${h(target.id)}" data-recipient-name="${h(target.name || '')}">
+                <input name="body" class="field-input" placeholder="Responder esta conversacion" required>
+                <button class="shrink-0 bg-brand-blue text-white rounded-xl px-4 py-2 font-bold">Responder</button>
+            </form>
+            <div class="mt-3 flex flex-wrap gap-2">
+                ${unread ? `<button data-message="${conversation.threadId}" class="message-read text-brand-blue text-sm font-bold">Marcar conversacion como leida</button>` : ''}
+                <button data-message-delete="${conversation.threadId}" class="message-delete text-red-500 text-sm font-bold">Eliminar conversacion</button>
+            </div>
+        </article>`;
+    }
+
+    function conversationMessage(m) {
+        const mine = m.sender_type === 'cobrador' && m.sender_id === cobrador.id;
+        return `<div class="rounded-lg ${mine ? 'bg-brand-blue/10' : 'bg-white'} border border-brand-gray-dark p-3">
+            <p class="text-xs font-bold ${mine ? 'text-brand-blue' : 'text-brand-text/55'}">${mine ? 'Yo' : h(m.sender_name || 'Usuario')} - ${new Date(m.created_at).toLocaleString('es-CO')}</p>
+            <p class="text-sm text-brand-text/75 mt-1 whitespace-pre-wrap">${h(m.body)}</p>
+        </div>`;
     }
 
     function messageCard(m) {
@@ -443,17 +495,43 @@
     }
 
     function markMessageRead(e) {
-        const msg = (state.mensajes || []).find(m => m.id === e.target.dataset.message && m.recipient_type === 'cobrador' && m.recipient_id === cobrador.id);
-        if (!msg) return;
-        msg.read = true;
-        msg.read_at = new Date().toISOString();
+        const threadId = e.target.dataset.message;
+        const now = new Date().toISOString();
+        (state.mensajes || []).forEach(m => {
+            if ((m.thread_id || m.id) === threadId && m.recipient_type === 'cobrador' && m.recipient_id === cobrador.id) {
+                m.read = true;
+                m.read_at = now;
+            }
+        });
         DamasPro.save(state);
         renderBuzon();
     }
 
     function deleteMessage(e) {
-        if (!confirm('Eliminar este mensaje del buzon?')) return;
-        state.mensajes = (state.mensajes || []).filter(m => m.id !== e.target.dataset.messageDelete);
+        if (!confirm('Eliminar esta conversacion del buzon?')) return;
+        const threadId = e.target.dataset.messageDelete;
+        state.mensajes = (state.mensajes || []).filter(m => (m.thread_id || m.id) !== threadId);
+        DamasPro.save(state);
+        renderBuzon();
+    }
+
+    function sendReply(e) {
+        e.preventDefault();
+        const form = e.target;
+        const body = String(new FormData(form).get('body') || '').trim();
+        if (!body) return;
+        DamasPro.addMessage(state, {
+            thread_id: form.dataset.thread,
+            sender_type: 'cobrador',
+            sender_id: cobrador.id,
+            sender_name: DamasPro.displayName(cobrador),
+            recipient_type: form.dataset.recipientType,
+            recipient_id: form.dataset.recipientId,
+            recipient_name: form.dataset.recipientName,
+            title: 'Respuesta',
+            body,
+            category: 'mensaje'
+        });
         DamasPro.save(state);
         renderBuzon();
     }
@@ -649,18 +727,36 @@
 
     async function saveProfile(e) {
         e.preventDefault();
+        const submit = e.target.querySelector('button');
+        if (submit) {
+            submit.disabled = true;
+            submit.textContent = 'Guardando...';
+        }
         const fd = new FormData(e.target);
         const nick = String(fd.get('nickname') || '').trim();
         const file = fd.get('profile_image');
-        if (nick) cobrador.nickname = nick;
-        if (file && file.size) {
-            try { cobrador.profile_image_url = await DamasPro.fileToDataUrl(file); } catch (err) { return alert(err.message); }
+        try {
+            const idx = state.cobradores.findIndex(c => c.id === cobrador.id);
+            if (idx < 0) return alert('No se encontro el cobrador.');
+            const next = { ...state.cobradores[idx] };
+            next.nickname = nick;
+            if (file && file.size) {
+                next.profile_image_url = await DamasPro.fileToDataUrl(file);
+            }
+            state.cobradores[idx] = next;
+            cobrador = next;
+            await DamasPro.save(state);
+            $('header-name').textContent = `${DamasPro.displayName(cobrador)} - ${cobrador.username}`;
+            alert('Perfil guardado correctamente.');
+            renderPerfil();
+        } catch (err) {
+            alert(err.message || 'No se pudo guardar el perfil.');
+        } finally {
+            if (submit) {
+                submit.disabled = false;
+                submit.textContent = 'Guardar perfil';
+            }
         }
-        const idx = state.cobradores.findIndex(c => c.id === cobrador.id);
-        state.cobradores[idx] = cobrador;
-        DamasPro.save(state);
-        $('header-name').textContent = `${DamasPro.displayName(cobrador)} - ${cobrador.username}`;
-        renderPerfil();
     }
 
     function markRead(e) {
