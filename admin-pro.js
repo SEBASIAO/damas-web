@@ -295,6 +295,9 @@
     }
 
     function renderAvances() {
+        const latestAvanceDate = latestAvanceFecha();
+        const selectedDate = sessionStorage.getItem('admin_avances_filter_date') || latestAvanceDate;
+        const filteredAvances = state.avances.filter(a => a.fecha === selectedDate);
         $('admin-view').innerHTML = `
             <div class="grid lg:grid-cols-[360px_1fr] gap-5">
                 <form id="form-avance" class="bg-white border border-brand-gray-dark rounded-xl p-5 shadow-sm space-y-4">
@@ -320,8 +323,14 @@
                     </div>
                 </form>
                 <section class="bg-white border border-brand-gray-dark rounded-xl p-5 shadow-sm">
-                    <h3 class="font-heading font-bold text-brand-text mb-4">Historial reciente</h3>
-                    <div class="space-y-2">${state.avances.slice().reverse().slice(0, 20).map(a => {
+                    <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 mb-4">
+                        <div>
+                            <h3 class="font-heading font-bold text-brand-text">Historial de avances</h3>
+                            <p class="text-xs text-brand-text/45 mt-1">Filtrado por fecha para evitar confusiones.</p>
+                        </div>
+                        ${fieldLabel('Fecha', `<input id="avance-filter-date" class="field-input sm:w-44" type="date" value="${selectedDate}">`)}
+                    </div>
+                    <div class="space-y-2">${filteredAvances.slice().reverse().map(a => {
                         const c = state.cobradores.find(x => x.id === a.cobrador_id) || {};
                         const avanceActions = `<div class="mt-3 flex gap-2"><button data-avance-edit="${a.id}" class="avance-edit rounded-lg bg-brand-blue text-white px-3 py-2 text-xs font-bold">Editar</button><button data-avance-delete="${a.id}" class="avance-delete rounded-lg bg-red-50 text-red-500 px-3 py-2 text-xs font-bold">Eliminar</button></div>`;
                         return `<div class="rounded-xl border border-brand-gray-dark p-3 text-sm">
@@ -337,29 +346,52 @@
                             ${a.observacion_admin_opcional ? `<p class="text-xs text-brand-text/40 mt-3">${h(a.observacion_admin_opcional)}</p>` : ''}
                             ${avanceActions}
                         </div>`;
-                    }).join('') || empty('No hay avances registrados.')}</div>
+                    }).join('') || empty('No hay avances registrados para esta fecha.')}</div>
                 </section>
             </div>`;
         $('form-avance').addEventListener('submit', saveAvance);
+        $('avance-filter-date').addEventListener('change', (e) => {
+            sessionStorage.setItem('admin_avances_filter_date', e.target.value);
+            renderAvances();
+        });
         $('avance-cancel').addEventListener('click', clearAvanceForm);
         setupAvancePreview();
         document.querySelectorAll('.avance-edit').forEach(btn => btn.addEventListener('click', editAvance));
         document.querySelectorAll('.avance-delete').forEach(btn => btn.addEventListener('click', deleteAvance));
     }
 
-    function saveAvance(e) {
+    async function saveAvance(e) {
         e.preventDefault();
-        const data = Object.fromEntries(new FormData(e.target).entries());
-        const payload = { cobrador_id: data.cobrador_id, fecha: data.fecha, creditos_nuevos: Number(data.creditos_nuevos || 0), renovaciones: Number(data.renovaciones || 0), recaudo_dia: parseMoneyInput(data.recaudo_dia), observacion_admin_opcional: data.observacion.trim(), updated_at: new Date().toISOString() };
-        if (data.id) {
-            const avance = state.avances.find(a => a.id === data.id);
-            Object.assign(avance, payload);
-        } else {
-            state.avances.push({ id: DamasPro.uid('av'), ...payload, created_by: 'admin_mauricio', created_at: new Date().toISOString() });
+        const form = e.target;
+        const submit = $('avance-submit');
+        if (submit) {
+            submit.disabled = true;
+            submit.textContent = 'Guardando...';
         }
-        DamasPro.recomputeUnlocks(state);
-        DamasPro.save(state);
-        renderView();
+        try {
+            const data = Object.fromEntries(new FormData(form).entries());
+            const payload = { cobrador_id: data.cobrador_id, fecha: data.fecha, creditos_nuevos: Number(data.creditos_nuevos || 0), renovaciones: Number(data.renovaciones || 0), recaudo_dia: parseMoneyInput(data.recaudo_dia), observacion_admin_opcional: data.observacion.trim(), updated_at: new Date().toISOString() };
+            if (data.id) {
+                const avance = state.avances.find(a => a.id === data.id);
+                if (!avance) return alert('No se encontro el avance para editar.');
+                Object.assign(avance, payload);
+            } else {
+                state.avances.push({ id: DamasPro.uid('av'), ...payload, created_by: 'admin_mauricio', created_at: new Date().toISOString() });
+            }
+            DamasPro.recomputeUnlocks(state);
+            const saved = await DamasPro.save(state);
+            if (!saved) throw new Error('No se pudo guardar en el servidor. Revisa la conexion e intenta de nuevo.');
+            sessionStorage.setItem('admin_avances_filter_date', payload.fecha);
+            alert('Avance guardado correctamente.');
+            renderView();
+        } catch (err) {
+            alert(err.message || 'No se pudo guardar el avance.');
+        } finally {
+            if (submit) {
+                submit.disabled = false;
+                submit.textContent = form.elements.id.value ? 'Guardar cambios' : 'Guardar avance';
+            }
+        }
     }
 
     function editAvance(e) {
@@ -396,6 +428,13 @@
         $('avance-submit').textContent = 'Guardar avance';
         $('avance-cancel').classList.add('hidden');
         updateAvancePreview();
+    }
+
+    function latestAvanceFecha() {
+        return state.avances
+            .map(a => a.fecha)
+            .filter(Boolean)
+            .sort((a, b) => String(b).localeCompare(String(a)))[0] || new Date().toISOString().slice(0,10);
     }
 
     function renderNotas() {

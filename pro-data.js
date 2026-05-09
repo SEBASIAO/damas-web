@@ -176,13 +176,17 @@
 
     async function saveRemote(state) {
         try {
-            await fetch(SYNC_ENDPOINT, {
+            const res = await fetch(SYNC_ENDPOINT, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ state })
             });
+            if (!res.ok) {
+                return false;
+            }
+            return true;
         } catch (_) {
-            // Offline/local file fallback: localStorage still keeps the latest change in this browser.
+            return false;
         }
     }
 
