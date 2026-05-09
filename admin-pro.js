@@ -107,13 +107,14 @@
 
     function renderDashboard() {
         DamasPro.recomputeUnlocks(state);
+        const week = DamasPro.weekRange();
         const active = state.cobradores.filter(c => c.estado === 'activo').length;
-        const unlocked = state.premios_cobradores.length;
+        const unlocked = (state.premios_cobradores || []).filter(p => p.fecha_inicio_periodo === week.start).length;
         const top = ranking()[0];
         $('admin-view').innerHTML = `
             <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
                 ${stat('Cobradores activos', active, 'fa-users')}
-                ${stat('Premios desbloqueados', unlocked, 'fa-trophy')}
+                ${stat('Premios otorgados esta semana', unlocked, 'fa-trophy')}
                 ${stat('Frase activa', DamasPro.activePhrase(state) ? 'Si' : 'No', 'fa-quote-left')}
                 ${stat('Lider semanal', top ? h(DamasPro.displayName(top.cobrador)) : '-', 'fa-ranking-star')}
             </div>
@@ -1202,6 +1203,7 @@
     }
 
     function renderRanking() {
+        const week = DamasPro.weekRange();
         $('admin-view').innerHTML = `
             <section class="bg-white border border-brand-gray-dark rounded-xl p-5 shadow-sm overflow-x-auto">
                 <h3 class="font-heading font-bold text-brand-text mb-4">Ranking completo</h3>
@@ -1209,8 +1211,8 @@
                     <thead><tr class="text-left text-brand-text/40 border-b"><th class="py-2 w-10">#</th><th class="w-64">Cobrador</th><th class="w-24 text-right">Creditos</th><th class="w-28 text-right">Renovaciones</th><th class="w-32 text-right">Recaudo</th><th class="w-28 text-right">Cumplimiento</th><th class="w-16 text-right">Logros</th><th class="w-16 text-right">Premios</th><th class="w-32">Estado</th><th class="w-20">Perfil</th></tr></thead>
                     <tbody>${ranking().map((r, i) => {
                         const c = r.cobrador;
-                        const logros = state.logros_cobradores.filter(x => x.cobrador_id === c.id).length;
-                        const premios = state.premios_cobradores.filter(x => x.cobrador_id === c.id).length;
+                        const logros = state.logros_cobradores.filter(x => x.cobrador_id === c.id && x.fecha_inicio_semana === week.start).length;
+                        const premios = state.premios_cobradores.filter(x => x.cobrador_id === c.id && x.fecha_inicio_periodo === week.start).length;
                         const status = DamasPro.estadoCumplimiento(r.cumplimientoGeneral);
                         return `<tr class="border-b last:border-0"><td class="py-3 font-bold">${i + 1}</td><td><div class="flex items-center gap-3 min-w-0">${avatar(c, 'w-9 h-9 shrink-0')}<b class="block min-w-0 truncate" title="${h(DamasPro.displayName(c))}">${h(DamasPro.displayName(c))}</b></div></td><td class="text-right tabular-nums">${r.total.creditos}/${r.meta.meta_creditos_nuevos || 0}</td><td class="text-right tabular-nums">${r.total.renovaciones}/${r.meta.meta_renovaciones || 0}</td><td class="text-right tabular-nums whitespace-nowrap">${DamasPro.money(r.total.recaudo)}</td><td class="text-right"><b class="text-brand-green tabular-nums">${Math.round(r.cumplimientoGeneral)}%</b></td><td class="text-right tabular-nums">${logros}</td><td class="text-right tabular-nums">${premios}</td><td><span class="block truncate" title="${h(status)}">${h(status)}</span></td><td><button data-profile="${c.id}" class="profile-btn rounded-lg bg-brand-green text-white px-3 py-1.5 text-xs font-bold">Ver</button></td></tr>`;
                     }).join('')}</tbody>
@@ -1227,13 +1229,12 @@
         const target = state.cobradores.find(c => c.id === cobradorId);
         if (!target) return;
         const r = DamasPro.resumenCobrador(state, target.id);
-        const week = DamasPro.weekRange();
         const unlockedLogroIds = state.logros_cobradores
-            .filter(x => x.cobrador_id === target.id && x.fecha_inicio_semana === week.start)
+            .filter(x => x.cobrador_id === target.id)
             .map(x => x.logro_id);
         const unlockedLogros = state.logros.filter(l => unlockedLogroIds.includes(l.id));
         const unlockedPremioIds = state.premios_cobradores
-            .filter(x => x.cobrador_id === target.id && x.fecha_inicio_periodo === week.start)
+            .filter(x => x.cobrador_id === target.id)
             .map(x => x.premio_id);
         const unlockedPremios = state.premios.filter(p => unlockedPremioIds.includes(p.id));
         $('admin-view').innerHTML = `
@@ -1262,7 +1263,7 @@
                 <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
                     ${unlockedLogros.map(l => adminProfileMedalCard(l, 'Logro')).join('')}
                     ${unlockedPremios.map(p => adminProfileMedalCard(p, 'Premio')).join('')}
-                    ${!unlockedLogros.length && !unlockedPremios.length ? empty('Este cobrador aun no tiene medallas esta semana.') : ''}
+                    ${!unlockedLogros.length && !unlockedPremios.length ? empty('Este cobrador aun no tiene medallas.') : ''}
                 </div>
             </section>
             <section class="bg-white border border-brand-gray-dark rounded-xl p-5 shadow-sm mt-5">

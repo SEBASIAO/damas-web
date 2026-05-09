@@ -305,9 +305,8 @@
         const target = state.cobradores.find(c => c.id === cobradorId && c.estado === 'activo');
         if (!target) return;
         const r = DamasPro.resumenCobrador(state, target.id);
-        const week = DamasPro.weekRange();
         const unlockedLogroIds = state.logros_cobradores
-            .filter(x => x.cobrador_id === target.id && x.fecha_inicio_semana === week.start)
+            .filter(x => x.cobrador_id === target.id)
             .map(x => x.logro_id);
         const unlockedLogros = state.logros.filter(l => unlockedLogroIds.includes(l.id));
         $('pro-view').innerHTML = `
@@ -631,8 +630,10 @@
         const week = DamasPro.weekRange();
         const unlockedLogroIds = state.logros_cobradores.filter(x => x.cobrador_id === cobrador.id && x.fecha_inicio_semana === week.start).map(x => x.logro_id);
         const unlockedPremioIds = state.premios_cobradores.filter(x => x.cobrador_id === cobrador.id && x.fecha_inicio_periodo === week.start).map(x => x.premio_id);
-        const unlockedLogros = state.logros.filter(l => unlockedLogroIds.includes(l.id));
-        const unlockedPremios = state.premios.filter(p => unlockedPremioIds.includes(p.id));
+        const medalLogroIds = state.logros_cobradores.filter(x => x.cobrador_id === cobrador.id).map(x => x.logro_id);
+        const medalPremioIds = state.premios_cobradores.filter(x => x.cobrador_id === cobrador.id).map(x => x.premio_id);
+        const unlockedLogros = state.logros.filter(l => medalLogroIds.includes(l.id));
+        const unlockedPremios = state.premios.filter(p => medalPremioIds.includes(p.id));
         $('pro-view').innerHTML = `
             <div class="grid xl:grid-cols-[360px_1fr] gap-5">
                 <section class="space-y-5">
@@ -681,7 +682,7 @@
                         <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
                             ${unlockedLogros.map(l => medalCard(l, 'Logro')).join('')}
                             ${unlockedPremios.map(p => medalCard(p, 'Premio')).join('')}
-                            ${!unlockedLogros.length && !unlockedPremios.length ? empty('Aun no tienes medallas esta semana.') : ''}
+                            ${!unlockedLogros.length && !unlockedPremios.length ? empty('Aun no tienes medallas.') : ''}
                         </div>
                     </section>
 
