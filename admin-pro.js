@@ -9,6 +9,7 @@
         ['metas', 'Metas', 'fa-bullseye'],
         ['avances', 'Avances', 'fa-calendar-plus'],
         ['notas', 'Notas', 'fa-note-sticky'],
+        ['buzon', 'Buzon', 'fa-inbox'],
         ['pizarra', 'Pizarra', 'fa-chalkboard'],
         ['logros', 'Logros', 'fa-medal'],
         ['premios', 'Premios', 'fa-trophy'],
@@ -38,6 +39,7 @@
 
     function renderShell(adminName) {
         const app = $('admin-app');
+        const unreadBuzon = adminUnreadMessages();
         app.innerHTML = `
             <div class="mb-6 flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4">
                 <div>
@@ -51,8 +53,8 @@
             </div>
             <div id="admin-tabs" class="flex gap-2 overflow-x-auto border-b border-brand-gray-dark mb-6">
                 ${tabs.map(([id, label, icon]) => `
-                    <button data-tab="${id}" class="admin-tab shrink-0 pb-3 px-2 text-sm font-bold flex items-center gap-2 border-b-2 ${currentTab === id ? 'border-brand-blue text-brand-blue' : 'border-transparent text-brand-text/40 hover:text-brand-text'}">
-                        <i class="fa-solid ${icon}"></i>${label}
+                    <button data-tab="${id}" class="admin-tab shrink-0 pb-3 px-2 text-sm font-bold flex items-center gap-2 border-b-2 ${currentTab === id ? 'border-brand-blue text-brand-blue' : 'border-transparent text-brand-text/40 hover:text-brand-text'} ${id === 'buzon' ? 'bg-brand-blue/10 text-brand-blue rounded-t-xl px-3 shadow-sm' : ''}">
+                        <i class="fa-solid ${icon}"></i>${label}${id === 'buzon' && unreadBuzon ? `<span class="min-w-5 h-5 rounded-full bg-red-500 text-white text-[11px] leading-5 text-center px-1">${unreadBuzon > 9 ? '9+' : unreadBuzon}</span>` : ''}
                     </button>
                 `).join('')}
             </div>
@@ -75,12 +77,17 @@
         }));
     }
 
+    function adminUnreadMessages() {
+        return (state?.mensajes || []).filter(m => m.recipient_type === 'admin' && !m.read).length;
+    }
+
     function renderView() {
         if (currentTab === 'dashboard') return renderDashboard();
         if (currentTab === 'cobradores') return renderCobradores();
         if (currentTab === 'metas') return renderMetas();
         if (currentTab === 'avances') return renderAvances();
         if (currentTab === 'notas') return renderNotas();
+        if (currentTab === 'buzon') return renderBuzon();
         if (currentTab === 'pizarra') return renderPizarra();
         if (currentTab === 'logros') return renderLogros();
         if (currentTab === 'premios') return renderPremios();
@@ -121,6 +128,7 @@
                         <button data-jump="cobradores" class="quick-btn text-left rounded-xl border border-brand-gray-dark p-3 hover:bg-brand-gray">Crear cobrador</button>
                         <button data-jump="avances" class="quick-btn text-left rounded-xl border border-brand-gray-dark p-3 hover:bg-brand-gray">Agregar avance diario</button>
                         <button data-jump="notas" class="quick-btn text-left rounded-xl border border-brand-gray-dark p-3 hover:bg-brand-gray">Crear nota privada</button>
+                        <button data-jump="buzon" class="quick-btn text-left rounded-xl border border-brand-gray-dark p-3 hover:bg-brand-gray">Abrir buzon</button>
                         <button data-jump="pizarra" class="quick-btn text-left rounded-xl border border-brand-gray-dark p-3 hover:bg-brand-gray">Pizarra semanal</button>
                         <button data-jump="logros" class="quick-btn text-left rounded-xl border border-brand-gray-dark p-3 hover:bg-brand-gray">Crear logro</button>
                         <button data-jump="premios" class="quick-btn text-left rounded-xl border border-brand-gray-dark p-3 hover:bg-brand-gray">Crear premio</button>
@@ -415,6 +423,96 @@
         renderView();
     }
 
+    function renderBuzon() {
+        const messages = adminMessages();
+        const unread = messages.filter(m => m.recipient_type === 'admin' && !m.read).length;
+        $('admin-view').innerHTML = `
+            <div class="grid lg:grid-cols-[380px_1fr] gap-5">
+                <form id="form-message" class="bg-white border border-brand-gray-dark rounded-xl p-5 shadow-sm space-y-4">
+                    <h3 class="font-heading font-bold text-brand-text">Enviar mensaje</h3>
+                    ${fieldLabel('Para', `<select name="cobrador_id" class="field-input">${options()}</select>`)}
+                    ${fieldLabel('Titulo', '<input name="title" class="field-input" placeholder="Asunto del mensaje" required>')}
+                    ${fieldLabel('Mensaje', '<textarea name="body" class="field-input resize-none" rows="5" placeholder="Escribe el mensaje" required></textarea>')}
+                    <button class="w-full bg-brand-blue text-white rounded-xl py-3 font-bold">Enviar al buzon</button>
+                </form>
+                <section class="bg-white border border-brand-gray-dark rounded-xl p-5 shadow-sm">
+                    <div class="flex items-center justify-between gap-3 mb-4">
+                        <h3 class="font-heading font-bold text-brand-text">Buzon admin</h3>
+                        <span class="text-xs rounded-full px-3 py-1 font-bold ${unread ? 'bg-brand-blue text-white' : 'bg-brand-gray text-brand-text/50'}">${unread} sin leer</span>
+                    </div>
+                    <div class="space-y-3">${messages.map(adminMessageCard).join('') || empty('No hay mensajes en el buzon.')}</div>
+                </section>
+            </div>`;
+        $('form-message').addEventListener('submit', sendAdminMessage);
+        document.querySelectorAll('.admin-message-read').forEach(btn => btn.addEventListener('click', markAdminMessageRead));
+        document.querySelectorAll('.admin-message-delete').forEach(btn => btn.addEventListener('click', deleteMessage));
+    }
+
+    function adminMessages() {
+        return (state.mensajes || [])
+            .filter(m => m.recipient_type === 'admin' || m.sender_type === 'admin')
+            .sort((a, b) => String(b.created_at || '').localeCompare(String(a.created_at || '')));
+    }
+
+    function adminMessageCard(m) {
+        const incoming = m.recipient_type === 'admin';
+        const unread = incoming && !m.read;
+        const meta = incoming ? `De ${h(m.sender_name || 'Cobrador')}` : `Para ${h(m.recipient_name || 'Cobrador')}`;
+        return `<article class="rounded-xl border ${unread ? 'border-brand-blue bg-brand-blue/5' : 'border-brand-gray-dark'} p-4">
+            <div class="flex items-start justify-between gap-3">
+                <div class="min-w-0">
+                    <div class="flex flex-wrap items-center gap-2">
+                        <h4 class="font-bold text-brand-text">${h(m.title)}</h4>
+                        <span class="text-[11px] rounded-full bg-brand-gray px-2 py-1 text-brand-text/55">${h(m.category || 'mensaje')}</span>
+                    </div>
+                    <p class="text-xs text-brand-text/40 mt-1">${meta} - ${new Date(m.created_at).toLocaleDateString('es-CO')}</p>
+                </div>
+                <span class="shrink-0 text-xs rounded-full px-2 py-1 ${unread ? 'bg-brand-blue text-white' : 'bg-brand-gray text-brand-text/50'}">${unread ? 'Nuevo' : incoming ? 'Leido' : 'Enviado'}</span>
+            </div>
+            <p class="text-sm text-brand-text/70 mt-3 whitespace-pre-wrap">${h(m.body)}</p>
+            <div class="mt-3 flex flex-wrap gap-2">
+                ${unread ? `<button data-message="${m.id}" class="admin-message-read text-brand-blue text-sm font-bold">Marcar como leido</button>` : ''}
+                <button data-message-delete="${m.id}" class="admin-message-delete text-red-500 text-sm font-bold">Eliminar</button>
+            </div>
+        </article>`;
+    }
+
+    function sendAdminMessage(e) {
+        e.preventDefault();
+        const data = Object.fromEntries(new FormData(e.target).entries());
+        const target = state.cobradores.find(c => c.id === data.cobrador_id);
+        if (!target) return alert('Selecciona un cobrador valido.');
+        DamasPro.addMessage(state, {
+            sender_type: 'admin',
+            sender_id: 'admin_mauricio',
+            sender_name: 'Admin Mauricio',
+            recipient_type: 'cobrador',
+            recipient_id: target.id,
+            recipient_name: DamasPro.displayName(target),
+            title: data.title.trim(),
+            body: data.body.trim(),
+            category: 'mensaje'
+        });
+        DamasPro.save(state);
+        renderView();
+    }
+
+    function markAdminMessageRead(e) {
+        const msg = (state.mensajes || []).find(m => m.id === e.target.dataset.message && m.recipient_type === 'admin');
+        if (!msg) return;
+        msg.read = true;
+        msg.read_at = new Date().toISOString();
+        DamasPro.save(state);
+        renderView();
+    }
+
+    function deleteMessage(e) {
+        if (!confirm('Eliminar este mensaje del buzon?')) return;
+        state.mensajes = (state.mensajes || []).filter(m => m.id !== e.target.dataset.messageDelete);
+        DamasPro.save(state);
+        renderView();
+    }
+
     function renderPizarra() {
         const week = DamasPro.weekRange();
         const notes = pizarraNotasSemana();
@@ -506,29 +604,48 @@
     }
 
     function renderLogros() {
+        const week = DamasPro.weekRange();
+        const weekAwards = currentWeekLogroAwards();
         $('admin-view').innerHTML = `
             <div class="grid lg:grid-cols-[380px_1fr] gap-5">
-                <form id="form-logro" class="bg-white border border-brand-gray-dark rounded-xl p-5 shadow-sm space-y-4">
-                    <h3 id="logro-form-title" class="font-heading font-bold text-brand-text">Crear logro</h3>
-                    <input name="id" type="hidden">
-                    ${fieldLabel('Nombre del logro', '<input name="nombre" class="field-input" placeholder="Ej. Primer cierre" required>')}
-                    ${fieldLabel('Descripcion breve', '<textarea name="descripcion" class="field-input resize-none" rows="3" placeholder="Explica que debe lograr el cobrador" required></textarea>')}
-                    ${fieldLabel('Tipo de meta asociada', '<select name="tipo" class="field-input"><option value="creditos_nuevos">Creditos nuevos</option><option value="renovaciones">Renovaciones</option><option value="recaudo">Recaudo</option><option value="cumplimiento_general">Cumplimiento general</option></select>')}
-                    ${fieldLabel('Valor objetivo', 'Numero que debe alcanzar para desbloquear el logro.', '<input name="valor_objetivo" class="field-input" type="number" min="0" placeholder="Ej. 5" required>')}
-                    ${fieldLabel('Nivel del logro', '<select name="nivel" class="field-input"><option>Bronce</option><option>Plata</option><option>Oro</option><option>Diamante</option></select>')}
-                    ${fieldLabel('Imagen personalizada', '<input name="imagen" class="field-input" type="file" accept="image/png,image/jpeg,image/webp">')}
-                    <div class="grid grid-cols-2 gap-2">
-                        <button id="logro-submit" class="bg-brand-blue text-white rounded-xl py-3 font-bold">Crear logro</button>
-                        <button id="logro-cancel" type="button" class="hidden bg-brand-gray text-brand-text rounded-xl py-3 font-bold">Cancelar</button>
-                    </div>
-                </form>
-                <section class="grid md:grid-cols-2 xl:grid-cols-3 gap-4">${(state.logros || []).map(logroAdminCard).join('') || empty('No hay logros creados.')}</section>
+                <div class="space-y-5">
+                    <form id="form-logro" class="bg-white border border-brand-gray-dark rounded-xl p-5 shadow-sm space-y-4">
+                        <h3 id="logro-form-title" class="font-heading font-bold text-brand-text">Crear logro</h3>
+                        <input name="id" type="hidden">
+                        ${fieldLabel('Nombre del logro', '<input name="nombre" class="field-input" placeholder="Ej. Primer cierre" required>')}
+                        ${fieldLabel('Descripcion breve', '<textarea name="descripcion" class="field-input resize-none" rows="3" placeholder="Explica que debe lograr el cobrador" required></textarea>')}
+                        ${fieldLabel('Tipo de meta asociada', '<select name="tipo" class="field-input"><option value="creditos_nuevos">Creditos nuevos</option><option value="renovaciones">Renovaciones</option><option value="recaudo">Recaudo</option><option value="cumplimiento_general">Cumplimiento general</option></select>')}
+                        ${fieldLabel('Valor objetivo', 'Numero que debe alcanzar para desbloquear el logro.', '<input name="valor_objetivo" class="field-input" type="number" min="0" placeholder="Ej. 5" required>')}
+                        ${fieldLabel('Nivel del logro', '<select name="nivel" class="field-input"><option>Bronce</option><option>Plata</option><option>Oro</option><option>Diamante</option></select>')}
+                        ${fieldLabel('Imagen personalizada', '<input name="imagen" class="field-input" type="file" accept="image/png,image/jpeg,image/webp">')}
+                        <div class="grid grid-cols-2 gap-2">
+                            <button id="logro-submit" class="bg-brand-blue text-white rounded-xl py-3 font-bold">Crear logro</button>
+                            <button id="logro-cancel" type="button" class="hidden bg-brand-gray text-brand-text rounded-xl py-3 font-bold">Cancelar</button>
+                        </div>
+                    </form>
+                    <form id="form-award-logro" class="bg-white border border-brand-gray-dark rounded-xl p-5 shadow-sm space-y-4">
+                        <h3 class="font-heading font-bold text-brand-text">Otorgar logro manual</h3>
+                        ${fieldLabel('Cobrador', `<select name="cobrador_id" class="field-input">${options()}</select>`)}
+                        ${fieldLabel('Logro', `<select name="logro_id" class="field-input">${(state.logros || []).map(l => `<option value="${l.id}">${h(l.nombre)} (${h(l.nivel)})</option>`).join('')}</select>`)}
+                        <button class="w-full bg-brand-green text-white rounded-xl py-3 font-bold">Otorgar logro</button>
+                        <p class="text-xs text-brand-text/40">Semana actual: ${week.start} a ${week.end}.</p>
+                    </form>
+                </div>
+                <div class="space-y-5">
+                    <section class="bg-white border border-brand-gray-dark rounded-xl p-5 shadow-sm overflow-x-auto">
+                        <h3 class="font-heading font-bold text-brand-text mb-4">Ganadores de logros esta semana</h3>
+                        ${logroWinnersTable(weekAwards)}
+                    </section>
+                    <section class="grid md:grid-cols-2 xl:grid-cols-3 gap-4">${(state.logros || []).map(logroAdminCard).join('') || empty('No hay logros creados.')}</section>
+                </div>
             </div>`;
         $('form-logro').addEventListener('submit', saveLogro);
         $('logro-cancel').addEventListener('click', clearLogroForm);
+        $('form-award-logro').addEventListener('submit', awardLogro);
         document.querySelectorAll('.logro-edit').forEach(btn => btn.addEventListener('click', editLogro));
         document.querySelectorAll('.logro-toggle').forEach(btn => btn.addEventListener('click', toggleLogro));
         document.querySelectorAll('.logro-delete').forEach(btn => btn.addEventListener('click', deleteLogro));
+        document.querySelectorAll('.logro-revoke').forEach(btn => btn.addEventListener('click', revokeLogro));
     }
 
     function logroAdminCard(l) {
@@ -616,41 +733,120 @@
         renderView();
     }
 
+    function currentWeekLogroAwards() {
+        const week = DamasPro.weekRange();
+        return (state.logros_cobradores || [])
+            .filter(x => x.fecha_inicio_semana === week.start)
+            .map(x => ({
+                award: x,
+                cobrador: state.cobradores.find(c => c.id === x.cobrador_id),
+                logro: state.logros.find(l => l.id === x.logro_id)
+            }))
+            .filter(x => x.cobrador && x.logro)
+            .sort((a, b) => String(b.award.fecha_desbloqueo || b.award.created_at || '').localeCompare(String(a.award.fecha_desbloqueo || a.award.created_at || '')));
+    }
+
+    function logroWinnersTable(rows) {
+        if (!rows.length) return empty('Aun no hay logros desbloqueados esta semana.');
+        return `<table class="w-full min-w-[680px] text-sm">
+            <thead><tr class="text-left text-brand-text/40 border-b"><th class="py-2">Cobrador</th><th>Logro</th><th>Nivel</th><th>Forma</th><th>Fecha</th><th></th></tr></thead>
+            <tbody>${rows.map(({ award, cobrador, logro }) => `<tr class="border-b last:border-0">
+                <td class="py-3 font-bold">${h(DamasPro.displayName(cobrador))}</td>
+                <td>${h(logro.nombre)}</td>
+                <td>${h(logro.nivel)}</td>
+                <td>${award.asignado_manualmente ? 'Manual' : 'Automatico'}</td>
+                <td>${h((award.fecha_desbloqueo || award.created_at || '').slice(0, 10) || '-')}</td>
+                <td class="text-right"><button data-logro-award="${award.id}" class="logro-revoke rounded-lg bg-red-50 text-red-500 px-3 py-1.5 text-xs font-bold">Quitar</button></td>
+            </tr>`).join('')}</tbody>
+        </table>`;
+    }
+
+    function awardLogro(e) {
+        e.preventDefault();
+        const data = Object.fromEntries(new FormData(e.target).entries());
+        if (!data.cobrador_id || !data.logro_id) return alert('Selecciona cobrador y logro.');
+        const week = DamasPro.weekRange();
+        const exists = (state.logros_cobradores || []).some(x => x.cobrador_id === data.cobrador_id && x.logro_id === data.logro_id && x.fecha_inicio_semana === week.start);
+        if (exists) return alert('Ese cobrador ya tiene este logro esta semana.');
+        const now = new Date().toISOString();
+        state.logros_cobradores.push({ id: DamasPro.uid('lc'), cobrador_id: data.cobrador_id, logro_id: data.logro_id, fecha_inicio_semana: week.start, fecha_desbloqueo: now, asignado_manualmente: true, asignado_por: 'admin_mauricio', created_at: now });
+        const target = state.cobradores.find(c => c.id === data.cobrador_id);
+        const logro = state.logros.find(l => l.id === data.logro_id);
+        DamasPro.addMessage(state, {
+            sender_type: 'admin',
+            sender_id: 'admin_mauricio',
+            sender_name: 'Admin Mauricio',
+            recipient_type: 'cobrador',
+            recipient_id: data.cobrador_id,
+            recipient_name: DamasPro.displayName(target),
+            title: 'Logro otorgado',
+            body: `Se te otorgo el logro "${logro?.nombre || 'Logro'}".`,
+            category: 'logro'
+        });
+        DamasPro.save(state);
+        renderView();
+    }
+
+    function revokeLogro(e) {
+        const id = e.target.dataset.logroAward;
+        if (!confirm('Quitar este logro al cobrador?')) return;
+        state.logros_cobradores = (state.logros_cobradores || []).filter(x => x.id !== id);
+        DamasPro.save(state);
+        renderView();
+    }
+
     function renderPremios() {
         const week = DamasPro.weekRange();
+        const weekAwards = currentWeekPremioAwards();
         $('admin-view').innerHTML = `
             <div class="grid lg:grid-cols-[380px_1fr] gap-5">
-                <form id="form-premio" class="bg-white border border-brand-gray-dark rounded-xl p-5 shadow-sm space-y-4">
-                    <h3 id="premio-form-title" class="font-heading font-bold text-brand-text">Crear premio</h3>
-                    <input name="id" type="hidden">
-                    ${fieldLabel('Nombre del premio', '<input name="nombre" class="field-input" placeholder="Ej. Recaudo PRO" required>')}
-                    ${fieldLabel('Descripcion', '<textarea name="descripcion" class="field-input resize-none" rows="2" placeholder="Que debe lograr el cobrador" required></textarea>')}
-                    ${fieldLabel('Texto motivacional', '<textarea name="texto_motivacional" class="field-input resize-none" rows="2" placeholder="Mensaje al desbloquear"></textarea>')}
-                    ${fieldLabel('Tipo de meta asociada', '<select name="tipo_meta" class="field-input"><option value="creditos_nuevos">Creditos nuevos</option><option value="renovaciones">Renovaciones</option><option value="recaudo">Recaudo</option><option value="cumplimiento_general">Cumplimiento general</option><option value="manual">Manual</option></select>')}
-                    ${fieldLabel('Valor objetivo de la meta', 'Numero que debe cumplir para desbloquearlo. Ej: 10 creditos o 10000000 de recaudo.', '<input name="valor_objetivo" class="field-input" type="number" min="0" placeholder="Ej. 10000000">')}
-                    ${fieldLabel('Valor del premio para entregar (COP)', 'Monto economico del premio. Ej: 50000.', '<input name="valor_economico" class="field-input text-lg font-bold" type="number" min="0" placeholder="Ej. 50000" value="0">')}
-                    ${fieldLabel('Nivel del premio', '<select name="nivel" class="field-input"><option>Bronce</option><option>Plata</option><option>Oro</option><option>Diamante</option></select>')}
-                    ${fieldLabel('Imagen del premio', '<input name="imagen" class="field-input" type="file" accept="image/png,image/jpeg,image/webp">')}
-                    <div class="grid grid-cols-2 gap-2">
-                        <button id="premio-submit" class="bg-brand-blue text-white rounded-xl py-3 font-bold">Crear premio</button>
-                        <button id="premio-cancel" type="button" class="hidden bg-brand-gray text-brand-text rounded-xl py-3 font-bold">Cancelar</button>
-                    </div>
-                    <div class="rounded-xl bg-brand-gray p-4 text-xs text-brand-text/60">
-                        <b>Reinicio semanal:</b> al cambiar la semana del calendario, los premios se vuelven a evaluar para el nuevo periodo. Si necesitas limpiar los desbloqueos de esta semana para corregir pruebas, usa el boton de reinicio.
-                    </div>
-                    <button id="reset-awards" type="button" class="w-full border border-red-200 text-red-500 rounded-xl py-3 font-bold hover:bg-red-50">
-                        Reiniciar premios y logros de esta semana
-                    </button>
-                    <p class="text-xs text-brand-text/40">Semana actual: ${week.start} a ${week.end}. No borra premios creados ni historial de semanas anteriores.</p>
-                </form>
-                <section class="grid md:grid-cols-2 xl:grid-cols-3 gap-4">${state.premios.map(p => premioCard(p)).join('')}</section>
+                <div class="space-y-5">
+                    <form id="form-premio" class="bg-white border border-brand-gray-dark rounded-xl p-5 shadow-sm space-y-4">
+                        <h3 id="premio-form-title" class="font-heading font-bold text-brand-text">Crear premio</h3>
+                        <input name="id" type="hidden">
+                        ${fieldLabel('Nombre del premio', '<input name="nombre" class="field-input" placeholder="Ej. Recaudo PRO" required>')}
+                        ${fieldLabel('Descripcion', '<textarea name="descripcion" class="field-input resize-none" rows="2" placeholder="Que debe lograr el cobrador" required></textarea>')}
+                        ${fieldLabel('Texto motivacional', '<textarea name="texto_motivacional" class="field-input resize-none" rows="2" placeholder="Mensaje al desbloquear"></textarea>')}
+                        ${fieldLabel('Tipo de meta asociada', '<select name="tipo_meta" class="field-input"><option value="creditos_nuevos">Creditos nuevos</option><option value="renovaciones">Renovaciones</option><option value="recaudo">Recaudo</option><option value="cumplimiento_general">Cumplimiento general</option><option value="manual">Manual</option></select>')}
+                        ${fieldLabel('Valor objetivo de la meta', 'Numero que debe cumplir para desbloquearlo. Ej: 10 creditos o 10000000 de recaudo.', '<input name="valor_objetivo" class="field-input" type="number" min="0" placeholder="Ej. 10000000">')}
+                        ${fieldLabel('Valor del premio para entregar (COP)', 'Monto economico del premio. Ej: 50000.', '<input name="valor_economico" class="field-input text-lg font-bold" type="number" min="0" placeholder="Ej. 50000" value="0">')}
+                        ${fieldLabel('Nivel del premio', '<select name="nivel" class="field-input"><option>Bronce</option><option>Plata</option><option>Oro</option><option>Diamante</option></select>')}
+                        ${fieldLabel('Imagen del premio', '<input name="imagen" class="field-input" type="file" accept="image/png,image/jpeg,image/webp">')}
+                        <div class="grid grid-cols-2 gap-2">
+                            <button id="premio-submit" class="bg-brand-blue text-white rounded-xl py-3 font-bold">Crear premio</button>
+                            <button id="premio-cancel" type="button" class="hidden bg-brand-gray text-brand-text rounded-xl py-3 font-bold">Cancelar</button>
+                        </div>
+                        <div class="rounded-xl bg-brand-gray p-4 text-xs text-brand-text/60">
+                            <b>Reinicio semanal:</b> al cambiar la semana del calendario, los premios se vuelven a evaluar para el nuevo periodo. Si necesitas limpiar los desbloqueos de esta semana para corregir pruebas, usa el boton de reinicio.
+                        </div>
+                        <button id="reset-awards" type="button" class="w-full border border-red-200 text-red-500 rounded-xl py-3 font-bold hover:bg-red-50">
+                            Reiniciar premios y logros de esta semana
+                        </button>
+                        <p class="text-xs text-brand-text/40">Semana actual: ${week.start} a ${week.end}. No borra premios creados ni historial de semanas anteriores.</p>
+                    </form>
+                    <form id="form-award-premio" class="bg-white border border-brand-gray-dark rounded-xl p-5 shadow-sm space-y-4">
+                        <h3 class="font-heading font-bold text-brand-text">Otorgar premio manual</h3>
+                        ${fieldLabel('Cobrador', `<select name="cobrador_id" class="field-input">${options()}</select>`)}
+                        ${fieldLabel('Premio', `<select name="premio_id" class="field-input">${(state.premios || []).map(p => `<option value="${p.id}">${h(p.nombre)} - ${DamasPro.money(p.valor_economico || 0)}</option>`).join('')}</select>`)}
+                        <button class="w-full bg-brand-green text-white rounded-xl py-3 font-bold">Otorgar premio</button>
+                    </form>
+                </div>
+                <div class="space-y-5">
+                    <section class="bg-white border border-brand-gray-dark rounded-xl p-5 shadow-sm overflow-x-auto">
+                        <h3 class="font-heading font-bold text-brand-text mb-4">Ganadores de premios esta semana</h3>
+                        ${premioWinnersTable(weekAwards)}
+                    </section>
+                    <section class="grid md:grid-cols-2 xl:grid-cols-3 gap-4">${state.premios.map(p => premioCard(p)).join('')}</section>
+                </div>
             </div>`;
         $('form-premio').addEventListener('submit', savePremio);
         $('premio-cancel').addEventListener('click', clearPremioForm);
         $('reset-awards').addEventListener('click', resetWeeklyAwards);
+        $('form-award-premio').addEventListener('submit', awardPremio);
         document.querySelectorAll('.premio-toggle').forEach(btn => btn.addEventListener('click', togglePremio));
         document.querySelectorAll('.premio-edit').forEach(btn => btn.addEventListener('click', editPremio));
         document.querySelectorAll('.premio-delete').forEach(btn => btn.addEventListener('click', deletePremio));
+        document.querySelectorAll('.premio-revoke').forEach(btn => btn.addEventListener('click', revokePremio));
     }
 
     function premioCard(p) {
@@ -736,6 +932,68 @@
     function togglePremio(e) {
         const p = state.premios.find(x => x.id === e.target.dataset.premio);
         p.activo = !p.activo;
+        DamasPro.save(state);
+        renderView();
+    }
+
+    function currentWeekPremioAwards() {
+        const week = DamasPro.weekRange();
+        return (state.premios_cobradores || [])
+            .filter(x => x.fecha_inicio_periodo === week.start)
+            .map(x => ({
+                award: x,
+                cobrador: state.cobradores.find(c => c.id === x.cobrador_id),
+                premio: state.premios.find(p => p.id === x.premio_id)
+            }))
+            .filter(x => x.cobrador && x.premio)
+            .sort((a, b) => String(b.award.fecha_desbloqueo || b.award.created_at || '').localeCompare(String(a.award.fecha_desbloqueo || a.award.created_at || '')));
+    }
+
+    function premioWinnersTable(rows) {
+        if (!rows.length) return empty('Aun no hay premios desbloqueados esta semana.');
+        return `<table class="w-full min-w-[760px] text-sm">
+            <thead><tr class="text-left text-brand-text/40 border-b"><th class="py-2">Cobrador</th><th>Premio</th><th>Valor</th><th>Forma</th><th>Fecha</th><th></th></tr></thead>
+            <tbody>${rows.map(({ award, cobrador, premio }) => `<tr class="border-b last:border-0">
+                <td class="py-3 font-bold">${h(DamasPro.displayName(cobrador))}</td>
+                <td>${h(premio.nombre)}</td>
+                <td>${DamasPro.money(premio.valor_economico || 0)}</td>
+                <td>${award.asignado_manualmente ? 'Manual' : 'Automatico'}</td>
+                <td>${h((award.fecha_desbloqueo || award.created_at || '').slice(0, 10) || '-')}</td>
+                <td class="text-right"><button data-premio-award="${award.id}" class="premio-revoke rounded-lg bg-red-50 text-red-500 px-3 py-1.5 text-xs font-bold">Quitar</button></td>
+            </tr>`).join('')}</tbody>
+        </table>`;
+    }
+
+    function awardPremio(e) {
+        e.preventDefault();
+        const data = Object.fromEntries(new FormData(e.target).entries());
+        if (!data.cobrador_id || !data.premio_id) return alert('Selecciona cobrador y premio.');
+        const week = DamasPro.weekRange();
+        const exists = (state.premios_cobradores || []).some(x => x.cobrador_id === data.cobrador_id && x.premio_id === data.premio_id && x.fecha_inicio_periodo === week.start);
+        if (exists) return alert('Ese cobrador ya tiene este premio esta semana.');
+        const now = new Date().toISOString();
+        state.premios_cobradores.push({ id: DamasPro.uid('pc'), cobrador_id: data.cobrador_id, premio_id: data.premio_id, fecha_inicio_periodo: week.start, fecha_fin_periodo: week.end, desbloqueado: true, fecha_desbloqueo: now, asignado_manualmente: true, asignado_por: 'admin_mauricio', created_at: now });
+        const target = state.cobradores.find(c => c.id === data.cobrador_id);
+        const premio = state.premios.find(p => p.id === data.premio_id);
+        DamasPro.addMessage(state, {
+            sender_type: 'admin',
+            sender_id: 'admin_mauricio',
+            sender_name: 'Admin Mauricio',
+            recipient_type: 'cobrador',
+            recipient_id: data.cobrador_id,
+            recipient_name: DamasPro.displayName(target),
+            title: 'Premio otorgado',
+            body: `Se te otorgo el premio "${premio?.nombre || 'Premio'}" por valor de ${DamasPro.money(premio?.valor_economico || 0)}.`,
+            category: 'premio'
+        });
+        DamasPro.save(state);
+        renderView();
+    }
+
+    function revokePremio(e) {
+        const id = e.target.dataset.premioAward;
+        if (!confirm('Quitar este premio al cobrador?')) return;
+        state.premios_cobradores = (state.premios_cobradores || []).filter(x => x.id !== id);
         DamasPro.save(state);
         renderView();
     }

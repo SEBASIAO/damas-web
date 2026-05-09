@@ -172,18 +172,29 @@
     }
 
     function renderTabs() {
+        const unreadMessages = cobrador ? cobradorMessages().filter(m => m.recipient_type === 'cobrador' && !m.read).length : 0;
         document.querySelectorAll('.pro-tab').forEach(btn => {
             const active = btn.dataset.tab === currentTab;
+            const isBuzon = btn.dataset.tab === 'buzon';
             btn.classList.toggle('border-brand-blue', active);
             btn.classList.toggle('text-brand-blue', active);
-            btn.classList.toggle('border-transparent', !active);
-            btn.classList.toggle('text-brand-text/40', !active);
+            btn.classList.toggle('border-transparent', !active && !isBuzon);
+            btn.classList.toggle('text-brand-text/40', !active && !isBuzon);
+            btn.classList.toggle('bg-brand-blue/10', isBuzon);
+            btn.classList.toggle('rounded-t-xl', isBuzon);
+            btn.classList.toggle('shadow-sm', isBuzon && unreadMessages > 0);
         });
+        const badge = $('buzon-badge');
+        if (badge) {
+            badge.textContent = unreadMessages > 9 ? '9+' : String(unreadMessages);
+            badge.classList.toggle('hidden', unreadMessages === 0);
+        }
     }
 
     function renderView() {
         cobrador = state.cobradores.find(c => c.id === cobrador.id);
         if (currentTab === 'inicio') renderInicio();
+        else if (currentTab === 'buzon') renderBuzon();
         else if (currentTab === 'pizarra') renderPizarra();
         else renderPerfil();
     }
@@ -194,11 +205,22 @@
         const week = DamasPro.weekRange();
         const myNotes = notasCobrador();
         const unreadNotes = myNotes.filter(n => !n.leido).length;
+        const unreadMessages = cobradorMessages().filter(m => m.recipient_type === 'cobrador' && !m.read).length;
         const currentPrizeIds = state.premios_cobradores.filter(p => p.cobrador_id === cobrador.id && p.desbloqueado && p.fecha_inicio_periodo === week.start).map(p => p.premio_id);
         $('pro-view').innerHTML = `
             <section class="rounded-2xl bg-brand-dark text-white p-6 sm:p-8 shadow-lg mb-6">
                 <p class="text-brand-gold text-xs font-bold uppercase tracking-widest">${h(phrase?.titulo || 'Frase de la semana')}</p>
                 <h2 class="font-banco font-bold text-3xl sm:text-5xl leading-tight mt-3">${h(phrase?.texto || 'Compite contigo mismo y supera tus numeros.')}</h2>
+            </section>
+
+            <section class="bg-white border border-brand-gray-dark rounded-xl p-5 shadow-sm mb-5">
+                <div class="flex items-center justify-between gap-4">
+                    <div>
+                        <h3 class="font-heading font-bold text-brand-text">Buzon</h3>
+                        <p class="text-xs text-brand-text/45 mt-1">Mensajes, premios y notificaciones del administrador.</p>
+                    </div>
+                    <button data-open-buzon="1" class="shrink-0 rounded-lg bg-brand-blue text-white px-4 py-2 text-sm font-bold">${unreadMessages} nuevos</button>
+                </div>
             </section>
 
             <section class="bg-white border border-brand-gray-dark rounded-xl p-5 shadow-sm mb-5">
@@ -235,6 +257,11 @@
             </section>
         `;
         document.querySelectorAll('.read-note').forEach(btn => btn.addEventListener('click', markRead));
+        document.querySelectorAll('[data-open-buzon]').forEach(btn => btn.addEventListener('click', () => {
+            currentTab = 'buzon';
+            renderTabs();
+            renderBuzon();
+        }));
         document.querySelectorAll('.view-cobrador-profile').forEach(btn => btn.addEventListener('click', openPublicProfile));
     }
 
@@ -327,6 +354,108 @@
             </div>
             <p class="text-sm text-brand-text/60 mt-2">${h(l.descripcion)}</p>
         </article>`;
+    }
+
+    function renderBuzon() {
+        const messages = cobradorMessages();
+        const unread = messages.filter(m => m.recipient_type === 'cobrador' && !m.read).length;
+        $('pro-view').innerHTML = `
+            <div class="grid lg:grid-cols-[360px_1fr] gap-5">
+                <form id="form-message" class="bg-white border border-brand-gray-dark rounded-xl p-5 shadow-sm space-y-4">
+                    <h3 class="font-heading font-bold text-brand-text">Enviar mensaje</h3>
+                    ${fieldLabel('Para', `<select name="recipient" class="field-input">${messageRecipientOptions()}</select>`)}
+                    ${fieldLabel('Titulo', '<input name="title" class="field-input" placeholder="Asunto del mensaje" required>')}
+                    ${fieldLabel('Mensaje', '<textarea name="body" class="field-input resize-none" rows="5" placeholder="Escribe tu mensaje" required></textarea>')}
+                    <button class="w-full bg-brand-blue text-white rounded-xl py-3 font-bold">Enviar</button>
+                </form>
+                <section class="bg-white border border-brand-gray-dark rounded-xl p-5 shadow-sm">
+                    <div class="flex items-center justify-between gap-3 mb-4">
+                        <h3 class="font-heading font-bold text-brand-text">Mi buzon</h3>
+                        <span class="text-xs rounded-full px-3 py-1 font-bold ${unread ? 'bg-brand-blue text-white' : 'bg-brand-gray text-brand-text/50'}">${unread} sin leer</span>
+                    </div>
+                    <div class="space-y-3">${messages.map(messageCard).join('') || empty('No tienes mensajes.')}</div>
+                </section>
+            </div>`;
+        $('form-message').addEventListener('submit', sendMessageToAdmin);
+        document.querySelectorAll('.message-read').forEach(btn => btn.addEventListener('click', markMessageRead));
+        document.querySelectorAll('.message-delete').forEach(btn => btn.addEventListener('click', deleteMessage));
+    }
+
+    function messageRecipientOptions() {
+        const admins = '<option value="admin:admin_mauricio">Admin Mauricio</option>';
+        const collectors = state.cobradores
+            .filter(c => c.estado === 'activo' && c.id !== cobrador.id)
+            .map(c => `<option value="cobrador:${c.id}">${h(DamasPro.displayName(c))}</option>`)
+            .join('');
+        return admins + collectors;
+    }
+
+    function cobradorMessages() {
+        return (state.mensajes || [])
+            .filter(m => (m.recipient_type === 'cobrador' && m.recipient_id === cobrador.id) || (m.sender_type === 'cobrador' && m.sender_id === cobrador.id))
+            .sort((a, b) => String(b.created_at || '').localeCompare(String(a.created_at || '')));
+    }
+
+    function messageCard(m) {
+        const incoming = m.recipient_type === 'cobrador';
+        const unread = incoming && !m.read;
+        const meta = incoming ? `De ${h(m.sender_name || 'Admin')}` : `Para ${h(m.recipient_name || 'Destinatario')}`;
+        return `<article class="rounded-xl border ${unread ? 'border-brand-blue bg-brand-blue/5' : 'border-brand-gray-dark'} p-4">
+            <div class="flex items-start justify-between gap-3">
+                <div class="min-w-0">
+                    <div class="flex flex-wrap items-center gap-2">
+                        <h4 class="font-bold">${h(m.title)}</h4>
+                        <span class="text-[11px] rounded-full bg-brand-gray px-2 py-1 text-brand-text/55">${h(m.category || 'mensaje')}</span>
+                    </div>
+                    <p class="text-xs text-brand-text/40 mt-1">${meta} - ${new Date(m.created_at).toLocaleDateString('es-CO')}</p>
+                </div>
+                <span class="shrink-0 text-xs rounded-full px-2 py-1 ${unread ? 'bg-brand-blue text-white' : 'bg-brand-gray text-brand-text/50'}">${unread ? 'Nuevo' : incoming ? 'Leido' : 'Enviado'}</span>
+            </div>
+            <p class="text-sm text-brand-text/70 mt-3 whitespace-pre-wrap">${h(m.body)}</p>
+            <div class="mt-3 flex flex-wrap gap-2">
+                ${unread ? `<button data-message="${m.id}" class="message-read text-brand-blue text-sm font-bold">Marcar como leido</button>` : ''}
+                <button data-message-delete="${m.id}" class="message-delete text-red-500 text-sm font-bold">Eliminar</button>
+            </div>
+        </article>`;
+    }
+
+    function sendMessageToAdmin(e) {
+        e.preventDefault();
+        const data = Object.fromEntries(new FormData(e.target).entries());
+        const [recipientType, recipientId] = String(data.recipient || 'admin:admin_mauricio').split(':');
+        const target = recipientType === 'admin'
+            ? { id: 'admin_mauricio', name: 'Admin Mauricio' }
+            : state.cobradores.find(c => c.id === recipientId && c.estado === 'activo');
+        if (!target) return alert('Selecciona un destinatario valido.');
+        DamasPro.addMessage(state, {
+            sender_type: 'cobrador',
+            sender_id: cobrador.id,
+            sender_name: DamasPro.displayName(cobrador),
+            recipient_type: recipientType,
+            recipient_id: target.id,
+            recipient_name: recipientType === 'admin' ? target.name : DamasPro.displayName(target),
+            title: data.title.trim(),
+            body: data.body.trim(),
+            category: 'mensaje'
+        });
+        DamasPro.save(state);
+        renderBuzon();
+    }
+
+    function markMessageRead(e) {
+        const msg = (state.mensajes || []).find(m => m.id === e.target.dataset.message && m.recipient_type === 'cobrador' && m.recipient_id === cobrador.id);
+        if (!msg) return;
+        msg.read = true;
+        msg.read_at = new Date().toISOString();
+        DamasPro.save(state);
+        renderBuzon();
+    }
+
+    function deleteMessage(e) {
+        if (!confirm('Eliminar este mensaje del buzon?')) return;
+        state.mensajes = (state.mensajes || []).filter(m => m.id !== e.target.dataset.messageDelete);
+        DamasPro.save(state);
+        renderBuzon();
     }
 
     function renderPizarra() {
@@ -563,6 +692,13 @@
 
     function labelMeta(type) {
         return { creditos_nuevos: 'Creditos nuevos', renovaciones: 'Renovaciones', recaudo: 'Recaudo', cumplimiento_general: 'Cumplimiento general', manual: 'Manual' }[type] || type;
+    }
+
+    function fieldLabel(label, control) {
+        return `<label class="block">
+            <span class="block text-sm font-bold text-brand-text mb-1.5">${label}</span>
+            ${control}
+        </label>`;
     }
 
     function empty(text) {
