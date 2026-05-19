@@ -244,10 +244,8 @@
     }
 
     function totals(state, cobradorId) {
-        const meta = currentMeta(state, cobradorId);
         const week = weekRange();
-        const range = meta ? { start: meta.fecha_inicio_semana || week.start, end: meta.fecha_fin_semana || week.end } : week;
-        return state.avances.filter(a => a.cobrador_id === cobradorId && a.fecha >= range.start && a.fecha <= range.end).reduce((acc, a) => {
+        return state.avances.filter(a => a.cobrador_id === cobradorId && a.fecha >= week.start && a.fecha <= week.end).reduce((acc, a) => {
             acc.creditos += Number(a.creditos_nuevos || 0);
             acc.renovaciones += Number(a.renovaciones || 0);
             acc.recaudo += Number(a.recaudo_dia || 0);
