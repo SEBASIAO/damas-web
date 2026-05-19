@@ -39,8 +39,21 @@
         const start = new Date(d);
         start.setDate(d.getDate() - day + 1);
         const end = new Date(start);
-        end.setDate(start.getDate() + 6);
+        end.setDate(start.getDate() + 5);
         return { start: start.toISOString().slice(0, 10), end: end.toISOString().slice(0, 10) };
+    }
+
+    function nextWeekRange(range) {
+        const start = new Date(`${range.start}T12:00:00`);
+        start.setDate(start.getDate() + 7);
+        return weekRange(start);
+    }
+
+    function activeWeek(state) {
+        if (!state.semana_activa?.start || !state.semana_activa?.end) {
+            state.semana_activa = weekRange();
+        }
+        return { start: state.semana_activa.start, end: state.semana_activa.end };
     }
 
     function defaultState() {
@@ -48,6 +61,7 @@
         return {
             version: 1,
             data_reset_version: DATA_RESET_VERSION,
+            semana_activa: { start: week.start, end: week.end, status: 'abierta', opened_at: new Date().toISOString() },
             admins: [
                 { id: 'admin_mauricio', username: 'mauricio', name: 'Mauricio', pin_hash: '', role: 'admin', status: 'activo' }
             ],
@@ -117,6 +131,11 @@
         state.mensajes = state.mensajes || [];
         state.pizarra_notas = state.pizarra_notas || [];
         state.historial_semanal = state.historial_semanal || [];
+        if (!state.semana_activa?.start || !state.semana_activa?.end) {
+            const week = weekRange();
+            state.semana_activa = { start: week.start, end: week.end, status: 'abierta', opened_at: new Date().toISOString() };
+            changed = true;
+        }
         state.premios = state.premios || [];
         state.premios.forEach(p => {
             if (p.valor_economico === undefined) {
@@ -239,13 +258,13 @@
     }
 
     function weeklyAvances(state, cobradorId) {
-        const week = weekRange();
-        return state.avances.filter(a => a.cobrador_id === cobradorId && a.fecha >= week.start && a.fecha <= week.end);
+        const week = activeWeek(state);
+        return state.avances.filter(a => avanceInWeek(a, week) && a.cobrador_id === cobradorId);
     }
 
     function totals(state, cobradorId) {
-        const week = weekRange();
-        return state.avances.filter(a => a.cobrador_id === cobradorId && a.fecha >= week.start && a.fecha <= week.end).reduce((acc, a) => {
+        const week = activeWeek(state);
+        return state.avances.filter(a => a.cobrador_id === cobradorId && avanceInWeek(a, week)).reduce((acc, a) => {
             acc.creditos += Number(a.creditos_nuevos || 0);
             acc.renovaciones += Number(a.renovaciones || 0);
             acc.recaudo += Number(a.recaudo_dia || 0);
@@ -265,7 +284,8 @@
 
     function resumenCobrador(state, cobradorId) {
         const cobrador = state.cobradores.find(c => c.id === cobradorId);
-        const meta = currentMeta(state, cobradorId) || {};
+        const week = activeWeek(state);
+        const meta = currentMeta(state, cobradorId, week.start) || {};
         const total = totals(state, cobradorId);
         const pCreditos = pct(total.creditos, meta.meta_creditos_nuevos);
         const pRenovaciones = pct(total.renovaciones, meta.meta_renovaciones);
@@ -299,7 +319,7 @@
 
     function totalsForRange(state, cobradorId, range) {
         return (state.avances || [])
-            .filter(a => a.cobrador_id === cobradorId && a.fecha >= range.start && a.fecha <= range.end)
+            .filter(a => a.cobrador_id === cobradorId && avanceInWeek(a, range))
             .reduce((acc, a) => {
                 acc.creditos += Number(a.creditos_nuevos || 0);
                 acc.renovaciones += Number(a.renovaciones || 0);
@@ -307,6 +327,11 @@
                 acc.avances += 1;
                 return acc;
             }, { creditos: 0, renovaciones: 0, recaudo: 0, avances: 0 });
+    }
+
+    function avanceInWeek(avance, range) {
+        if (avance.fecha_inicio_semana) return avance.fecha_inicio_semana === range.start;
+        return avance.fecha >= range.start && avance.fecha <= range.end;
     }
 
     function weeklyArchiveId(range) {
@@ -391,10 +416,11 @@
     }
 
     function archivePastWeeks(state, shouldSave = true) {
-        const current = weekRange();
+        const current = activeWeek(state);
         const starts = new Set();
         (state.avances || []).forEach(a => {
-            if (a.fecha) starts.add(weekRange(`${a.fecha}T12:00:00`).start);
+            if (a.fecha_inicio_semana) starts.add(a.fecha_inicio_semana);
+            else if (a.fecha) starts.add(weekRange(`${a.fecha}T12:00:00`).start);
         });
         (state.premios_cobradores || []).forEach(p => {
             if (p.fecha_inicio_periodo) starts.add(p.fecha_inicio_periodo);
@@ -481,7 +507,7 @@
 
     function unlockForCobrador(state, cobradorId) {
         let changed = false;
-        const week = weekRange();
+        const week = activeWeek(state);
         const resumen = resumenCobrador(state, cobradorId);
         const cobrador = state.cobradores.find(c => c.id === cobradorId);
         const now = new Date().toISOString();
@@ -514,7 +540,7 @@
     }
 
     function resetWeeklyAwards(state) {
-        const week = weekRange();
+        const week = activeWeek(state);
         state.premios_cobradores = state.premios_cobradores.filter(p => p.fecha_inicio_periodo !== week.start);
         state.logros_cobradores = state.logros_cobradores.filter(l => l.fecha_inicio_semana !== week.start);
         state.premios_bloqueados = (state.premios_bloqueados || []).filter(p => p.fecha_inicio_periodo !== week.start);
@@ -523,11 +549,13 @@
     }
 
     function resetWeeklyProgress(state) {
-        const week = weekRange();
+        const week = activeWeek(state);
         const archive = buildWeeklyArchive(state, week, 'manual');
         upsertWeeklyArchive(state, archive);
         const before = (state.avances || []).length;
-        state.avances = (state.avances || []).filter(a => a.fecha < week.start || a.fecha > week.end);
+        state.avances = (state.avances || []).filter(a => !avanceInWeek(a, week));
+        const next = nextWeekRange(week);
+        state.semana_activa = { start: next.start, end: next.end, status: 'abierta', opened_at: new Date().toISOString(), previous_start: week.start };
         save(state);
         return { removed: before - state.avances.length, archive };
     }
@@ -596,7 +624,7 @@
     }
 
     window.DamasPro = {
-        load, save, uid, hashPin, verifyPin, weekRange, currentMeta, weeklyAvances, totals,
+        load, save, uid, hashPin, verifyPin, weekRange, activeWeek, currentMeta, weeklyAvances, totals,
         pct, visualPct, resumenCobrador, estadoCumplimiento, metricValue, unlockForCobrador,
         recomputeUnlocks, resetWeeklyAwards, resetWeeklyProgress, archivePastWeeks, activePhrase, displayName, initials, money, escapeHtml, validateImage, fileToDataUrl
         , blockLogro, blockPremio, unblockLogro, unblockPremio

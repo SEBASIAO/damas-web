@@ -1,4 +1,4 @@
-﻿(function () {
+(function () {
     let state;
     let cobrador;
     let currentTab = 'inicio';
@@ -202,7 +202,7 @@
     function renderInicio() {
         const phrase = DamasPro.activePhrase(state);
         const ranking = allRanking();
-        const week = DamasPro.weekRange();
+        const week = DamasPro.activeWeek(state);
         const myNotes = notasCobrador();
         const unreadNotes = myNotes.filter(n => !n.leido).length;
         const unreadMessages = cobradorMessages().filter(m => m.recipient_type === 'cobrador' && !m.read).length;
@@ -534,7 +534,7 @@
     }
 
     function renderPizarra() {
-        const week = DamasPro.weekRange();
+        const week = DamasPro.activeWeek(state);
         const notes = pizarraNotasSemana();
         $('pro-view').innerHTML = `
             <div class="grid lg:grid-cols-[360px_1fr] gap-5">
@@ -571,7 +571,7 @@
     }
 
     function pizarraNotasSemana() {
-        const week = DamasPro.weekRange();
+        const week = DamasPro.activeWeek(state);
         return (state.pizarra_notas || [])
             .filter(n => n.fecha >= week.start && n.fecha <= week.end)
             .sort((a, b) => String(b.created_at || '').localeCompare(String(a.created_at || '')));
@@ -625,7 +625,7 @@
     function renderPerfil() {
         const r = resumen();
         const myNotes = notasCobrador();
-        const week = DamasPro.weekRange();
+        const week = DamasPro.activeWeek(state);
         const unlockedLogroIds = state.logros_cobradores.filter(x => x.cobrador_id === cobrador.id && x.fecha_inicio_semana === week.start).map(x => x.logro_id);
         const unlockedPremioIds = state.premios_cobradores.filter(x => x.cobrador_id === cobrador.id && x.fecha_inicio_periodo === week.start).map(x => x.premio_id);
         const medalLogroAwards = state.logros_cobradores.filter(x => x.cobrador_id === cobrador.id);

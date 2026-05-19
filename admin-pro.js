@@ -1,4 +1,4 @@
-﻿(function () {
+(function () {
     let state;
     let currentTab = 'dashboard';
     let tabsScrollLeft = 0;
@@ -109,7 +109,7 @@
 
     function renderDashboard() {
         DamasPro.recomputeUnlocks(state);
-        const week = DamasPro.weekRange();
+        const week = DamasPro.activeWeek(state);
         const active = state.cobradores.filter(c => c.estado === 'activo').length;
         const unlocked = (state.premios_cobradores || []).filter(p => p.fecha_inicio_periodo === week.start).length;
         const top = ranking()[0];
@@ -232,7 +232,7 @@
     }
 
     function renderMetas() {
-        const week = DamasPro.weekRange();
+        const week = DamasPro.activeWeek(state);
         $('admin-view').innerHTML = `
             <div class="grid lg:grid-cols-[360px_1fr] gap-5">
                 <form id="form-meta" class="bg-white border border-brand-gray-dark rounded-xl p-5 shadow-sm space-y-4">
@@ -297,6 +297,7 @@
     }
 
     function renderAvances() {
+        const week = DamasPro.activeWeek(state);
         const latestAvanceDate = latestAvanceFecha();
         const selectedDate = sessionStorage.getItem('admin_avances_filter_date') || latestAvanceDate;
         const filteredAvances = state.avances.filter(a => a.fecha === selectedDate);
@@ -304,6 +305,7 @@
             <div class="grid lg:grid-cols-[360px_1fr] gap-5">
                 <form id="form-avance" class="bg-white border border-brand-gray-dark rounded-xl p-5 shadow-sm space-y-4">
                     <h3 id="avance-form-title" class="font-heading font-bold text-brand-text">Agregar avance diario</h3>
+                    <p class="text-xs text-brand-text/45">Semana activa: ${week.start} a ${week.end}. Los avances nuevos cuentan para esta semana hasta que la cierres.</p>
                     <input name="id" type="hidden">
                     ${fieldLabel('Cobrador', 'Selecciona a quien le vas a sumar este avance.', `<select name="cobrador_id" class="field-input">${options()}</select>`)}
                     ${fieldLabel('Fecha del avance', 'Dia exacto en que se hizo la gestion.', `<input name="fecha" class="field-input" type="date" value="${new Date().toISOString().slice(0,10)}" required>`)}
@@ -333,11 +335,11 @@
                         <div class="flex flex-col sm:flex-row sm:items-end gap-2">
                             ${fieldLabel('Fecha', `<input id="avance-filter-date" class="field-input sm:w-44" type="date" value="${selectedDate}">`)}
                             <button id="reset-progress" type="button" class="border border-red-200 text-red-500 rounded-xl px-4 py-3 text-sm font-bold hover:bg-red-50">
-                                Reiniciar semana
+                                Cerrar semana
                             </button>
                         </div>
                     </div>
-                    <p class="text-xs text-brand-text/40 mb-4">Reinicia creditos, renovaciones, recaudo y ranking de la semana actual. Los premios y logros ganados se conservan.</p>
+                    <p class="text-xs text-brand-text/40 mb-4">Cierra la semana activa, archiva el resumen y abre la siguiente. Los premios y logros ganados se conservan.</p>
                     <div class="space-y-2">${filteredAvances.slice().reverse().map(a => {
                         const c = state.cobradores.find(x => x.id === a.cobrador_id) || {};
                         const avanceActions = `<div class="mt-3 flex gap-2"><button data-avance-edit="${a.id}" class="avance-edit rounded-lg bg-brand-blue text-white px-3 py-2 text-xs font-bold">Editar</button><button data-avance-delete="${a.id}" class="avance-delete rounded-lg bg-red-50 text-red-500 px-3 py-2 text-xs font-bold">Eliminar</button></div>`;
@@ -379,13 +381,16 @@
         }
         try {
             const data = Object.fromEntries(new FormData(form).entries());
+            const week = DamasPro.activeWeek(state);
             const payload = { cobrador_id: data.cobrador_id, fecha: data.fecha, creditos_nuevos: Number(data.creditos_nuevos || 0), renovaciones: Number(data.renovaciones || 0), recaudo_dia: parseMoneyInput(data.recaudo_dia), observacion_admin_opcional: data.observacion.trim(), updated_at: new Date().toISOString() };
             if (data.id) {
                 const avance = state.avances.find(a => a.id === data.id);
                 if (!avance) return alert('No se encontro el avance para editar.');
+                payload.fecha_inicio_semana = avance.fecha_inicio_semana || DamasPro.weekRange(`${payload.fecha}T12:00:00`).start;
+                payload.fecha_fin_semana = avance.fecha_fin_semana || DamasPro.weekRange(`${payload.fecha}T12:00:00`).end;
                 Object.assign(avance, payload);
             } else {
-                state.avances.push({ id: DamasPro.uid('av'), ...payload, created_by: 'admin_mauricio', created_at: new Date().toISOString() });
+                state.avances.push({ id: DamasPro.uid('av'), ...payload, fecha_inicio_semana: week.start, fecha_fin_semana: week.end, created_by: 'admin_mauricio', created_at: new Date().toISOString() });
             }
             DamasPro.recomputeUnlocks(state);
             const saved = await DamasPro.save(state);
@@ -429,13 +434,14 @@
     }
 
     async function resetWeeklyProgress() {
-        const week = DamasPro.weekRange();
-        if (!confirm(`Reiniciar los avances de la semana actual (${week.start} a ${week.end})? Se archivara el resumen antes de borrar avances. Premios y logros ganados se conservan.`)) return;
+        const week = DamasPro.activeWeek(state);
+        if (!confirm(`Cerrar la semana activa (${week.start} a ${week.end}) y abrir la siguiente? Se archivara el resumen antes de borrar avances. Premios y logros ganados se conservan.`)) return;
         const result = DamasPro.resetWeeklyProgress(state);
         const saved = await DamasPro.save(state);
         if (!saved) return alert('El reinicio quedo guardado localmente, pero no se pudo sincronizar con el servidor. Revisa la conexion.');
         sessionStorage.setItem('admin_avances_filter_date', new Date().toISOString().slice(0, 10));
-        alert(`Semana reiniciada. Avances eliminados: ${result.removed}. El resumen quedo en Historico.`);
+        const next = DamasPro.activeWeek(state);
+        alert(`Semana cerrada. Avances eliminados: ${result.removed}. Nueva semana activa: ${next.start} a ${next.end}.`);
         renderView();
     }
 
@@ -653,7 +659,7 @@
     }
 
     function renderPizarra() {
-        const week = DamasPro.weekRange();
+        const week = DamasPro.activeWeek(state);
         const notes = pizarraNotasSemana();
         $('admin-view').innerHTML = `
             <div class="grid lg:grid-cols-[360px_1fr] gap-5">
@@ -698,7 +704,7 @@
     }
 
     function pizarraNotasSemana() {
-        const week = DamasPro.weekRange();
+        const week = DamasPro.activeWeek(state);
         return (state.pizarra_notas || [])
             .filter(n => n.fecha >= week.start && n.fecha <= week.end)
             .sort((a, b) => String(b.created_at || '').localeCompare(String(a.created_at || '')));
@@ -736,14 +742,14 @@
 
     function clearPizarraSemana() {
         if (!confirm('Limpiar todas las notas de la pizarra de esta semana?')) return;
-        const week = DamasPro.weekRange();
+        const week = DamasPro.activeWeek(state);
         state.pizarra_notas = (state.pizarra_notas || []).filter(n => n.fecha < week.start || n.fecha > week.end);
         DamasPro.save(state);
         renderView();
     }
 
     function renderLogros() {
-        const week = DamasPro.weekRange();
+        const week = DamasPro.activeWeek(state);
         const weekAwards = currentWeekLogroAwards();
         $('admin-view').innerHTML = `
             <div class="grid lg:grid-cols-[380px_1fr] gap-5">
@@ -877,7 +883,7 @@
     }
 
     function currentWeekLogroAwards() {
-        const week = DamasPro.weekRange();
+        const week = DamasPro.activeWeek(state);
         return (state.logros_cobradores || [])
             .filter(x => x.fecha_inicio_semana === week.start)
             .map(x => ({
@@ -908,7 +914,7 @@
         e.preventDefault();
         const data = Object.fromEntries(new FormData(e.target).entries());
         if (!data.cobrador_id || !data.logro_id) return alert('Selecciona cobrador y logro.');
-        const week = DamasPro.weekRange();
+        const week = DamasPro.activeWeek(state);
         const exists = (state.logros_cobradores || []).some(x => x.cobrador_id === data.cobrador_id && x.logro_id === data.logro_id && x.fecha_inicio_semana === week.start);
         if (exists) return alert('Ese cobrador ya tiene este logro esta semana.');
         const now = new Date().toISOString();
@@ -942,7 +948,7 @@
     }
 
     function renderPremios() {
-        const week = DamasPro.weekRange();
+        const week = DamasPro.activeWeek(state);
         const weekAwards = currentWeekPremioAwards();
         const candidates = premioCandidates();
         $('admin-view').innerHTML = `
@@ -1041,7 +1047,7 @@
             Object.assign(premio, payload);
             if (image) premio.imagen_url = image;
         } else {
-            const week = DamasPro.weekRange();
+            const week = DamasPro.activeWeek(state);
             state.premios.push({ id: DamasPro.uid('premio'), ...payload, imagen_url: image, fecha_inicio: week.start, fecha_fin: week.end, activo: true, created_by: 'admin_mauricio', created_at: new Date().toISOString() });
         }
         DamasPro.recomputeUnlocks(state);
@@ -1090,7 +1096,7 @@
     }
 
     function currentWeekPremioAwards() {
-        const week = DamasPro.weekRange();
+        const week = DamasPro.activeWeek(state);
         return (state.premios_cobradores || [])
             .filter(x => x.fecha_inicio_periodo === week.start)
             .map(x => ({
@@ -1118,7 +1124,7 @@
     }
 
     function premioCandidates() {
-        const week = DamasPro.weekRange();
+        const week = DamasPro.activeWeek(state);
         const activePremios = (state.premios || []).filter(p => p.activo && p.tipo_meta !== 'manual');
         return state.cobradores
             .filter(c => c.estado === 'activo')
@@ -1167,7 +1173,7 @@
 
     function awardPremioTo(cobradorId, premioId) {
         if (!cobradorId || !premioId) return alert('Selecciona cobrador y premio.');
-        const week = DamasPro.weekRange();
+        const week = DamasPro.activeWeek(state);
         const exists = (state.premios_cobradores || []).some(x => x.cobrador_id === cobradorId && x.premio_id === premioId && x.fecha_inicio_periodo === week.start);
         if (exists) return alert('Ese cobrador ya tiene este premio esta semana.');
         const now = new Date().toISOString();
@@ -1367,7 +1373,7 @@
     }
 
     function renderRanking() {
-        const week = DamasPro.weekRange();
+        const week = DamasPro.activeWeek(state);
         $('admin-view').innerHTML = `
             <section class="bg-white border border-brand-gray-dark rounded-xl p-5 shadow-sm overflow-x-auto">
                 <h3 class="font-heading font-bold text-brand-text mb-4">Ranking completo</h3>
