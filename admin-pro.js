@@ -14,7 +14,8 @@
         ['logros', 'Logros', 'fa-medal'],
         ['premios', 'Premios', 'fa-trophy'],
         ['frase', 'Frase', 'fa-quote-left'],
-        ['ranking', 'Ranking', 'fa-ranking-star']
+        ['ranking', 'Ranking', 'fa-ranking-star'],
+        ['historico', 'Historico', 'fa-clock-rotate-left']
     ];
 
     const $ = (id) => document.getElementById(id);
@@ -93,6 +94,7 @@
         if (currentTab === 'premios') return renderPremios();
         if (currentTab === 'frase') return renderFrase();
         if (currentTab === 'ranking') return renderRanking();
+        if (currentTab === 'historico') return renderHistorico();
     }
 
     function stat(label, value, icon) {
@@ -328,8 +330,14 @@
                             <h3 class="font-heading font-bold text-brand-text">Historial de avances</h3>
                             <p class="text-xs text-brand-text/45 mt-1">Filtrado por fecha para evitar confusiones.</p>
                         </div>
-                        ${fieldLabel('Fecha', `<input id="avance-filter-date" class="field-input sm:w-44" type="date" value="${selectedDate}">`)}
+                        <div class="flex flex-col sm:flex-row sm:items-end gap-2">
+                            ${fieldLabel('Fecha', `<input id="avance-filter-date" class="field-input sm:w-44" type="date" value="${selectedDate}">`)}
+                            <button id="reset-progress" type="button" class="border border-red-200 text-red-500 rounded-xl px-4 py-3 text-sm font-bold hover:bg-red-50">
+                                Reiniciar semana
+                            </button>
+                        </div>
                     </div>
+                    <p class="text-xs text-brand-text/40 mb-4">Reinicia creditos, renovaciones, recaudo y ranking de la semana actual. Los premios y logros ganados se conservan.</p>
                     <div class="space-y-2">${filteredAvances.slice().reverse().map(a => {
                         const c = state.cobradores.find(x => x.id === a.cobrador_id) || {};
                         const avanceActions = `<div class="mt-3 flex gap-2"><button data-avance-edit="${a.id}" class="avance-edit rounded-lg bg-brand-blue text-white px-3 py-2 text-xs font-bold">Editar</button><button data-avance-delete="${a.id}" class="avance-delete rounded-lg bg-red-50 text-red-500 px-3 py-2 text-xs font-bold">Eliminar</button></div>`;
@@ -354,6 +362,7 @@
             sessionStorage.setItem('admin_avances_filter_date', e.target.value);
             renderAvances();
         });
+        $('reset-progress').addEventListener('click', resetWeeklyProgress);
         $('avance-cancel').addEventListener('click', clearAvanceForm);
         setupAvancePreview();
         document.querySelectorAll('.avance-edit').forEach(btn => btn.addEventListener('click', editAvance));
@@ -416,6 +425,17 @@
         state.avances = state.avances.filter(a => a.id !== e.target.dataset.avanceDelete);
         DamasPro.recomputeUnlocks(state);
         DamasPro.save(state);
+        renderView();
+    }
+
+    async function resetWeeklyProgress() {
+        const week = DamasPro.weekRange();
+        if (!confirm(`Reiniciar los avances de la semana actual (${week.start} a ${week.end})? Se archivara el resumen antes de borrar avances. Premios y logros ganados se conservan.`)) return;
+        const result = DamasPro.resetWeeklyProgress(state);
+        const saved = await DamasPro.save(state);
+        if (!saved) return alert('El reinicio quedo guardado localmente, pero no se pudo sincronizar con el servidor. Revisa la conexion.');
+        sessionStorage.setItem('admin_avances_filter_date', new Date().toISOString().slice(0, 10));
+        alert(`Semana reiniciada. Avances eliminados: ${result.removed}. El resumen quedo en Historico.`);
         renderView();
     }
 
@@ -846,9 +866,12 @@
 
     function deleteLogro(e) {
         const id = e.target.dataset.logroDelete;
-        if (!confirm('Eliminar este logro? Tambien se quitara de los cobradores que lo hayan desbloqueado.')) return;
+        if (!confirm('Eliminar este logro? Se quitara de la lista de logros disponibles, pero se conservara en el medallero de quienes ya lo ganaron.')) return;
+        const logro = state.logros.find(l => l.id === id);
+        (state.logros_cobradores || []).forEach(award => {
+            if (award.logro_id === id && !award.logro_snapshot) award.logro_snapshot = DamasPro.logroSnapshot(logro);
+        });
         state.logros = state.logros.filter(l => l.id !== id);
-        state.logros_cobradores = state.logros_cobradores.filter(l => l.logro_id !== id);
         DamasPro.save(state);
         renderView();
     }
@@ -860,7 +883,7 @@
             .map(x => ({
                 award: x,
                 cobrador: state.cobradores.find(c => c.id === x.cobrador_id),
-                logro: state.logros.find(l => l.id === x.logro_id)
+                logro: DamasPro.resolveLogroAward(state, x)
             }))
             .filter(x => x.cobrador && x.logro)
             .sort((a, b) => String(b.award.fecha_desbloqueo || b.award.created_at || '').localeCompare(String(a.award.fecha_desbloqueo || a.award.created_at || '')));
@@ -890,9 +913,9 @@
         if (exists) return alert('Ese cobrador ya tiene este logro esta semana.');
         const now = new Date().toISOString();
         DamasPro.unblockLogro(state, data.cobrador_id, data.logro_id, week.start);
-        state.logros_cobradores.push({ id: DamasPro.uid('lc'), cobrador_id: data.cobrador_id, logro_id: data.logro_id, fecha_inicio_semana: week.start, fecha_desbloqueo: now, asignado_manualmente: true, asignado_por: 'admin_mauricio', created_at: now });
         const target = state.cobradores.find(c => c.id === data.cobrador_id);
         const logro = state.logros.find(l => l.id === data.logro_id);
+        state.logros_cobradores.push({ id: DamasPro.uid('lc'), cobrador_id: data.cobrador_id, logro_id: data.logro_id, logro_snapshot: DamasPro.logroSnapshot(logro), fecha_inicio_semana: week.start, fecha_desbloqueo: now, asignado_manualmente: true, asignado_por: 'admin_mauricio', created_at: now });
         DamasPro.addMessage(state, {
             sender_type: 'admin',
             sender_id: 'admin_mauricio',
@@ -1073,7 +1096,7 @@
             .map(x => ({
                 award: x,
                 cobrador: state.cobradores.find(c => c.id === x.cobrador_id),
-                premio: state.premios.find(p => p.id === x.premio_id)
+                premio: DamasPro.resolvePremioAward(state, x)
             }))
             .filter(x => x.cobrador && x.premio)
             .sort((a, b) => String(b.award.fecha_desbloqueo || b.award.created_at || '').localeCompare(String(a.award.fecha_desbloqueo || a.award.created_at || '')));
@@ -1149,9 +1172,9 @@
         if (exists) return alert('Ese cobrador ya tiene este premio esta semana.');
         const now = new Date().toISOString();
         DamasPro.unblockPremio(state, cobradorId, premioId, week.start);
-        state.premios_cobradores.push({ id: DamasPro.uid('pc'), cobrador_id: cobradorId, premio_id: premioId, fecha_inicio_periodo: week.start, fecha_fin_periodo: week.end, desbloqueado: true, fecha_desbloqueo: now, asignado_manualmente: true, asignado_por: 'admin_mauricio', created_at: now });
         const target = state.cobradores.find(c => c.id === cobradorId);
         const premio = state.premios.find(p => p.id === premioId);
+        state.premios_cobradores.push({ id: DamasPro.uid('pc'), cobrador_id: cobradorId, premio_id: premioId, premio_snapshot: DamasPro.premioSnapshot(premio), fecha_inicio_periodo: week.start, fecha_fin_periodo: week.end, desbloqueado: true, fecha_desbloqueo: now, asignado_manualmente: true, asignado_por: 'admin_mauricio', created_at: now });
         DamasPro.addMessage(state, {
             sender_type: 'admin',
             sender_id: 'admin_mauricio',
@@ -1247,6 +1270,102 @@
         renderView();
     }
 
+    function renderHistorico() {
+        DamasPro.archivePastWeeks(state);
+        const history = (state.historial_semanal || [])
+            .slice()
+            .sort((a, b) => String(b.fecha_inicio_semana || '').localeCompare(String(a.fecha_inicio_semana || '')));
+        const selectedId = sessionStorage.getItem('admin_historico_semana') || history[0]?.id || '';
+        const selected = history.find(h => h.id === selectedId) || history[0];
+        $('admin-view').innerHTML = `
+            <div class="grid lg:grid-cols-[320px_1fr] gap-5">
+                <section class="bg-white border border-brand-gray-dark rounded-xl p-5 shadow-sm">
+                    <h3 class="font-heading font-bold text-brand-text mb-2">Historico semanal</h3>
+                    <p class="text-xs text-brand-text/45 mb-4">Semanas archivadas automaticamente y cortes guardados antes de reiniciar avances.</p>
+                    ${history.length ? fieldLabel('Semana', `<select id="historico-select" class="field-input">${history.map(item => `<option value="${h(item.id)}" ${selected?.id === item.id ? 'selected' : ''}>${h(item.fecha_inicio_semana)} a ${h(item.fecha_fin_semana)}</option>`).join('')}</select>`) : empty('Aun no hay semanas archivadas.')}
+                    ${selected ? `
+                        <div class="grid grid-cols-2 gap-2 mt-5">
+                            ${historicStat('Creditos', selected.total_creditos || 0)}
+                            ${historicStat('Renovaciones', selected.total_renovaciones || 0)}
+                            ${historicStat('Recaudo', DamasPro.money(selected.total_recaudo || 0))}
+                            ${historicStat('Avances', selected.total_avances || 0)}
+                        </div>
+                        <p class="text-xs text-brand-text/40 mt-4">Archivo: ${selected.tipo_archivo === 'manual' ? 'reinicio manual' : 'automatico'}.</p>
+                    ` : ''}
+                </section>
+                <div class="space-y-5">
+                    ${selected ? `
+                        <section class="bg-white border border-brand-gray-dark rounded-xl p-5 shadow-sm overflow-x-auto">
+                            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4">
+                                <h3 class="font-heading font-bold text-brand-text">Resumen por cobrador</h3>
+                                <p class="text-xs text-brand-text/45">${h(selected.fecha_inicio_semana)} a ${h(selected.fecha_fin_semana)}</p>
+                            </div>
+                            ${historicResumenTable(selected.resumen || [])}
+                        </section>
+                        <section class="grid lg:grid-cols-2 gap-5">
+                            <div class="bg-white border border-brand-gray-dark rounded-xl p-5 shadow-sm overflow-x-auto">
+                                <h3 class="font-heading font-bold text-brand-text mb-4">Logros ganados</h3>
+                                ${historicAwardsTable(selected.logros || [], 'logro')}
+                            </div>
+                            <div class="bg-white border border-brand-gray-dark rounded-xl p-5 shadow-sm overflow-x-auto">
+                                <h3 class="font-heading font-bold text-brand-text mb-4">Premios ganados</h3>
+                                ${historicAwardsTable(selected.premios || [], 'premio')}
+                            </div>
+                        </section>
+                    ` : `
+                        <section class="bg-white border border-brand-gray-dark rounded-xl p-5 shadow-sm">
+                            ${empty('Cuando termine una semana o reinicies avances, aparecera aqui el resumen.')}
+                        </section>
+                    `}
+                </div>
+            </div>`;
+        const select = $('historico-select');
+        if (select) {
+            select.addEventListener('change', (e) => {
+                sessionStorage.setItem('admin_historico_semana', e.target.value);
+                renderHistorico();
+            });
+        }
+    }
+
+    function historicStat(label, value) {
+        return `<div class="rounded-xl bg-brand-gray p-3">
+            <p class="text-[11px] uppercase tracking-widest text-brand-text/45 font-bold">${label}</p>
+            <p class="font-heading font-bold text-brand-text mt-1">${h(value)}</p>
+        </div>`;
+    }
+
+    function historicResumenTable(rows) {
+        if (!rows.length) return empty('No hay datos de cobradores en esta semana.');
+        return `<table class="w-full min-w-[820px] text-sm table-fixed">
+            <thead><tr class="text-left text-brand-text/40 border-b"><th class="py-2 w-56">Cobrador</th><th class="w-24 text-right">Creditos</th><th class="w-28 text-right">Renovaciones</th><th class="w-32 text-right">Recaudo</th><th class="w-28 text-right">Cumplimiento</th><th class="w-28">Estado</th></tr></thead>
+            <tbody>${rows.slice().sort((a, b) => Number(b.cumplimientoGeneral || 0) - Number(a.cumplimientoGeneral || 0)).map(r => `
+                <tr class="border-b last:border-0">
+                    <td class="py-3"><b class="block truncate" title="${h(r.nombre)}">${h(r.nombre)}</b><span class="text-xs text-brand-text/40">${h(r.username || '')}</span></td>
+                    <td class="text-right tabular-nums">${h(r.total?.creditos || 0)}/${h(r.meta?.meta_creditos_nuevos || 0)}</td>
+                    <td class="text-right tabular-nums">${h(r.total?.renovaciones || 0)}/${h(r.meta?.meta_renovaciones || 0)}</td>
+                    <td class="text-right tabular-nums whitespace-nowrap">${DamasPro.money(r.total?.recaudo || 0)}</td>
+                    <td class="text-right"><b class="text-brand-green tabular-nums">${Math.round(r.cumplimientoGeneral || 0)}%</b></td>
+                    <td><span class="block truncate" title="${h(DamasPro.estadoCumplimiento(r.cumplimientoGeneral || 0))}">${h(DamasPro.estadoCumplimiento(r.cumplimientoGeneral || 0))}</span></td>
+                </tr>`).join('')}</tbody>
+        </table>`;
+    }
+
+    function historicAwardsTable(rows, key) {
+        if (!rows.length) return empty(`No hubo ${key === 'premio' ? 'premios' : 'logros'} en esta semana.`);
+        return `<table class="w-full min-w-[480px] text-sm">
+            <thead><tr class="text-left text-brand-text/40 border-b"><th class="py-2">Cobrador</th><th>${key === 'premio' ? 'Premio' : 'Logro'}</th><th>Fecha</th></tr></thead>
+            <tbody>${rows.map(row => {
+                const item = row[key] || {};
+                return `<tr class="border-b last:border-0">
+                    <td class="py-3">${h(row.nombre_cobrador || '-')}</td>
+                    <td><b>${h(item.nombre || '-')}</b><p class="text-xs text-brand-text/40">${h(item.nivel || '')}</p></td>
+                    <td class="text-xs text-brand-text/50">${h(String(row.fecha_desbloqueo || '').slice(0, 10) || '-')}</td>
+                </tr>`;
+            }).join('')}</tbody>
+        </table>`;
+    }
+
     function renderRanking() {
         const week = DamasPro.weekRange();
         $('admin-view').innerHTML = `
@@ -1274,14 +1393,10 @@
         const target = state.cobradores.find(c => c.id === cobradorId);
         if (!target) return;
         const r = DamasPro.resumenCobrador(state, target.id);
-        const unlockedLogroIds = state.logros_cobradores
-            .filter(x => x.cobrador_id === target.id)
-            .map(x => x.logro_id);
-        const unlockedLogros = state.logros.filter(l => unlockedLogroIds.includes(l.id));
-        const unlockedPremioIds = state.premios_cobradores
-            .filter(x => x.cobrador_id === target.id)
-            .map(x => x.premio_id);
-        const unlockedPremios = state.premios.filter(p => unlockedPremioIds.includes(p.id));
+        const unlockedLogroAwards = state.logros_cobradores.filter(x => x.cobrador_id === target.id);
+        const unlockedLogros = DamasPro.uniqueAwardItems(unlockedLogroAwards, x => DamasPro.resolveLogroAward(state, x), 'logro_id');
+        const unlockedPremioAwards = state.premios_cobradores.filter(x => x.cobrador_id === target.id);
+        const unlockedPremios = DamasPro.uniqueAwardItems(unlockedPremioAwards, x => DamasPro.resolvePremioAward(state, x), 'premio_id');
         $('admin-view').innerHTML = `
             <button id="back-admin-profile" class="mb-5 inline-flex items-center gap-2 text-brand-blue font-bold text-sm">
                 <i class="fa-solid fa-arrow-left"></i> Volver
@@ -1447,9 +1562,12 @@
 
     function deletePremio(e) {
         const id = e.target.dataset.delete;
-        if (!confirm('Eliminar este premio? Se quitara de la lista de premios disponibles.')) return;
+        if (!confirm('Eliminar este premio? Se quitara de la lista de premios disponibles, pero se conservara en el medallero de quienes ya lo ganaron.')) return;
+        const premio = state.premios.find(p => p.id === id);
+        (state.premios_cobradores || []).forEach(award => {
+            if (award.premio_id === id && !award.premio_snapshot) award.premio_snapshot = DamasPro.premioSnapshot(premio);
+        });
         state.premios = state.premios.filter(p => p.id !== id);
-        state.premios_cobradores = state.premios_cobradores.filter(p => p.premio_id !== id);
         DamasPro.save(state);
         renderView();
     }

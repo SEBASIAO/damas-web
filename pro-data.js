@@ -61,6 +61,7 @@
             notas: [],
             mensajes: [],
             pizarra_notas: [],
+            historial_semanal: [],
             logros: [],
             logros_cobradores: [],
             logros_bloqueados: [],
@@ -115,6 +116,7 @@
         state.notas = state.notas || [];
         state.mensajes = state.mensajes || [];
         state.pizarra_notas = state.pizarra_notas || [];
+        state.historial_semanal = state.historial_semanal || [];
         state.premios = state.premios || [];
         state.premios.forEach(p => {
             if (p.valor_economico === undefined) {
@@ -123,6 +125,15 @@
             }
         });
         state.premios_cobradores = state.premios_cobradores || [];
+        state.premios_cobradores.forEach(award => {
+            if (!award.premio_snapshot) {
+                const premio = state.premios.find(p => p.id === award.premio_id);
+                if (premio) {
+                    award.premio_snapshot = premioSnapshot(premio);
+                    changed = true;
+                }
+            }
+        });
         state.premios_bloqueados = state.premios_bloqueados || [];
         state.logros = state.logros || [];
         state.logros.forEach(l => {
@@ -132,7 +143,17 @@
             }
         });
         state.logros_cobradores = state.logros_cobradores || [];
+        state.logros_cobradores.forEach(award => {
+            if (!award.logro_snapshot) {
+                const logro = state.logros.find(l => l.id === award.logro_id);
+                if (logro) {
+                    award.logro_snapshot = logroSnapshot(logro);
+                    changed = true;
+                }
+            }
+        });
         state.logros_bloqueados = state.logros_bloqueados || [];
+        if (archivePastWeeks(state, false)) changed = true;
         if (changed) save(state);
         return state;
     }
@@ -272,6 +293,127 @@
         return 0;
     }
 
+    function metaForDate(state, cobradorId, date) {
+        const metas = (state.metas || []).filter(m => m.cobrador_id === cobradorId);
+        return metas.find(m => (!m.fecha_inicio_semana || m.fecha_inicio_semana <= date) && (!m.fecha_fin_semana || m.fecha_fin_semana >= date)) ||
+            metas.slice().sort((a, b) => String(b.fecha_inicio_semana || '').localeCompare(String(a.fecha_inicio_semana || '')))[0] || {};
+    }
+
+    function totalsForRange(state, cobradorId, range) {
+        return (state.avances || [])
+            .filter(a => a.cobrador_id === cobradorId && a.fecha >= range.start && a.fecha <= range.end)
+            .reduce((acc, a) => {
+                acc.creditos += Number(a.creditos_nuevos || 0);
+                acc.renovaciones += Number(a.renovaciones || 0);
+                acc.recaudo += Number(a.recaudo_dia || 0);
+                acc.avances += 1;
+                return acc;
+            }, { creditos: 0, renovaciones: 0, recaudo: 0, avances: 0 });
+    }
+
+    function weeklyArchiveId(range) {
+        return `hist_${range.start}`;
+    }
+
+    function buildWeeklyArchive(state, range, archiveType = 'auto') {
+        const resumen = (state.cobradores || []).map(c => {
+            const meta = metaForDate(state, c.id, range.start);
+            const total = totalsForRange(state, c.id, range);
+            const pCreditos = pct(total.creditos, meta.meta_creditos_nuevos);
+            const pRenovaciones = pct(total.renovaciones, meta.meta_renovaciones);
+            const pRecaudo = pct(total.recaudo, meta.meta_recaudo);
+            const valid = [meta.meta_creditos_nuevos, meta.meta_renovaciones, meta.meta_recaudo].filter(v => Number(v || 0) > 0).length || 1;
+            const cumplimientoGeneral = (pCreditos + pRenovaciones + pRecaudo) / valid;
+            return {
+                cobrador_id: c.id,
+                nombre: displayName(c),
+                username: c.username || '',
+                estado: c.estado || '',
+                meta: {
+                    meta_creditos_nuevos: Number(meta.meta_creditos_nuevos || 0),
+                    meta_renovaciones: Number(meta.meta_renovaciones || 0),
+                    meta_recaudo: Number(meta.meta_recaudo || 0)
+                },
+                total,
+                pCreditos,
+                pRenovaciones,
+                pRecaudo,
+                cumplimientoGeneral
+            };
+        });
+        const premios = (state.premios_cobradores || [])
+            .filter(p => p.fecha_inicio_periodo === range.start)
+            .map(p => ({
+                id: p.id,
+                cobrador_id: p.cobrador_id,
+                nombre_cobrador: displayName((state.cobradores || []).find(c => c.id === p.cobrador_id)),
+                premio: resolvePremioAward(state, p),
+                fecha_desbloqueo: p.fecha_desbloqueo || p.created_at || ''
+            }));
+        const logros = (state.logros_cobradores || [])
+            .filter(l => l.fecha_inicio_semana === range.start)
+            .map(l => ({
+                id: l.id,
+                cobrador_id: l.cobrador_id,
+                nombre_cobrador: displayName((state.cobradores || []).find(c => c.id === l.cobrador_id)),
+                logro: resolveLogroAward(state, l),
+                fecha_desbloqueo: l.fecha_desbloqueo || l.created_at || ''
+            }));
+        return {
+            id: weeklyArchiveId(range),
+            fecha_inicio_semana: range.start,
+            fecha_fin_semana: range.end,
+            tipo_archivo: archiveType,
+            archived_at: new Date().toISOString(),
+            total_avances: resumen.reduce((sum, r) => sum + Number(r.total.avances || 0), 0),
+            total_creditos: resumen.reduce((sum, r) => sum + Number(r.total.creditos || 0), 0),
+            total_renovaciones: resumen.reduce((sum, r) => sum + Number(r.total.renovaciones || 0), 0),
+            total_recaudo: resumen.reduce((sum, r) => sum + Number(r.total.recaudo || 0), 0),
+            resumen,
+            premios,
+            logros
+        };
+    }
+
+    function upsertWeeklyArchive(state, archive) {
+        state.historial_semanal = state.historial_semanal || [];
+        const idx = state.historial_semanal.findIndex(h => h.id === archive.id);
+        if (idx >= 0 && state.historial_semanal[idx].tipo_archivo === 'manual' && archive.tipo_archivo === 'auto') {
+            return false;
+        }
+        if (idx >= 0 && archive.tipo_archivo === 'auto') {
+            archive.archived_at = state.historial_semanal[idx].archived_at || archive.archived_at;
+        }
+        const previous = idx >= 0 ? JSON.stringify(state.historial_semanal[idx]) : '';
+        const next = idx >= 0 ? { ...state.historial_semanal[idx], ...archive } : archive;
+        if (idx >= 0) state.historial_semanal[idx] = next;
+        else state.historial_semanal.push(next);
+        state.historial_semanal.sort((a, b) => String(b.fecha_inicio_semana || '').localeCompare(String(a.fecha_inicio_semana || '')));
+        return previous !== JSON.stringify(next);
+    }
+
+    function archivePastWeeks(state, shouldSave = true) {
+        const current = weekRange();
+        const starts = new Set();
+        (state.avances || []).forEach(a => {
+            if (a.fecha) starts.add(weekRange(`${a.fecha}T12:00:00`).start);
+        });
+        (state.premios_cobradores || []).forEach(p => {
+            if (p.fecha_inicio_periodo) starts.add(p.fecha_inicio_periodo);
+        });
+        (state.logros_cobradores || []).forEach(l => {
+            if (l.fecha_inicio_semana) starts.add(l.fecha_inicio_semana);
+        });
+        let changed = false;
+        starts.forEach(start => {
+            const range = weekRange(`${start}T12:00:00`);
+            if (range.end >= current.start) return;
+            if (upsertWeeklyArchive(state, buildWeeklyArchive(state, range, 'auto'))) changed = true;
+        });
+        if (changed && shouldSave) save(state);
+        return changed;
+    }
+
     function addMessage(state, payload) {
         state.mensajes = state.mensajes || [];
         const now = new Date().toISOString();
@@ -296,6 +438,49 @@
         return message;
     }
 
+    function logroSnapshot(logro) {
+        return {
+            nombre: logro?.nombre || 'Logro',
+            descripcion: logro?.descripcion || '',
+            tipo: logro?.tipo || '',
+            valor_objetivo: Number(logro?.valor_objetivo || 0),
+            nivel: logro?.nivel || '',
+            icono: logro?.icono || 'fa-medal',
+            imagen_url: logro?.imagen_url || ''
+        };
+    }
+
+    function premioSnapshot(premio) {
+        return {
+            nombre: premio?.nombre || 'Premio',
+            descripcion: premio?.descripcion || '',
+            texto_motivacional: premio?.texto_motivacional || '',
+            tipo_meta: premio?.tipo_meta || '',
+            valor_objetivo: Number(premio?.valor_objetivo || 0),
+            valor_economico: Number(premio?.valor_economico || 0),
+            nivel: premio?.nivel || '',
+            imagen_url: premio?.imagen_url || ''
+        };
+    }
+
+    function resolveLogroAward(state, award) {
+        return state.logros.find(l => l.id === award.logro_id) || award.logro_snapshot || logroSnapshot(null);
+    }
+
+    function resolvePremioAward(state, award) {
+        return state.premios.find(p => p.id === award.premio_id) || award.premio_snapshot || premioSnapshot(null);
+    }
+
+    function uniqueAwardItems(awards, resolver, idKey) {
+        const seen = new Set();
+        return (awards || []).filter(award => {
+            const key = award[idKey] || award.id;
+            if (seen.has(key)) return false;
+            seen.add(key);
+            return true;
+        }).map(resolver);
+    }
+
     function unlockForCobrador(state, cobradorId) {
         let changed = false;
         const week = weekRange();
@@ -306,7 +491,7 @@
             const exists = state.logros_cobradores.some(x => x.cobrador_id === cobradorId && x.logro_id === logro.id && x.fecha_inicio_semana === week.start);
             const blocked = (state.logros_bloqueados || []).some(x => x.cobrador_id === cobradorId && x.logro_id === logro.id && x.fecha_inicio_semana === week.start);
             if (!exists && !blocked && metricValue(resumen, logro.tipo) >= Number(logro.valor_objetivo || 0)) {
-                state.logros_cobradores.push({ id: uid('lc'), cobrador_id: cobradorId, logro_id: logro.id, fecha_inicio_semana: week.start, fecha_desbloqueo: now, created_at: now });
+                state.logros_cobradores.push({ id: uid('lc'), cobrador_id: cobradorId, logro_id: logro.id, logro_snapshot: logroSnapshot(logro), fecha_inicio_semana: week.start, fecha_desbloqueo: now, created_at: now });
                 addMessage(state, {
                     recipient_type: 'cobrador',
                     recipient_id: cobradorId,
@@ -339,6 +524,16 @@
         save(state);
     }
 
+    function resetWeeklyProgress(state) {
+        const week = weekRange();
+        const archive = buildWeeklyArchive(state, week, 'manual');
+        upsertWeeklyArchive(state, archive);
+        const before = (state.avances || []).length;
+        state.avances = (state.avances || []).filter(a => a.fecha < week.start || a.fecha > week.end);
+        save(state);
+        return { removed: before - state.avances.length, archive };
+    }
+
     function blockLogro(state, award) {
         state.logros_bloqueados = state.logros_bloqueados || [];
         const exists = state.logros_bloqueados.some(x => x.cobrador_id === award.cobrador_id && x.logro_id === award.logro_id && x.fecha_inicio_semana === award.fecha_inicio_semana);
@@ -368,6 +563,7 @@
     }
 
     function displayName(c) {
+        c = c || {};
         return (c.nickname || c.nombre || c.username || '').trim();
     }
 
@@ -404,8 +600,9 @@
     window.DamasPro = {
         load, save, uid, hashPin, verifyPin, weekRange, currentMeta, weeklyAvances, totals,
         pct, visualPct, resumenCobrador, estadoCumplimiento, metricValue, unlockForCobrador,
-        recomputeUnlocks, resetWeeklyAwards, activePhrase, displayName, initials, money, escapeHtml, validateImage, fileToDataUrl
+        recomputeUnlocks, resetWeeklyAwards, resetWeeklyProgress, archivePastWeeks, activePhrase, displayName, initials, money, escapeHtml, validateImage, fileToDataUrl
         , blockLogro, blockPremio, unblockLogro, unblockPremio
+        , logroSnapshot, premioSnapshot, resolveLogroAward, resolvePremioAward, uniqueAwardItems
         , addMessage
         , startAutoSync
     };

@@ -305,10 +305,8 @@
         const target = state.cobradores.find(c => c.id === cobradorId && c.estado === 'activo');
         if (!target) return;
         const r = DamasPro.resumenCobrador(state, target.id);
-        const unlockedLogroIds = state.logros_cobradores
-            .filter(x => x.cobrador_id === target.id)
-            .map(x => x.logro_id);
-        const unlockedLogros = state.logros.filter(l => unlockedLogroIds.includes(l.id));
+        const unlockedLogroAwards = state.logros_cobradores.filter(x => x.cobrador_id === target.id);
+        const unlockedLogros = DamasPro.uniqueAwardItems(unlockedLogroAwards, x => DamasPro.resolveLogroAward(state, x), 'logro_id');
         $('pro-view').innerHTML = `
             <button id="back-to-inicio" class="mb-5 inline-flex items-center gap-2 text-brand-blue font-bold text-sm">
                 <i class="fa-solid fa-arrow-left"></i> Volver
@@ -630,10 +628,10 @@
         const week = DamasPro.weekRange();
         const unlockedLogroIds = state.logros_cobradores.filter(x => x.cobrador_id === cobrador.id && x.fecha_inicio_semana === week.start).map(x => x.logro_id);
         const unlockedPremioIds = state.premios_cobradores.filter(x => x.cobrador_id === cobrador.id && x.fecha_inicio_periodo === week.start).map(x => x.premio_id);
-        const medalLogroIds = state.logros_cobradores.filter(x => x.cobrador_id === cobrador.id).map(x => x.logro_id);
-        const medalPremioIds = state.premios_cobradores.filter(x => x.cobrador_id === cobrador.id).map(x => x.premio_id);
-        const unlockedLogros = state.logros.filter(l => medalLogroIds.includes(l.id));
-        const unlockedPremios = state.premios.filter(p => medalPremioIds.includes(p.id));
+        const medalLogroAwards = state.logros_cobradores.filter(x => x.cobrador_id === cobrador.id);
+        const medalPremioAwards = state.premios_cobradores.filter(x => x.cobrador_id === cobrador.id);
+        const unlockedLogros = DamasPro.uniqueAwardItems(medalLogroAwards, x => DamasPro.resolveLogroAward(state, x), 'logro_id');
+        const unlockedPremios = DamasPro.uniqueAwardItems(medalPremioAwards, x => DamasPro.resolvePremioAward(state, x), 'premio_id');
         $('pro-view').innerHTML = `
             <div class="grid xl:grid-cols-[360px_1fr] gap-5">
                 <section class="space-y-5">
